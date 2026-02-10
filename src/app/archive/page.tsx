@@ -12,11 +12,13 @@ import { Search, History, MessageSquareHeart } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence } from "framer-motion"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import Image from "next/image"
-import { designsRepo } from "@/lib/db/repositories/designs.repo"
 import { useAppStore } from "@/lib/store/app-store"
+import { Design } from "@/lib/db/schemas"
+
+const EMPTY_ARRAY: Design[] = []
 
 export default function ArchivePage() {
     const { currentPerson, setCurrentPerson } = useAppStore()
@@ -25,14 +27,15 @@ export default function ArchivePage() {
     const [selectedDesignId, setSelectedDesignId] = useState<string | null>(null)
 
     // Local Query Logic
-    const designs = useLiveQuery(
+    const liveDesigns = useLiveQuery(
         async () => {
-            let collection = db.designs.orderBy('createdAt').reverse();
-            let results = await collection.toArray();
+            const collection = db.designs.orderBy('createdAt').reverse();
+            const results = await collection.toArray();
             return results;
         },
         []
-    ) || []
+    );
+    const designs = liveDesigns || EMPTY_ARRAY;
 
     // Filter Logic (Client-side for simplicity and speed)
     const filteredDesigns = React.useMemo(() => {
@@ -122,7 +125,7 @@ export default function ArchivePage() {
             {/* Gallery Grid - Denser 'Browse' Feel */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
                 <AnimatePresence mode="popLayout">
-                    {designs?.map((design) => (
+                    {filteredDesigns.map((design) => (
                         <DesignCard
                             key={design.id}
                             design={design}
@@ -131,7 +134,7 @@ export default function ArchivePage() {
                     ))}
 
                     {/* Expectant Ghost Card if few items */}
-                    {designs && designs.length > 0 && designs.length < 6 && (
+                    {filteredDesigns.length > 0 && filteredDesigns.length < 6 && (
                         <div className="border border-dashed border-night-200 rounded-3xl flex flex-col items-center justify-center p-8 text-night-300 aspect-square group hover:border-pink-300 transition-colors cursor-pointer" onClick={() => window.location.href = '/upload'}>
                             <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">✨</div>
                             <span className="text-[9px] font-black uppercase tracking-widest">Add more</span>
@@ -141,7 +144,7 @@ export default function ArchivePage() {
             </div>
 
             {
-                designs && designs.length === 0 && (
+                filteredDesigns.length === 0 && (
                     <div className="text-center py-24 space-y-4">
                         <div className="text-6xl grayscale opacity-30">🔍</div>
                         <div className="space-y-1">
@@ -179,15 +182,15 @@ export default function ArchivePage() {
                                     {/* CONTEXTUAL LINE FOR KHUSHI */}
                                     {d.person === 'khushi' && (
                                         <p className="text-xs text-pink-200/80 font-medium mt-2 italic">
-                                            "Created after a long day — still showed up."
+                                            &quot;Created after a long day — still showed up.&quot;
                                         </p>
                                     )}
                                 </div>
 
                                 <div className="relative w-full h-[75vh] mt-12 shadow-2xl rounded-2xl overflow-hidden">
-                                    {d.thumbnailBlob && (
+                                    {(d.thumbnailBlob || d.imageUrl) && (
                                         <Image
-                                            src={URL.createObjectURL(d.thumbnailBlob)}
+                                            src={d.thumbnailBlob ? URL.createObjectURL(d.thumbnailBlob) : (d.imageUrl || '')}
                                             alt={d.title}
                                             fill
                                             className="object-contain"

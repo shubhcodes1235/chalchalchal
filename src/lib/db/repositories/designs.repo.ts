@@ -22,6 +22,10 @@ export const designsRepo = {
         return await db.designs.orderBy('createdAt').reverse().toArray();
     },
 
+    async upsertDesign(design: Design) {
+        return await db.designs.put(design);
+    },
+
     async getDesignsByPerson(person: 'shubham' | 'khushi') {
         return await db.designs.where('person').equals(person).reverse().toArray();
     },

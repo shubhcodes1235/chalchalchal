@@ -6,6 +6,7 @@ import { db } from '@/lib/db/database';
 import { seedDatabase } from '@/lib/db/seed-data';
 import { runMigrations } from '@/lib/db/migrations';
 import { motion, AnimatePresence } from 'framer-motion';
+import { startCloudSync } from '@/lib/services/sync.service';
 
 interface DatabaseContextType {
     isInitialized: boolean;
@@ -39,6 +40,13 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
 
         initDB();
     }, []);
+
+    useEffect(() => {
+        if (isInitialized) {
+            const unsubscribe = startCloudSync();
+            return () => unsubscribe();
+        }
+    }, [isInitialized]);
 
     return (
         <DatabaseContext.Provider value={{ isInitialized }}>

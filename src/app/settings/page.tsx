@@ -13,9 +13,11 @@ import { cn } from "@/lib/utils/cn"
 import { toast } from "react-hot-toast"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
-import { ShieldCheck, RefreshCw, Upload, FileJson, LogOut } from "lucide-react"
+import { ShieldCheck, RefreshCw, Upload, FileJson, LogOut, Users, User } from "lucide-react"
+import { useAppStore } from "@/lib/store/app-store"
 
 export default function SettingsPage() {
+    const { currentPerson, setCurrentPerson } = useAppStore()
     const settings = useLiveQuery(() => db.appSettings.get('main'))
     const [isResetDialogOpen, setIsResetDialogOpen] = React.useState(false)
     const [isRestoreDialogOpen, setIsRestoreDialogOpen] = React.useState(false)
@@ -26,6 +28,9 @@ export default function SettingsPage() {
 
     const updateSetting = async (key: string, value: any) => {
         await settingsRepo.updateSettings({ [key]: value })
+        if (key === 'currentPerson') {
+            setCurrentPerson(value)
+        }
         toast.success("Settings updated!")
     }
 
@@ -114,6 +119,49 @@ export default function SettingsPage() {
                     Your progress is stored safely. Nothing is deleted without your confirmation. This is your safe space.
                 </p>
             </div>
+
+            {/* Profile Switcher */}
+            <section className="space-y-4">
+                <h3 className="text-xs font-black uppercase tracking-widest text-night-400 flex items-center gap-2 px-1">
+                    <User className="w-3.5 h-3.5" /> Profile Selection
+                </h3>
+                <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden">
+                    <CardContent className="p-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            {[
+                                { id: 'shubham', label: 'Shubham', emoji: '👦', color: 'blue' },
+                                { id: 'khushi', label: 'Khushi', emoji: '👧', color: 'pink' },
+                                { id: 'both', label: 'Together', emoji: '💍', color: 'purple' }
+                            ].map((p) => (
+                                <button
+                                    key={p.id}
+                                    onClick={() => updateSetting('currentPerson', p.id as any)}
+                                    className={cn(
+                                        "flex flex-col items-center justify-center p-6 rounded-2xl border-2 transition-all space-y-3",
+                                        currentPerson === p.id
+                                            ? (p.id === 'shubham' ? "border-blue-200 bg-blue-50 shadow-inner" :
+                                                p.id === 'khushi' ? "border-pink-200 bg-pink-50 shadow-inner" :
+                                                    "border-purple-200 bg-purple-50 shadow-inner")
+                                            : "border-transparent bg-night-50 hover:bg-night-100"
+                                    )}
+                                >
+                                    <span className="text-3xl">{p.emoji}</span>
+                                    <span className={cn(
+                                        "text-xs font-black uppercase tracking-widest",
+                                        currentPerson === p.id
+                                            ? (p.id === 'shubham' ? "text-blue-600" :
+                                                p.id === 'khushi' ? "text-pink-600" :
+                                                    "text-purple-600")
+                                            : "text-night-400"
+                                    )}>
+                                        {p.label}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            </section>
 
             <div className="space-y-10">
                 {/* 1. Appearance Section */}

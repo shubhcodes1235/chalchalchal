@@ -6,10 +6,11 @@ import { useLiveQuery } from "dexie-react-hooks"
 import { db } from "@/lib/db/database"
 import { format } from "date-fns"
 import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { Sparkles, ArrowDown, History, Users } from "lucide-react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { TOOLS } from "@/lib/constants/tools"
+import { Design } from "@/lib/db/schemas"
 
 export default function TimelinePage() {
     const [selectedDesignId, setSelectedDesignId] = useState<string | null>(null)
@@ -20,7 +21,7 @@ export default function TimelinePage() {
     if (!designs) return null;
 
     // Group designs by month
-    const groupedDesigns = designs.reduce((acc: Record<string, any[]>, design) => {
+    const groupedDesigns = designs.reduce((acc: Record<string, Design[]>, design) => {
         const month = format(new Date(design.createdAt), 'MMMM yyyy')
         if (!acc[month]) acc[month] = []
         acc[month].push(design)
@@ -40,7 +41,7 @@ export default function TimelinePage() {
                     <span className="text-pink-600">Becoming.</span>
                 </h1>
                 <p className="max-w-xl mx-auto text-xl font-medium text-night-600 leading-relaxed italic opacity-80">
-                    "This isn't just an archive. It's the evidence that we didn't give up. Every pixel carries the weight of who we were, and who we're becoming."
+                    &quot;This isn&apos;t just an archive. It&apos;s the evidence that we didn&apos;t give up. Every pixel carries the weight of who we were, and who we&apos;re becoming.&quot;
                 </p>
                 <motion.div
                     animate={{ y: [0, 10, 0] }}
@@ -53,7 +54,7 @@ export default function TimelinePage() {
 
             {/* Timeline Feed */}
             <div className="relative border-l-4 border-night-100 ml-6 md:ml-20 space-y-32">
-                {Object.entries(groupedDesigns).map(([month, items], monthIdx) => {
+                {Object.entries(groupedDesigns).map(([month, items]) => {
                     // Check for shared activity in this month
                     const hasShubham = items.some(d => d.person === 'shubham')
                     const hasKhushi = items.some(d => d.person === 'khushi')
@@ -80,7 +81,7 @@ export default function TimelinePage() {
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                                    {items.map((design, idx) => {
+                                    {items.map((design) => {
                                         const tool = TOOLS.find(t => t.id === design.tool);
                                         const ageInDays = Math.floor((Date.now() - design.createdAt.getTime()) / (1000 * 60 * 60 * 24));
                                         // Nostalgia tint moved here (older = warmer)
@@ -100,9 +101,9 @@ export default function TimelinePage() {
                                                     style={{ backgroundColor: `rgba(255, 245, 230, ${filterIntensity})` }}
                                                 >
                                                     <div className="aspect-square relative rounded-2xl overflow-hidden mb-6 shadow-inner bg-night-50">
-                                                        {design.thumbnailBlob ? (
+                                                        {(design.thumbnailBlob || design.imageUrl) ? (
                                                             <Image
-                                                                src={URL.createObjectURL(design.thumbnailBlob)}
+                                                                src={design.thumbnailBlob ? URL.createObjectURL(design.thumbnailBlob) : (design.imageUrl || '')}
                                                                 alt={design.title}
                                                                 fill
                                                                 className="object-cover"
@@ -146,7 +147,7 @@ export default function TimelinePage() {
                                                         {/* The Story / Note */}
                                                         <div className="bg-night-50/50 rounded-2xl p-5 border border-night-100/50 relative">
                                                             <p className="text-sm text-night-700 leading-relaxed font-medium italic opacity-90">
-                                                                "{design.description || "In this moment, we were just being brave enough to create."}"
+                                                                &quot;{design.description || "In this moment, we were just being brave enough to create."}&quot;
                                                             </p>
                                                         </div>
                                                     </div>
@@ -165,7 +166,7 @@ export default function TimelinePage() {
                 <Sparkles className="w-16 h-16 text-pink-400 mx-auto mb-6 animate-pulse" />
                 <h3 className="text-4xl font-black text-night-950 tracking-tighter">The journey continues...</h3>
                 <p className="text-night-500 font-medium mt-4 max-w-md mx-auto italic">
-                    "Because every great designer was once a beginner who didn't stop."
+                    &quot;Because every great designer was once a beginner who didn&apos;t stop.&quot;
                 </p>
             </div>
 
@@ -182,9 +183,9 @@ export default function TimelinePage() {
                                 </div>
 
                                 <div className="relative w-full h-[85vh]">
-                                    {d.thumbnailBlob && (
+                                    {(d.thumbnailBlob || d.imageUrl) && (
                                         <Image
-                                            src={URL.createObjectURL(d.thumbnailBlob)}
+                                            src={d.thumbnailBlob ? URL.createObjectURL(d.thumbnailBlob) : (d.imageUrl || '')}
                                             alt={d.title}
                                             fill
                                             className="object-contain"

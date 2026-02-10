@@ -9,8 +9,10 @@ export interface Design {
   person: 'shubham' | 'khushi';
   title: string;
   description?: string;
-  imageBlob: Blob;               // Stored locally in IndexedDB
-  thumbnailBlob: Blob;           // Compressed thumbnail
+  imageBlob?: Blob;               // Stored locally in IndexedDB
+  thumbnailBlob?: Blob;           // Compressed thumbnail
+  imageUrl?: string;             // For cloud-synced items
+  thumbnailUrl?: string;         // For cloud-synced items
   tool: 'photoshop' | 'illustrator' | 'figma' | 'other';
   toolDetail?: string;           // e.g., "After Effects"
   tags: string[];                // ['logo', 'poster', etc.]

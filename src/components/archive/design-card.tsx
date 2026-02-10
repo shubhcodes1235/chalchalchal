@@ -35,9 +35,9 @@ export function DesignCard({ design, onClick }: DesignCardProps) {
                 onClick={() => onClick(design)}
             >
                 <div className="aspect-square relative bg-night-100 overflow-hidden">
-                    {design.thumbnailBlob ? (
+                    {(design.thumbnailBlob || design.thumbnailUrl || design.imageUrl) ? (
                         <Image
-                            src={URL.createObjectURL(design.thumbnailBlob)}
+                            src={design.thumbnailBlob ? URL.createObjectURL(design.thumbnailBlob) : (design.thumbnailUrl || design.imageUrl || '')}
                             alt={design.title}
                             fill
                             className="object-cover transition-opacity duration-300 group-hover:opacity-90"
