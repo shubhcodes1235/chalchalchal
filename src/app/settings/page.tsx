@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { useLiveQuery } from "dexie-react-hooks"
 import { db } from "@/lib/db/database"
 import { settingsRepo } from "@/lib/db/repositories/settings.repo"
-import { Sun, Moon, Monitor, Palette, Volume2, Music, Bell, MousePointer2, Download, Trash2, Heart } from "lucide-react"
+import { Sun, Moon, Monitor, Palette, Bell, MousePointer2, Download, Trash2, Heart } from "lucide-react"
 import { cn } from "@/lib/utils/cn"
 import { toast } from "react-hot-toast"
 
@@ -167,48 +167,6 @@ export default function SettingsPage() {
                     </Card>
                 </section>
 
-                {/* 2. Sensory Section */}
-                <section className="space-y-4">
-                    <h3 className="text-xs font-black uppercase tracking-widest text-night-400 flex items-center gap-2 px-1">
-                        <Volume2 className="w-3.5 h-3.5" /> Sensory Experience
-                    </h3>
-                    <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden">
-                        <CardContent className="p-6 space-y-6">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-3">
-                                    <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center">
-                                        <Volume2 className="w-4 h-4 text-pink-500" />
-                                    </div>
-                                    <span className="font-bold text-night-900">Sound Effects</span>
-                                </div>
-                                <Button
-                                    variant={settings.soundEnabled ? "primary" : "outline"}
-                                    size="sm"
-                                    className="rounded-full w-14 h-8 px-0 font-black text-[10px]"
-                                    onClick={() => updateSetting('soundEnabled', !settings.soundEnabled)}
-                                >
-                                    {settings.soundEnabled ? "ON" : "OFF"}
-                                </Button>
-                            </div>
-                            <div className="flex items-center justify-between border-t border-night-50 pt-6">
-                                <div className="flex items-center space-x-3">
-                                    <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center">
-                                        <Music className="w-4 h-4 text-pink-500" />
-                                    </div>
-                                    <span className="font-bold text-night-900">Background Music</span>
-                                </div>
-                                <Button
-                                    variant={settings.musicEnabled ? "primary" : "outline"}
-                                    size="sm"
-                                    className="rounded-full w-14 h-8 px-0 font-black text-[10px]"
-                                    onClick={() => updateSetting('musicEnabled', !settings.musicEnabled)}
-                                >
-                                    {settings.musicEnabled ? "ON" : "OFF"}
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </section>
 
                 {/* 3. Backup & Restore Section */}
                 <section className="space-y-4">

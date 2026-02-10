@@ -122,20 +122,25 @@ export async function addReactionToFirebase(
     emoji: string,
     byPersona: string
 ): Promise<void> {
-    const designRef = doc(db, "designs", designId);
-    const designSnap = await getDoc(designRef);
+    try {
+        const designRef = doc(db, "designs", designId);
+        const designSnap = await getDoc(designRef);
 
-    if (designSnap.exists()) {
-        const design = designSnap.data() as Design;
-        const newReaction: Reaction = {
-            emoji,
-            byPersona,
-            at: new Date(), // Using client date for optmistic UI, or serverTimestamp if strict
-        };
+        if (designSnap.exists()) {
+            const design = designSnap.data() as Design;
+            const newReaction: Reaction = {
+                emoji,
+                byPersona,
+                at: new Date(), // Using client date for optmistic UI, or serverTimestamp if strict
+            };
 
-        await updateDoc(designRef, {
-            reactions: [...(design.reactions || []), newReaction],
-        });
+            await updateDoc(designRef, {
+                reactions: [...(design.reactions || []), newReaction],
+            });
+        }
+    } catch (error) {
+        console.error("Failed to add reaction:", error);
+        throw error; // Re-throw to let UI handle it, or handle silently
     }
 }
 

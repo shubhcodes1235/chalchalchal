@@ -1,10 +1,7 @@
 // src/providers/sound-provider.tsx
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Howl } from 'howler';
-import { db } from '@/lib/db/database';
-import { useLiveQuery } from 'dexie-react-hooks';
+import React, { createContext, useContext } from 'react';
 
 interface SoundContextType {
     playSound: (soundName: string) => void;
@@ -15,33 +12,16 @@ interface SoundContextType {
 const SoundContext = createContext<SoundContextType | undefined>(undefined);
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
-    const settings = useLiveQuery(() => db.appSettings.get('main'));
-    const [soundEnabled, setSoundEnabled] = useState(true);
-
-    useEffect(() => {
-        if (settings) {
-            setSoundEnabled(settings.soundEnabled);
-        }
-    }, [settings]);
-
-    // Preload sounds (placeholders for now)
-    const sounds: Record<string, Howl> = {
-        click: new Howl({ src: ['/sounds/click.mp3'], volume: 0.5 }),
-        upload: new Howl({ src: ['/sounds/upload.mp3'], volume: 0.6 }),
-        celebration: new Howl({ src: ['/sounds/celebration.mp3'], volume: 0.7 }),
-        pop: new Howl({ src: ['/sounds/pop.mp3'], volume: 0.4 }),
-    };
+    // Sound is completely disabled as per user request
+    const soundEnabled = false;
 
     const playSound = (soundName: string) => {
-        if (soundEnabled && sounds[soundName]) {
-            sounds[soundName].play();
-        }
+        // No-op: Sounds have been removed
+        console.log(`Sound effect "${soundName}" requested but sounds are disabled.`);
     };
 
-    const toggleSound = async () => {
-        const newStatus = !soundEnabled;
-        await db.appSettings.update('main', { soundEnabled: newStatus });
-        setSoundEnabled(newStatus);
+    const toggleSound = () => {
+        // No-op: Sound toggling is disabled
     };
 
     return (
@@ -57,4 +37,4 @@ export const useSound = () => {
         throw new Error('useSound must be used within a SoundProvider');
     }
     return context;
-};
+}

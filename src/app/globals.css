@@ -6,68 +6,72 @@
 
 @layer base {
   :root {
-    --background: 345 100% 98%;
-    /* #FFF5F7 */
-    --foreground: 295 25% 15%;
-    /* #2A1B2E (Deep Plum) */
+    --background: 345 100% 99%;
+    /* Nearly white pink */
+    --foreground: 335 40% 15%;
+    /* Dark Plum Text */
 
     --card: 0 0% 100%;
-    --card-foreground: 295 25% 15%;
+    --card-foreground: 335 40% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 295 25% 15%;
+    --popover-foreground: 335 40% 15%;
 
-    --primary: 335 100% 55%;
-    /* More Saturated Hero Pink */
+    --primary: 335 85% 55%;
+    /* Vibrant Raspberry */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 335 100% 95%;
-    --secondary-foreground: 335 100% 55%;
+    --secondary: 260 100% 98%;
+    /* Soft Lilac */
+    --secondary-foreground: 260 50% 30%;
 
-    --muted: 0 0% 95%;
-    --muted-foreground: 295 25% 30%;
+    --muted: 335 20% 96%;
+    --muted-foreground: 335 15% 40%;
 
-    --accent: 335 100% 95%;
-    --accent-foreground: 335 100% 55%;
+    --accent: 35 100% 96%;
+    /* Warm Cream */
+    --accent-foreground: 35 80% 30%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 335 100% 90%;
-    --input: 335 100% 90%;
-    --ring: 335 100% 55%;
+    --border: 335 30% 90%;
+    /* Visible Pink Border */
+    --input: 335 30% 90%;
+    --ring: 335 85% 55%;
 
-    --radius: 1.5rem;
+    --radius: 2rem;
+    /* Softer, rounder feel */
   }
 
   .dark {
-    --background: 300 100% 5%;
+    --background: 300 100% 4%;
     --foreground: 350 100% 98%;
 
-    --card: 300 100% 8%;
+    --card: 300 30% 6%;
     --card-foreground: 350 100% 96%;
 
-    --popover: 300 100% 8%;
+    --popover: 300 30% 6%;
     --popover-foreground: 350 100% 96%;
 
-    --primary: 330 100% 71%;
+    --primary: 330 100% 65%;
     --primary-foreground: 350 100% 98%;
 
-    --secondary: 240 28% 15%;
-    --secondary-foreground: 330 100% 71%;
+    --secondary: 240 28% 12%;
+    --secondary-foreground: 330 100% 65%;
 
-    --muted: 240 28% 15%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 240 28% 12%;
+    --muted-foreground: 240 5% 70%;
 
-    --accent: 240 28% 15%;
-    --accent-foreground: 330 100% 71%;
+    --accent: 240 28% 12%;
+    --accent-foreground: 330 100% 65%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 75% 35%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 240 28% 15%;
-    --input: 240 28% 15%;
-    --ring: 330 100% 71%;
+    --border: 240 28% 12%;
+    --input: 240 28% 12%;
+    --ring: 330 100% 65%;
   }
 }
 
@@ -79,7 +83,14 @@
   body {
     @apply bg-background text-foreground font-sans selection:bg-pink-100 selection:text-pink-900;
     min-height: 100vh;
-    background: linear-gradient(135deg, #FFF5F7 0%, #F8BBD0 100%);
+    /* Blueprint design grid */
+    background-color: #FFF5F7;
+    background-image:
+      linear-gradient(rgba(233, 30, 99, 0.05) 1.5px, transparent 1.5px),
+      linear-gradient(90deg, rgba(233, 30, 99, 0.05) 1.5px, transparent 1.5px),
+      linear-gradient(rgba(233, 30, 99, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(233, 30, 99, 0.02) 1px, transparent 1px);
+    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
     background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -87,7 +98,31 @@
 
   .dark body {
     @apply selection:bg-pink-800 selection:text-pink-100;
+    background-color: #0F0010;
+    background-image:
+      linear-gradient(rgba(255, 105, 180, 0.05) 1.5px, transparent 1.5px),
+      linear-gradient(90deg, rgba(255, 105, 180, 0.05) 1.5px, transparent 1.5px),
+      linear-gradient(rgba(255, 105, 180, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 105, 180, 0.02) 1px, transparent 1px);
+    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
   }
+}
+
+/* Interconnected line effect for sections */
+.section-connect {
+  position: relative;
+}
+
+.section-connect::before {
+  content: "";
+  position: absolute;
+  top: -48px;
+  left: 50%;
+  width: 2px;
+  height: 48px;
+  background: linear-gradient(to bottom, transparent, rgba(233, 30, 99, 0.2), rgba(233, 30, 99, 0.4));
+  transform: translateX(-50%);
+  z-index: 0;
 }
 
 /* Custom Scrollbar */
@@ -101,16 +136,16 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-pink-200 rounded-full hover:bg-pink-300 transition-colors border-4 border-transparent bg-clip-padding;
+  @apply bg-pink-300 rounded-full hover:bg-pink-400 transition-colors border-4 border-transparent bg-clip-padding;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  @apply bg-pink-800/40 hover:bg-pink-700/40;
+  @apply bg-pink-700/40 hover:bg-pink-600/40;
 }
 
 /* Custom Cursor */
 .custom-cursor {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FF69B4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 19 9 2-9-18-9 18 9-2zm0 0v-8'%3E%3C/path%3E%3C/svg%3E"), auto;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23E91E63' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 19 9 2-9-18-9 18 9-2zm0 0v-8'%3E%3C/path%3E%3C/svg%3E"), auto;
 }
 
 /* Texture Styles */
@@ -119,8 +154,8 @@
 }
 
 .texture-dots {
-  background-image: radial-gradient(rgba(255, 105, 180, 0.1) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(rgba(233, 30, 99, 0.15) 1.5px, transparent 1.5px);
+  background-size: 32px 32px;
 }
 
 .grain-texture {
@@ -134,7 +169,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.04;
+  opacity: 0.06;
   pointer-events: none;
   z-index: 1;
   background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
@@ -142,11 +177,11 @@
 
 /* Glassmorphism Utilities */
 .glass {
-  @apply bg-white/40 backdrop-blur-md border border-white/20;
+  @apply bg-white/60 backdrop-blur-md border border-white/40 shadow-xl;
 }
 
 .dark .glass {
-  @apply bg-deep-plum/40 backdrop-blur-xl border border-white/5;
+  @apply bg-deep-plum/60 backdrop-blur-xl border border-white/10 shadow-2xl;
 }
 
 /* Typography Overrides */

@@ -1,16 +1,28 @@
 // src/components/home/team-streak-counter.tsx
 "use client"
 
-import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "@/lib/db/database";
+import React, { useState, useEffect } from "react"
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-
 import { useAppStore } from "@/lib/store/app-store";
+import { subscribeToStreak, checkDailyStreak, StreakData } from "@/lib/firebase/services/streak"
 
 export function TeamStreakCounter() {
     const { currentPerson } = useAppStore();
-    const streak = useLiveQuery(() => db.streakData.get('main-streak'));
+    const [streak, setStreak] = useState<StreakData | null>(null);
+
+    useEffect(() => {
+        // Initialize/Check streak on load
+        checkDailyStreak();
+
+        // Subscribe to real-time updates
+        const unsubscribe = subscribeToStreak((data) => {
+            setStreak(data);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
     const count = streak?.currentStreak || 0;
 
     return (

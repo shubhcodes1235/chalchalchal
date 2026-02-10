@@ -11,6 +11,8 @@ import { TodayPrompt } from "@/components/home/today-prompt"
 import { WinOfTheDay } from "@/components/home/win-of-the-day"
 import { UsMoment } from "@/components/home/us-moment"
 import { PartnerFeed } from "@/components/home/partner-feed"
+import { VisionSnippet } from "@/components/home/vision-snippet"
+import { FocusCard } from "@/components/home/focus-card"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -59,104 +61,129 @@ export default function HomePage() {
 
 
     return (
-        <PageWrapper className="flex flex-col items-center max-w-5xl mx-auto space-y-12 pt-8 pb-16">
+        <PageWrapper className="flex flex-col items-center max-w-6xl mx-auto space-y-16 pt-12 pb-32">
 
-            {/* 1. HERO SECTION: Unified & Work-First */}
-            <section className="w-full flex flex-col items-center text-center space-y-8 pt-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                {isBoth && (
-                    <div className="flex items-center justify-center space-x-2">
-                        <span className="text-4xl">🤪</span>
-                    </div>
-                )}
-
-                <div className="space-y-4">
-                    <h1 className="text-5xl md:text-7xl font-black text-night-950 tracking-tightest leading-tight whitespace-pre-line">
-                        {heroHeadline}
+            {/* 1. HERO SECTION: BOLD & MANIFESTING */}
+            <section className="w-full flex flex-col items-center text-center space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                <div className="relative">
+                    <div className="absolute -inset-4 bg-gradient-to-r from-pink-500/20 via-purple-500/10 to-blue-500/20 blur-xl rounded-full opacity-50" />
+                    <h1 className="relative text-7xl md:text-9xl font-poppins font-black tracking-tighter leading-none text-night-950">
+                        {isKhushi ? (
+                            <>
+                                You've got<br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600">this.</span>
+                            </>
+                        ) : (
+                            <>
+                                Make it<br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600">count.</span>
+                            </>
+                        )}
                     </h1>
-                    <p className={cn("font-bold tracking-widest text-xs uppercase", isKhushi ? "text-pink-400 opacity-90" : "text-night-400")}>
-                        {heroSubtext}
-                    </p>
                 </div>
 
-                <div className="pt-2">
+                <div className="space-y-6 max-w-2xl mx-auto">
+                    <div className="flex items-center justify-center space-x-3">
+                        <div className="h-px w-12 bg-night-200" />
+                        <p className="text-sm font-black uppercase tracking-[0.3em] text-night-400">
+                            {isKhushi ? "Even on busy days, you're growing" : "Your Journey Starts Today"}
+                        </p>
+                        <div className="h-px w-12 bg-night-200" />
+                    </div>
+                </div>
+
+                <div className="pt-4">
                     <Link href="/upload">
-                        <Button size="lg" className={cn(
-                            "rounded-[2rem] h-20 px-12 text-xl shadow-xl transition-all border-none font-black tracking-tight group hover:scale-[1.02]",
-                            isKhushi ? "bg-pink-100 hover:bg-pink-200 text-pink-900" : "bg-night-950 hover:bg-night-900 text-white"
-                        )}>
-                            {ctaText}
-                            {!isKhushi && (
-                                <div className="ml-3 bg-white/20 p-2 rounded-full group-hover:bg-white/30 transition-colors">
-                                    <ArrowRight className="w-5 h-5" />
-                                </div>
-                            )}
+                        <Button className="h-24 px-16 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-2xl font-black tracking-tight shadow-[0_10px_40px_-10px_rgba(236,72,153,0.5)] hover:shadow-[0_20px_60px_-15px_rgba(236,72,153,0.6)] hover:scale-105 transition-all duration-300 border-4 border-pink-200/20">
+                            {isKhushi ? "Capture the Moment 💗" : "Start Today's Design"}
+                            <ArrowRight className="ml-4 w-8 h-8" />
                         </Button>
                     </Link>
                 </div>
             </section>
 
-            {/* 1.5 Progress Bar for Everyone */}
+            {/* 2. VISION & FOCUS: The Brain & The Heart */}
             {showSecondary && (
-                <section className="w-full max-w-4xl mx-auto animate-in fade-in duration-500 delay-200">
-                    <DreamProgressBar />
+                <section className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 w-full animate-in fade-in duration-700 delay-150 px-4">
+                    {/* Vision Board Snippet */}
+                    <div className="space-y-4">
+                        <div className="flex items-center space-x-2">
+                            <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-night-400">The Dream</span>
+                        </div>
+                        <VisionSnippet />
+                    </div>
+
+                    {/* Focus Card */}
+                    <div className="space-y-4">
+                        <div className="flex items-center space-x-2">
+                            <span className="w-2 h-2 rounded-full bg-night-900" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-night-400">The Action</span>
+                        </div>
+                        <FocusCard />
+                    </div>
                 </section>
             )}
 
-            {/* 2. CORE WORKSPACE GRID (Identical Layout, Different Content) */}
+            {/* 3. MOMENTUM TRACKER */}
             {showSecondary && (
-                <section className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in duration-500 max-w-4xl mx-auto">
+                <div className="w-full relative py-8">
+                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                        <div className="w-full border-t border-night-100"></div>
+                    </div>
+                    <div className="relative flex justify-center">
+                        <span className="bg-background px-4 text-[10px] font-black uppercase tracking-[0.2em] text-night-300">Step by Step. Every mark counts.</span>
+                    </div>
+                </div>
+            )}
 
-                    {/* CARD 1: Context/Support */}
-                    <div className="relative group">
-                        <div className={cn("absolute -top-3 left-6 z-10 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-sm",
-                            isKhushi ? "bg-blue-400" : "bg-indigo-500"
-                        )}>
-                            {slot1Label}
-                        </div>
-                        {isKhushi ? (
-                            <UsMoment />
-                        ) : (
-                            <TeamStreakCounter />
-                        )}
+            {/* 4. CORE WORKSPACE GRID */}
+            {showSecondary && (
+                <section className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 w-full animate-in fade-in duration-500 px-4">
+                    {/* Perspective 1: Connection/Streak */}
+                    <div className="space-y-2">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white bg-pink-500 px-3 py-1 rounded-full w-fit shadow-md shadow-pink-200">
+                            {isKhushi ? "Our Journey" : "Growth"}
+                        </span>
+                        <TeamStreakCounter />
                     </div>
 
-                    {/* CARD 2: Reflection/Win */}
-                    <div className="relative group">
-                        <div className="absolute -top-3 left-6 z-10 bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-sm">
+                    {/* Perspective 2: Reflection */}
+                    <div className="space-y-2">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white bg-rose-500 px-3 py-1 rounded-full w-fit shadow-md shadow-rose-200">
                             {reflectionLabel}
-                        </div>
-                        <WinOfTheDay minimal={isKhushi} />
+                        </span>
+                        <WinOfTheDay />
                     </div>
-
                 </section>
             )}
 
             {/* 3. PARTNER FEED (Real-time updates) */}
             {showSecondary && (
-                <section className="w-full max-w-4xl mx-auto animate-in fade-in duration-700 delay-300">
+                <section className="w-full max-w-5xl mx-auto animate-in fade-in duration-700 delay-300 pt-12 border-t border-night-100">
                     <PartnerFeed />
                 </section>
             )}
 
-            {/* 4. OPTIONAL NUDGE (If needed, keep it subtle) */}
+            {/* 6. OPTIONAL NUDGE */}
             {showDeep && !isKhushi && (
                 <section className="max-w-xl mx-auto animate-in fade-in duration-700">
                     <TodayPrompt />
                 </section>
             )}
 
-            {/* 5. FOOTER: The Why */}
-            <section className="w-full pt-12 border-t border-primary/10 animate-in fade-in duration-1000">
-                <div className="text-center space-y-4">
-                    <p className="font-handwritten text-xl text-night-700 italic opacity-80">
+            {/* 7. FOOTER */}
+            <section className="w-full pt-24 pb-12 animate-in fade-in duration-1000">
+                <div className="text-center space-y-8">
+                    <p className="font-poppins text-3xl md:text-4xl font-black text-night-950/90 tracking-tight italic">
                         {footerQuote}
                     </p>
-
-                    {/* Subtle Badge */}
-                    <div className="flex items-center justify-center space-x-2 opacity-40">
-                        <span className="text-[10px] uppercase tracking-[0.3em] font-black text-night-300">
-                            😄 Chal chal chal — two tired humans, one big dream.
+                    <div className="flex items-center justify-center space-x-4 opacity-50">
+                        <div className="h-px w-12 bg-night-300" />
+                        <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-night-400">
+                            Chal chal chal — Two tired humans, one big dream.
                         </span>
+                        <div className="h-px w-12 bg-night-300" />
                     </div>
                 </div>
             </section>
@@ -164,3 +191,4 @@ export default function HomePage() {
         </PageWrapper>
     )
 }
+

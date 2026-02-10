@@ -2,9 +2,6 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { useLiveQuery } from "dexie-react-hooks"
-import { db } from "@/lib/db/database"
-import { winsRepo } from "@/lib/db/repositories/wins.repo"
 import { useAppStore } from "@/lib/store/app-store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -12,18 +9,19 @@ import { Button } from "@/components/ui/button"
 import { Trophy, CheckCircle2, PartyPopper } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useSound } from "@/providers/sound-provider"
+import { subscribeToTodayWin, addWinToFirebase, DailyWin } from "@/lib/firebase/services/wins"
 
 export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
     const { currentPerson } = useAppStore()
     const { playSound } = useSound()
     const today = new Date().toISOString().split('T')[0]
 
-    // Use a simpler query or state if needed, but keeping it same for now.
-    // Actually, hook rules must be at top level.
     const [content, setContent] = useState("")
     const [author, setAuthor] = useState<'shubham' | 'khushi'>(
         currentPerson === 'both' ? 'shubham' : currentPerson
     )
+    const [todayWin, setTodayWin] = useState<DailyWin | null>(null)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         if (currentPerson !== 'both') {
@@ -31,21 +29,20 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
         }
     }, [currentPerson])
 
-    const todayWin = useLiveQuery(
-        () => winsRepo.getWinByDate(today, author),
-        [today, author]
-    )
+    useEffect(() => {
+        const unsubscribe = subscribeToTodayWin(today, author, (win) => {
+            setTodayWin(win)
+            setLoading(false)
+        })
+        return () => unsubscribe()
+    }, [today, author])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!content.trim()) return
 
-        await winsRepo.addWin({
-            person: author,
-            content: content.trim(),
-            date: today
-        })
-        playSound('pop') // Ensure this sound exists or remove if causing 404
+        await addWinToFirebase(author, content.trim(), today)
+        playSound('pop')
         setContent("")
     }
 
@@ -103,7 +100,9 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                 </div>
 
                 <AnimatePresence mode="wait">
-                    {todayWin ? (
+                    {loading ? (
+                        <div className="h-12 w-full animate-pulse bg-night-50 rounded-xl" />
+                    ) : todayWin ? (
                         <motion.div
                             key="win-saved"
                             initial={{ opacity: 0, x: 10 }}
