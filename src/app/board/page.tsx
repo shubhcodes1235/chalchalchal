@@ -22,6 +22,7 @@ import { formatDistanceToNow } from "date-fns"
 import { addNoteToFirebase, deleteNoteFromFirebase, togglePinInFirebase } from "@/lib/firebase/services/notes"
 import { logActivityToFirebase } from "@/lib/firebase/services/activity"
 import { toast } from "react-hot-toast"
+import { nanoid } from "nanoid"
 
 const NOTE_COLORS = [
     "bg-pink-100 border-pink-200 text-pink-900",
@@ -41,6 +42,7 @@ const NOTE_TYPES = [
 export default function BoardPage() {
     const { currentPerson } = useAppStore()
     const [filterType, setFilterType] = useState<StickyNote['type'] | 'all'>('all')
+    const [activePerson, setActivePerson] = useState<string>("all")
 
     const notes = useLiveQuery(async () => {
         let collection = db.stickyNotes.orderBy('createdAt').reverse()
@@ -52,9 +54,10 @@ export default function BoardPage() {
         // Filter by Type
         if (filterType !== 'all' && n.type !== filterType) return false
 
-        // Filter by Person (Shared View logic kept for local simulation)
-        if (currentPerson === 'both') return true;
-        return n.person === currentPerson;
+        // Filter by Person (Default to all)
+        if (activePerson !== 'all' && n.person !== activePerson) return false
+
+        return true
     })
 
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -71,6 +74,7 @@ export default function BoardPage() {
         if (!formData.content.trim()) return
 
         const uploader = currentPerson === 'both' ? 'shubham' : currentPerson
+        const noteId = nanoid()
 
         try {
             await notesRepo.addNote({
@@ -80,7 +84,7 @@ export default function BoardPage() {
                 color: formData.color,
                 isPinned: false,
                 linkedUrl: formData.linkedUrl
-            })
+            }, noteId)
 
             // Firebase Sync
             await addNoteToFirebase({
@@ -90,7 +94,7 @@ export default function BoardPage() {
                 color: formData.color,
                 isPinned: false,
                 linkedUrl: formData.linkedUrl
-            })
+            }, noteId)
 
             // Activity Log
             await logActivityToFirebase({
@@ -107,7 +111,10 @@ export default function BoardPage() {
         }
     }
 
-    const sortedNotes = filteredNotes ? [...filteredNotes].sort((a, b) => (a.isPinned === b.isPinned ? 0 : a.isPinned ? -1 : 1)) : []
+    const sortedNotes = filteredNotes ? [...filteredNotes].sort((a, b) => {
+        if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1;
+        return b.createdAt.getTime() - a.createdAt.getTime();
+    }) : []
 
     return (
         <PageWrapper className="space-y-6 pt-4 pb-24">
@@ -195,6 +202,57 @@ export default function BoardPage() {
                             </form>
                         </DialogContent>
                     </Dialog>
+                </div>
+            </div>
+
+            {/* Filters Section */}
+            <div className="flex flex-wrap items-center gap-4 py-4">
+                {/* Person Toggle */}
+                <div className="flex bg-white border border-night-100 rounded-full p-1">
+                    {[
+                        { id: 'all', label: 'All', emoji: '✨' },
+                        { id: 'shubham', label: 'Shubham', emoji: '👦' },
+                        { id: 'khushi', label: 'Khushi', emoji: '👧' }
+                    ].map(p => (
+                        <button
+                            key={p.id}
+                            onClick={() => setActivePerson(p.id)}
+                            className={cn(
+                                "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter transition-all flex items-center gap-1",
+                                activePerson === p.id ? "bg-night-950 text-white" : "text-night-400 hover:text-night-600"
+                            )}
+                        >
+                            <span>{p.emoji}</span>
+                            <span>{p.label}</span>
+                        </button>
+                    ))}
+                </div>
+
+                <div className="w-px h-6 bg-night-100" />
+
+                <div className="flex flex-wrap gap-2">
+                    <button
+                        onClick={() => setFilterType('all')}
+                        className={cn(
+                            "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                            filterType === 'all' ? "bg-pink-500 text-white" : "bg-white text-night-400 border border-night-100 hover:border-night-200"
+                        )}
+                    >
+                        All Types
+                    </button>
+                    {NOTE_TYPES.map(type => (
+                        <button
+                            key={type.id}
+                            onClick={() => setFilterType(type.id)}
+                            className={cn(
+                                "flex items-center space-x-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                filterType === type.id ? "bg-pink-500 text-white" : "bg-white text-night-400 border border-night-100 hover:border-night-200"
+                            )}
+                        >
+                            <type.icon className="w-3.5 h-3.5" />
+                            <span>{type.label}</span>
+                        </button>
+                    ))}
                 </div>
             </div>
 

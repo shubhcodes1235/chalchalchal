@@ -4,10 +4,10 @@ import { StickyNote } from "../schemas";
 import { nanoid } from "nanoid";
 
 export const notesRepo = {
-    async addNote(noteData: Omit<StickyNote, 'id' | 'createdAt'>) {
+    async addNote(noteData: Omit<StickyNote, 'id' | 'createdAt'>, id?: string) {
         const note: StickyNote = {
             ...noteData,
-            id: nanoid(),
+            id: id || nanoid(),
             createdAt: new Date(),
         };
         return await db.stickyNotes.add(note);

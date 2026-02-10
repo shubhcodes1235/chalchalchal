@@ -24,8 +24,8 @@ export interface StickyNote {
     createdAt: any;
 }
 
-export async function addNoteToFirebase(noteData: Omit<StickyNote, 'id' | 'createdAt'>) {
-    const id = uuidv4();
+export async function addNoteToFirebase(noteData: Omit<StickyNote, 'id' | 'createdAt'>, customId?: string) {
+    const id = customId || uuidv4();
     const noteRef = doc(db, "notes", id);
     const note: StickyNote = {
         ...noteData,

@@ -9,6 +9,8 @@ import { toast } from "react-hot-toast";
 
 export function startCloudSync(currentPerson: string) {
     console.log("☁️ Cloud Sync Initialized for", currentPerson);
+    // Visual feedback for debugging
+    toast("Sync engine online 🚀", { icon: '☁️', duration: 2000 });
     const unsubscribes: (() => void)[] = [];
 
     // 1. SYNC DESIGNS

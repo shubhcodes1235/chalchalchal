@@ -47,7 +47,6 @@ export function subscribeToOtherActivities(
 
     const q = query(
         collection(db, "activities"),
-        where("person", "==", otherPerson),
         orderBy("timestamp", "desc"),
         limit(1)
     );
@@ -60,7 +59,11 @@ export function subscribeToOtherActivities(
 
         snapshot.docChanges().forEach((change) => {
             if (change.type === "added") {
-                callback(change.doc.data() as Activity);
+                const activity = change.doc.data() as Activity;
+                // Filter in-memory to avoid composite index requirement
+                if (activity.person === otherPerson) {
+                    callback(activity);
+                }
             }
         });
     });
