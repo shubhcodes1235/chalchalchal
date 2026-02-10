@@ -175,3 +175,7 @@ export function subscribeToDesigns(
         callback(designs);
     });
 }
+export async function updateDesignHype(id: string, newHypeCount: number) {
+    const designRef = doc(db, "designs", id);
+    await updateDoc(designRef, { hypeCount: newHypeCount });
+}

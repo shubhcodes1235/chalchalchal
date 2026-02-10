@@ -14,6 +14,7 @@ import { toast } from "react-hot-toast"
 import { useCelebration } from "@/providers/celebration-provider"
 import { useSound } from "@/providers/sound-provider"
 import { createDesignInFirebase } from "@/lib/firebase/services/designs"
+import { logActivityToFirebase } from "@/lib/firebase/services/activity"
 
 function UploadPageContent() {
     const router = useRouter()
@@ -78,6 +79,14 @@ function UploadPageContent() {
                 console.error("Firebase Sync Failed:", err);
                 toast.error("Saved locally, but sync failed.", { id: toastId });
             });
+
+            // 2.6 Activity Log
+            await logActivityToFirebase({
+                person: uploader as any,
+                type: 'upload',
+                title: 'New Design',
+                message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} just uploaded a new masterpiece! 🎨`
+            })
 
             // 3. Update Streak
             await streaksRepo.recordActivity(uploader)

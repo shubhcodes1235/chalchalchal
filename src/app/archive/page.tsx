@@ -17,12 +17,16 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import Image from "next/image"
 import { useAppStore } from "@/lib/store/app-store"
 import { Design } from "@/lib/db/schemas"
+import { updateDesignHype } from "@/lib/firebase/services/designs"
+import { logActivityToFirebase } from "@/lib/firebase/services/activity"
+import { Flame } from "lucide-react"
 
 const EMPTY_ARRAY: Design[] = []
 
 export default function ArchivePage() {
     const { currentPerson, setCurrentPerson } = useAppStore()
     const [activeTool, setActiveTool] = useState<string>("all")
+    const [activePerson, setActivePerson] = useState<string>("all") // Changed this
     const [searchQuery, setSearchQuery] = useState("")
     const [selectedDesignId, setSelectedDesignId] = useState<string | null>(null)
 
@@ -45,8 +49,8 @@ export default function ArchivePage() {
             results = results.filter(d => d.tool === activeTool);
         }
 
-        if (currentPerson !== "both") {
-            results = results.filter(d => d.person === currentPerson);
+        if (activePerson !== "all") {
+            results = results.filter(d => d.person === activePerson);
         }
 
         if (searchQuery.trim()) {
@@ -58,7 +62,7 @@ export default function ArchivePage() {
             );
         }
         return results;
-    }, [designs, activeTool, currentPerson, searchQuery])
+    }, [designs, activeTool, activePerson, searchQuery])
 
     return (
         <PageWrapper className="space-y-6 pt-4 pb-32">
@@ -83,6 +87,27 @@ export default function ArchivePage() {
             <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                     <div className="flex flex-wrap items-center gap-2">
+                        {/* Person Toggle */}
+                        <div className="flex bg-white border border-night-100 rounded-full p-1 mr-2">
+                            {[
+                                { id: 'all', label: 'All', emoji: '✨' },
+                                { id: 'shubham', label: 'Shubham', emoji: '👦' },
+                                { id: 'khushi', label: 'Khushi', emoji: '👧' }
+                            ].map(p => (
+                                <button
+                                    key={p.id}
+                                    onClick={() => setActivePerson(p.id)}
+                                    className={cn(
+                                        "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter transition-all flex items-center gap-1",
+                                        activePerson === p.id ? "bg-night-950 text-white" : "text-night-400 hover:text-night-600"
+                                    )}
+                                >
+                                    <span>{p.emoji}</span>
+                                    <span>{p.label}</span>
+                                </button>
+                            ))}
+                        </div>
+
                         <button
                             onClick={() => setActiveTool("all")}
                             className={cn(
@@ -200,6 +225,30 @@ export default function ArchivePage() {
                                 </div>
 
                                 <div className="mt-8 flex items-center justify-center space-x-6">
+                                    <button
+                                        onClick={async () => {
+                                            const newHype = (d.hypeCount || 0) + 1;
+                                            await db.designs.update(d.id, { hypeCount: newHype });
+                                            await updateDesignHype(d.id, newHype);
+                                            await logActivityToFirebase({
+                                                person: currentPerson === 'both' ? 'shubham' : currentPerson,
+                                                type: 'hype',
+                                                title: 'Design Hyped!',
+                                                message: `${currentPerson === 'shubham' ? 'Shubham' : 'Khushi'} just hyped up your design: "${d.title}"! 🔥`
+                                            });
+                                        }}
+                                        className="group"
+                                    >
+                                        <div className="flex flex-col items-center space-y-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                                            <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center">
+                                                <Flame className="w-6 h-6 text-orange-500 fill-orange-500" />
+                                            </div>
+                                            <span className="text-[9px] font-black uppercase tracking-widest text-white">{d.hypeCount || 0} Hype</span>
+                                        </div>
+                                    </button>
+
+                                    <div className="w-px h-10 bg-white/10" />
+
                                     <Link href="/board" className="group">
                                         <div className="flex flex-col items-center space-y-2 opacity-60 group-hover:opacity-100 transition-opacity">
                                             <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">

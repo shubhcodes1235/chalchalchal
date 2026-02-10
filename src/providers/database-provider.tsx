@@ -7,6 +7,7 @@ import { seedDatabase } from '@/lib/db/seed-data';
 import { runMigrations } from '@/lib/db/migrations';
 import { motion, AnimatePresence } from 'framer-motion';
 import { startCloudSync } from '@/lib/services/sync.service';
+import { useAppStore } from '@/lib/store/app-store';
 
 interface DatabaseContextType {
     isInitialized: boolean;
@@ -16,6 +17,7 @@ const DatabaseContext = createContext<DatabaseContextType | undefined>(undefined
 
 export function DatabaseProvider({ children }: { children: React.ReactNode }) {
     const [isInitialized, setIsInitialized] = useState(false);
+    const { currentPerson } = useAppStore();
 
     useEffect(() => {
         async function initDB() {
@@ -43,10 +45,11 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (isInitialized) {
-            const unsubscribe = startCloudSync();
+            const person = currentPerson === 'both' ? 'shubham' : currentPerson;
+            const unsubscribe = startCloudSync(person);
             return () => unsubscribe();
         }
-    }, [isInitialized]);
+    }, [isInitialized, currentPerson]);
 
     return (
         <DatabaseContext.Provider value={{ isInitialized }}>

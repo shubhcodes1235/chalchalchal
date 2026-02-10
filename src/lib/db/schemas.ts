@@ -31,7 +31,7 @@ export interface StickyNote {
   id: string;
   person: 'shubham' | 'khushi';
   content: string;
-  type: 'idea' | 'boost' | 'goal' | 'resource' | 'future-self';
+  type: 'idea' | 'boost' | 'goal' | 'resource' | 'future-self' | 'thought' | 'reminder';
   color: string;                  // Note color
   isPinned: boolean;
   linkedUrl?: string;             // For resource links

@@ -10,6 +10,7 @@ import { Trophy, CheckCircle2, PartyPopper } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useSound } from "@/providers/sound-provider"
 import { subscribeToTodayWin, addWinToFirebase, DailyWin } from "@/lib/firebase/services/wins"
+import { logActivityToFirebase } from "@/lib/firebase/services/activity"
 
 export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
     const { currentPerson } = useAppStore()
@@ -42,6 +43,15 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
         if (!content.trim()) return
 
         await addWinToFirebase(author, content.trim(), today)
+
+        // Activity Log
+        await logActivityToFirebase({
+            person: author,
+            type: 'win',
+            title: 'Daily Win',
+            message: `${author === 'shubham' ? 'Shubham' : 'Khushi'} just logged a win: "${content.trim()}" 🏆`
+        })
+
         playSound('pop')
         setContent("")
     }

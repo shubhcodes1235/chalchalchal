@@ -19,6 +19,9 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils/cn"
 import { formatDistanceToNow } from "date-fns"
+import { addNoteToFirebase, deleteNoteFromFirebase, togglePinInFirebase } from "@/lib/firebase/services/notes"
+import { logActivityToFirebase } from "@/lib/firebase/services/activity"
+import { toast } from "react-hot-toast"
 
 const NOTE_COLORS = [
     "bg-pink-100 border-pink-200 text-pink-900",
@@ -69,17 +72,39 @@ export default function BoardPage() {
 
         const uploader = currentPerson === 'both' ? 'shubham' : currentPerson
 
-        await notesRepo.addNote({
-            person: uploader,
-            content: formData.content,
-            type: formData.type,
-            color: formData.color,
-            isPinned: false,
-            linkedUrl: formData.linkedUrl
-        })
+        try {
+            await notesRepo.addNote({
+                person: uploader,
+                content: formData.content,
+                type: formData.type,
+                color: formData.color,
+                isPinned: false,
+                linkedUrl: formData.linkedUrl
+            })
 
-        setIsDialogOpen(false)
-        setFormData({ content: "", type: "thought", color: NOTE_COLORS[0], isPinned: false, linkedUrl: "" })
+            // Firebase Sync
+            await addNoteToFirebase({
+                person: uploader,
+                content: formData.content,
+                type: formData.type,
+                color: formData.color,
+                isPinned: false,
+                linkedUrl: formData.linkedUrl
+            })
+
+            // Activity Log
+            await logActivityToFirebase({
+                person: uploader,
+                type: 'note',
+                title: 'New Note',
+                message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} left a note for you!`
+            })
+
+            setIsDialogOpen(false)
+            setFormData({ content: "", type: "thought", color: NOTE_COLORS[0], isPinned: false, linkedUrl: "" })
+        } catch (error) {
+            console.error("Failed to add note:", error)
+        }
     }
 
     const sortedNotes = filteredNotes ? [...filteredNotes].sort((a, b) => (a.isPinned === b.isPinned ? 0 : a.isPinned ? -1 : 1)) : []
@@ -209,7 +234,11 @@ export default function BoardPage() {
                                                 </span>
                                             </div>
                                             <button
-                                                onClick={() => notesRepo.togglePin(note.id)}
+                                                onClick={async () => {
+                                                    const newPin = !note.isPinned;
+                                                    await notesRepo.togglePin(note.id);
+                                                    await togglePinInFirebase(note.id, newPin);
+                                                }}
                                                 className={cn(
                                                     "p-1.5 rounded-lg transition-all",
                                                     note.isPinned ? "bg-night-950 text-white shadow-lg" : "bg-black/5 text-night-300 hover:text-night-500"
@@ -230,7 +259,10 @@ export default function BoardPage() {
                                         </span>
                                         <div className="flex space-x-1">
                                             <button
-                                                onClick={() => notesRepo.deleteNote(note.id)}
+                                                onClick={async () => {
+                                                    await notesRepo.deleteNote(note.id);
+                                                    await deleteNoteFromFirebase(note.id);
+                                                }}
                                                 className="p-1.5 hover:bg-red-500 hover:text-white rounded-lg transition-all opacity-0 group-hover:opacity-100"
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
