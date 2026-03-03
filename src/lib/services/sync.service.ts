@@ -3,6 +3,7 @@ import { subscribeToDesigns, Design as FirebaseDesign } from "@/lib/firebase/ser
 import { subscribeToNotes, StickyNote as FirebaseNote } from "@/lib/firebase/services/notes";
 import { subscribeToOtherActivities, logActivityToFirebase } from "@/lib/firebase/services/activity";
 import { designsRepo } from "@/lib/db/repositories/designs.repo";
+import { notesRepo } from "@/lib/db/repositories/notes.repo";
 import { db } from "@/lib/db/database";
 import { Design as LocalDesign, StickyNote as LocalNote } from "@/lib/db/schemas";
 import { toast } from "react-hot-toast";
@@ -11,11 +12,21 @@ export function startCloudSync(currentPerson: string) {
     console.log("☁️ Cloud Sync Initialized for", currentPerson);
     // Visual feedback for debugging
     toast("Sync engine online 🚀", { icon: '☁️', duration: 2000 });
+    // Diagnostic: Check if env variables are loaded
+    const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+    if (!projectId) {
+        console.error("❌ Firebase Project ID missing! Did you restart the server?");
+        toast.error("Firebase not configured. Check .env.local and restart system.", { duration: 5000 });
+    } else {
+        console.log("🔥 Connected to Firebase project:", projectId);
+    }
+
     const unsubscribes: (() => void)[] = [];
 
     // 1. SYNC DESIGNS
     const unsubDesigns = subscribeToDesigns(async (firebaseDesigns) => {
         console.log(`📥 Received ${firebaseDesigns.length} designs from Cloud`);
+        let syncedCount = 0;
         for (const fbDesign of firebaseDesigns) {
             try {
                 let designDate = new Date();
@@ -37,13 +48,14 @@ export function startCloudSync(currentPerson: string) {
                     workType: 'practice',
                     isHallOfFame: fbDesign.isHallOfFame || false,
                     isFirstDesign: false,
-                    hypeCount: 0,
+                    hypeCount: fbDesign.hypeCount || 0,
                     createdAt: designDate,
                     updatedAt: new Date(),
                     imageBlob: local?.imageBlob,
                     thumbnailBlob: local?.thumbnailBlob,
                 };
                 await designsRepo.upsertDesign(designToSync);
+                syncedCount++;
             } catch (err) {
                 console.error("❌ Sync design failed:", fbDesign.id, err);
             }
@@ -60,7 +72,7 @@ export function startCloudSync(currentPerson: string) {
                     ...fbNote,
                     createdAt: fbNote.createdAt?.toDate ? fbNote.createdAt.toDate() : new Date(fbNote.createdAt),
                 };
-                await db.stickyNotes.put(noteToSync);
+                await notesRepo.upsertNote(noteToSync);
             } catch (err) {
                 console.error("❌ Sync note failed:", fbNote.id, err);
             }

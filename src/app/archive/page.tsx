@@ -201,7 +201,7 @@ export default function ArchivePage() {
                                     <div className="flex items-center space-x-3">
                                         <p className="text-[10px] opacity-70 font-black uppercase tracking-widest">{tool?.name}</p>
                                         <span className="w-1 h-1 rounded-full bg-white/30" />
-                                        <p className="text-[10px] opacity-70 font-black uppercase tracking-widest capitalize">{d.person}</p>
+                                        <p className="text-[10px] opacity-70 font-black uppercase tracking-widest">{d.person}</p>
                                     </div>
 
                                     {/* CONTEXTUAL LINE FOR KHUSHI */}

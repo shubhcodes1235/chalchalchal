@@ -41,7 +41,7 @@ export default function EntryPage() {
       {/* Background Atmosphere - Dreamy Blobs */}
       <div className="absolute inset-0 z-0 opacity-30 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-raspberry/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blush-100/40 rounded-full blur-[120px] animate-pulse animate-float" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blush-100/40 rounded-full blur-[120px] animate-float" />
       </div>
 
       <div className="z-10 w-full max-w-2xl text-center space-y-12">

@@ -38,5 +38,9 @@ export const notesRepo = {
         if (note) {
             return await db.stickyNotes.update(id, { isPinned: !note.isPinned });
         }
+    },
+
+    async upsertNote(note: StickyNote) {
+        return await db.stickyNotes.put(note);
     }
 };

@@ -13,8 +13,9 @@ import { cn } from "@/lib/utils/cn"
 import { toast } from "react-hot-toast"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
-import { ShieldCheck, RefreshCw, Upload, FileJson, LogOut, Users, User } from "lucide-react"
+import { ShieldCheck, RefreshCw, Upload, FileJson, LogOut, Users, User, Wifi, Send } from "lucide-react"
 import { useAppStore } from "@/lib/store/app-store"
+import { logActivityToFirebase } from "@/lib/firebase/services/activity"
 
 export default function SettingsPage() {
     const { currentPerson, setCurrentPerson } = useAppStore()
@@ -105,6 +106,22 @@ export default function SettingsPage() {
         }
     }
 
+    const pingPartner = async () => {
+        const uploader = currentPerson === 'both' ? 'shubham' : currentPerson
+        try {
+            await logActivityToFirebase({
+                person: uploader,
+                type: 'hype',
+                title: 'Sync Check!',
+                message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} sent a test ping! 🧪`
+            })
+            toast.success("Ping sent to cloud!")
+        } catch (error) {
+            console.error("Ping failed:", error)
+            toast.error("Cloud connection failed. Check your internet or Firebase config.")
+        }
+    }
+
     return (
         <PageWrapper className="max-w-3xl space-y-8 pb-32 pt-4">
             <div className="space-y-1">
@@ -158,6 +175,31 @@ export default function SettingsPage() {
                                     </span>
                                 </button>
                             ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            </section>
+
+            {/* Cloud Sync Diagnostic */}
+            <section className="space-y-4">
+                <h3 className="text-xs font-black uppercase tracking-widest text-night-400 flex items-center gap-2 px-1">
+                    <Wifi className="w-3.5 h-3.5" /> Cloud Connection
+                </h3>
+                <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden bg-gradient-to-br from-white to-night-50">
+                    <CardContent className="p-6">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div className="space-y-1 text-center sm:text-left">
+                                <p className="font-bold text-night-900">Sync Diagnostic</p>
+                                <p className="text-xs text-night-500 max-w-[300px]">Send a test notification to the other persona to verify the real-time link.</p>
+                            </div>
+                            <Button
+                                variant="outline"
+                                onClick={pingPartner}
+                                className="rounded-xl font-black text-[10px] h-11 px-6 bg-white border-2 border-night-100 hover:border-night-200"
+                            >
+                                <Send className="w-4 h-4 mr-2" />
+                                PING PARTNER
+                            </Button>
                         </div>
                     </CardContent>
                 </Card>

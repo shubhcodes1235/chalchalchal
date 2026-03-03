@@ -104,7 +104,7 @@ export default function HomePage() {
 
             {/* 2. VISION & FOCUS: The Brain & The Heart */}
             {showSecondary && (
-                <section className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 w-full animate-in fade-in duration-700 delay-150 px-4">
+                <section className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in fade-in duration-700 delay-150 px-4">
                     {/* Vision Board Snippet */}
                     <div className="space-y-4">
                         <div className="flex items-center space-x-2">
@@ -139,7 +139,7 @@ export default function HomePage() {
 
             {/* 4. CORE WORKSPACE GRID */}
             {showSecondary && (
-                <section className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 w-full animate-in fade-in duration-500 px-4">
+                <section className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in duration-500 px-4">
                     {/* Perspective 1: Connection/Streak */}
                     <div className="space-y-2">
                         <span className="text-[10px] font-black uppercase tracking-widest text-white bg-pink-500 px-3 py-1 rounded-full w-fit shadow-md shadow-pink-200">

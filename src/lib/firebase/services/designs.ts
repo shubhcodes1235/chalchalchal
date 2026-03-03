@@ -34,6 +34,7 @@ export interface Design {
     uploadedByPersona: 'shubham' | 'khushi' | 'both';
     createdAt: any;
     reactions: Reaction[];
+    hypeCount?: number;
 }
 
 export interface Reaction {
