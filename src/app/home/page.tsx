@@ -12,7 +12,7 @@ import { FocusCard } from "@/components/home/focus-card"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Sparkles, Target, Coins, Compass } from "lucide-react"
+import { ArrowRight, Sparkles, Coins, Compass } from "lucide-react"
 import { useAppStore } from "@/lib/store/app-store"
 import { cn } from "@/lib/utils/cn"
 
@@ -67,7 +67,7 @@ export default function HomePage() {
                 <div className="pt-2 flex flex-col sm:flex-row items-center gap-4">
                     <Link href="/upload">
                         <Button className="h-16 px-10 rounded-full bg-night-950 hover:bg-night-800 text-white text-lg font-black tracking-tight shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
-                            Push Today's Work
+                            Push Today&apos;s Work
                             <ArrowRight className="ml-3 w-5 h-5" />
                         </Button>
                     </Link>

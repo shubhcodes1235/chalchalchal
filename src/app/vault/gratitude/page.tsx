@@ -56,7 +56,7 @@ export default function GratitudePage() {
                     <Heart className="w-8 h-8 text-pink-500 fill-pink-500 animate-pulse" />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-handwritten font-bold text-pink-700">Gratitude Journal</h1>
-                <p className="text-night-500 italic">Writing down one small thing you're thankful for today.</p>
+                <p className="text-night-500 italic">Writing down one small thing you&apos;re thankful for today.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="glass p-8 rounded-4xl border-2 border-pink-100 shadow-warm space-y-6">
@@ -83,7 +83,7 @@ export default function GratitudePage() {
                     <Input
                         id="gratitude-content"
                         name="gratitude-content"
-                        placeholder="e.g. 'That extra cup of chai' or 'Khushi's feedback'"
+                        placeholder="e.g. &apos;That extra cup of chai&apos; or &apos;Khushi&apos;s feedback&apos;"
                         value={content}
                         onChange={e => setContent(e.target.value)}
                         className="h-16 text-lg rounded-3xl"
@@ -112,7 +112,7 @@ export default function GratitudePage() {
                                     </div>
                                     <div className="flex-1 space-y-2">
                                         <p className="text-night-800 text-lg italic leading-relaxed font-handwritten">
-                                            "{entry.content}"
+                                            &quot;{entry.content}&quot;
                                         </p>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center text-xs text-night-600 font-bold uppercase tracking-widest">

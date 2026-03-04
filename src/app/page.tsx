@@ -77,7 +77,7 @@ export default function EntryPage() {
               className="space-y-10"
             >
               <div className="space-y-2">
-                <h3 className="text-sm md:text-base font-bold text-deep-plum opacity-80 uppercase tracking-[0.15em]">Who's here today?</h3>
+                <h3 className="text-sm md:text-base font-bold text-deep-plum opacity-80 uppercase tracking-[0.15em]">Who&apos;s here today?</h3>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
@@ -102,7 +102,7 @@ export default function EntryPage() {
                         </div>
                         <div className="flex flex-col space-y-1">
                           <span className="text-2xl font-poppins font-bold tracking-tight text-deep-plum">{p.name}</span>
-                          <span className="text-xs uppercase tracking-widest font-bold text-raspberry/60">Let's do this!</span>
+                          <span className="text-xs uppercase tracking-widest font-bold text-raspberry/60">Let&apos;s do this!</span>
                         </div>
 
                         <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -161,7 +161,7 @@ export default function EntryPage() {
                 onClick={() => setStep('person')}
                 className="text-raspberry hover:text-raspberry/80 font-bold opacity-80 hover:opacity-100"
               >
-                Wait, it's not me!
+                Wait, it&apos;s not me!
               </Button>
             </motion.div>
           )}
