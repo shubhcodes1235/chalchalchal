@@ -13,7 +13,7 @@ interface CelebrationContextType {
 const CelebrationContext = createContext<CelebrationContextType | undefined>(undefined);
 
 export function CelebrationProvider({ children }: { children: React.ReactNode }) {
-    const [isActive, setIsActive] = useState(false);
+    const [, setIsActive] = useState(false);
 
     const fireConfetti = (type: CelebrationType) => {
         const colors = ['#FF69B4', '#FFB6C1', '#FFD700', '#FF1493'];
@@ -23,7 +23,7 @@ export function CelebrationProvider({ children }: { children: React.ReactNode })
             const animationEnd = Date.now() + duration;
             const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
-            const interval: any = setInterval(function () {
+            const interval: ReturnType<typeof setInterval> = setInterval(function () {
                 const timeLeft = animationEnd - Date.now();
 
                 if (timeLeft <= 0) {

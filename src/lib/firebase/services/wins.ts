@@ -22,7 +22,7 @@ export interface DailyWin {
     person: 'shubham' | 'khushi';
     content: string;
     date: string; // YYYY-MM-DD
-    createdAt: any;
+    createdAt: unknown;
 }
 
 // ============================================

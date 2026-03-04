@@ -21,7 +21,7 @@ export interface StickyNote {
     color: string;
     isPinned: boolean;
     linkedUrl?: string;
-    createdAt: any;
+    createdAt: unknown;
 }
 
 export async function addNoteToFirebase(noteData: Omit<StickyNote, 'id' | 'createdAt'>, customId?: string) {

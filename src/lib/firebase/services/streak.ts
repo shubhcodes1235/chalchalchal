@@ -2,14 +2,8 @@
 import {
     doc,
     setDoc,
-    addDoc,
     getDoc,
-    onSnapshot,
-    serverTimestamp,
-    collection,
-    query,
-    orderBy,
-    where
+    onSnapshot
 } from "firebase/firestore";
 import { db } from "../config";
 

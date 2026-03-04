@@ -11,8 +11,7 @@ import {
     onSnapshot,
     where,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "../config";
+import { db } from "../config";
 import { v4 as uuidv4 } from "uuid";
 
 // ============================================
@@ -32,7 +31,7 @@ export interface Design {
     tags: string[];
     isHallOfFame: boolean;
     uploadedByPersona: 'shubham' | 'khushi' | 'both';
-    createdAt: any;
+    createdAt: unknown;
     reactions: Reaction[];
     hypeCount?: number;
 }
@@ -40,7 +39,7 @@ export interface Design {
 export interface Reaction {
     emoji: string;
     byPersona: string;
-    at: any;
+    at: unknown;
 }
 
 // ============================================

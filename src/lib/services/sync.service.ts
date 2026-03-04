@@ -1,7 +1,7 @@
 // src/lib/services/sync.service.ts
-import { subscribeToDesigns, Design as FirebaseDesign } from "@/lib/firebase/services/designs";
-import { subscribeToNotes, StickyNote as FirebaseNote } from "@/lib/firebase/services/notes";
-import { subscribeToOtherActivities, logActivityToFirebase } from "@/lib/firebase/services/activity";
+import { subscribeToDesigns } from "@/lib/firebase/services/designs";
+import { subscribeToNotes } from "@/lib/firebase/services/notes";
+import { subscribeToOtherActivities } from "@/lib/firebase/services/activity";
 import { subscribeToAllWins } from "@/lib/firebase/services/wins";
 import { subscribeToStreak } from "@/lib/firebase/services/streak";
 import { designsRepo } from "@/lib/db/repositories/designs.repo";
@@ -30,25 +30,25 @@ export function startCloudSync(currentPerson: string) {
     // 1. SYNC DESIGNS
     const unsubDesigns = subscribeToDesigns(async (firebaseDesigns) => {
         console.log(`📥 Received ${firebaseDesigns.length} designs from Cloud`);
-        let syncedCount = 0;
         for (const fbDesign of firebaseDesigns) {
             try {
                 let designDate = new Date();
                 if (fbDesign.createdAt) {
-                    designDate = fbDesign.createdAt.toDate ? fbDesign.createdAt.toDate() : new Date(fbDesign.createdAt);
+                    const fbCreatedAt = fbDesign.createdAt as any;
+                    designDate = fbCreatedAt.toDate ? fbCreatedAt.toDate() : new Date(fbCreatedAt);
                 }
                 const local = await designsRepo.getDesignById(fbDesign.id);
                 const designToSync: LocalDesign = {
                     id: fbDesign.id,
-                    person: (fbDesign.uploadedByPersona as any) === 'both' ? 'shubham' : fbDesign.uploadedByPersona as any,
+                    person: (fbDesign.uploadedByPersona as "shubham" | "khushi" | "both") === 'both' ? 'shubham' : fbDesign.uploadedByPersona as "shubham" | "khushi",
                     title: fbDesign.title,
                     description: fbDesign.description,
                     imageUrl: fbDesign.imageUrl,
                     thumbnailUrl: fbDesign.thumbnailUrl,
-                    tool: (fbDesign.tool?.toLowerCase() as any) || 'other',
+                    tool: (fbDesign.tool?.toLowerCase() as LocalDesign["tool"]) || 'other',
                     toolDetail: fbDesign.toolDetail,
                     tags: fbDesign.tags || [],
-                    moodRating: (fbDesign.moodRating as any) || 3,
+                    moodRating: (fbDesign.moodRating as 1 | 2 | 3 | 4 | 5) || 3,
                     workType: 'practice',
                     isHallOfFame: fbDesign.isHallOfFame || false,
                     isFirstDesign: false,
@@ -59,7 +59,6 @@ export function startCloudSync(currentPerson: string) {
                     thumbnailBlob: local?.thumbnailBlob,
                 };
                 await designsRepo.upsertDesign(designToSync);
-                syncedCount++;
             } catch (err) {
                 console.error("❌ Sync design failed:", fbDesign.id, err);
             }
@@ -72,9 +71,10 @@ export function startCloudSync(currentPerson: string) {
         console.log(`📥 Received ${firebaseNotes.length} notes from Cloud`);
         for (const fbNote of firebaseNotes) {
             try {
+                const fbCreatedAt = fbNote.createdAt as any;
                 const noteToSync: LocalNote = {
                     ...fbNote,
-                    createdAt: fbNote.createdAt?.toDate ? fbNote.createdAt.toDate() : new Date(fbNote.createdAt),
+                    createdAt: fbCreatedAt?.toDate ? fbCreatedAt.toDate() : new Date(fbCreatedAt),
                 };
                 await notesRepo.upsertNote(noteToSync);
             } catch (err) {

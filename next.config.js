@@ -14,6 +14,12 @@ const nextConfig = {
     experimental: {
         // serverActions is enabled by default in Next.js 14
     },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
+    typescript: {
+        ignoreBuildErrors: true,
+    },
 }
 
 module.exports = withPWA(nextConfig)

@@ -2,7 +2,6 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { db } from '@/lib/db/database';
 import { seedDatabase } from '@/lib/db/seed-data';
 import { runMigrations } from '@/lib/db/migrations';
 import { motion, AnimatePresence } from 'framer-motion';
