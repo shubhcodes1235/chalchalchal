@@ -12,8 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
-import { Plus, Pin, Trash2, ExternalLink, Lightbulb, Heart, Target, BookOpen, Clock, Sparkles, FolderHeart } from "lucide-react"
+import { Plus, Pin, Trash2, Lightbulb, Heart, Target, BookOpen, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils/cn"
@@ -44,7 +43,7 @@ export default function BoardPage() {
     const [activePerson, setActivePerson] = useState<string>("all")
 
     const notes = useLiveQuery(async () => {
-        let collection = db.stickyNotes.orderBy('createdAt').reverse()
+        const collection = db.stickyNotes.orderBy('createdAt').reverse()
         let results = await collection.toArray()
         return results
     }, []) || []
