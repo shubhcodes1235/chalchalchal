@@ -76,16 +76,22 @@ export default function DreamBoardPage() {
                         <form onSubmit={handleSubmit} className="space-y-6 pt-4">
                             <div className="space-y-4">
                                 <Input
+                                    id="dream-title"
+                                    name="dream-title"
                                     placeholder="Title of the dream (e.g. First MacBook Pro)"
                                     value={formData.title}
                                     onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
                                 />
                                 <Input
+                                    id="dream-image"
+                                    name="dream-image"
                                     placeholder="Image URL (optional)"
                                     value={formData.imageUrl}
                                     onChange={e => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))}
                                 />
                                 <Input
+                                    id="dream-date"
+                                    name="dream-date"
                                     type="date"
                                     value={formData.targetDate}
                                     onChange={e => setFormData(prev => ({ ...prev, targetDate: e.target.value }))}
@@ -96,7 +102,7 @@ export default function DreamBoardPage() {
                                         onClick={() => setFormData(prev => ({ ...prev, category: 'personal' }))}
                                         className={cn(
                                             "flex-1 py-3 rounded-xl text-xs font-bold transition-all",
-                                            formData.category === 'personal' ? "bg-white text-pink-600 shadow-sm" : "text-night-400"
+                                            formData.category === 'personal' ? "bg-white text-pink-600 shadow-sm" : "text-night-600"
                                         )}
                                     >
                                         For Me
@@ -106,7 +112,7 @@ export default function DreamBoardPage() {
                                         onClick={() => setFormData(prev => ({ ...prev, category: 'shared' }))}
                                         className={cn(
                                             "flex-1 py-3 rounded-xl text-xs font-bold transition-all",
-                                            formData.category === 'shared' ? "bg-white text-pink-600 shadow-sm" : "text-night-400"
+                                            formData.category === 'shared' ? "bg-white text-pink-600 shadow-sm" : "text-night-600"
                                         )}
                                     >
                                         For Us
@@ -197,9 +203,9 @@ export default function DreamBoardPage() {
             </div>
 
             {items && items.length === 0 && (
-                <div className="text-center py-24 glass rounded-4xl border-2 border-dashed border-pink-200 opacity-60">
+                <div className="text-center py-24 glass rounded-4xl border-2 border-dashed border-pink-200 opacity-80">
                     <Heart className="w-12 h-12 text-pink-300 mx-auto mb-4" />
-                    <p className="text-night-400 font-handwritten text-xl">What does our future look like?</p>
+                    <p className="text-night-600 font-handwritten text-xl">What does our future look like?</p>
                 </div>
             )}
         </PageWrapper>

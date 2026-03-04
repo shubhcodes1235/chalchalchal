@@ -60,14 +60,18 @@ export function UploadForm({ onSubmit, isLoading, initialPrompt }: UploadFormPro
     return (
         <form className="space-y-8 pb-12" onSubmit={(e) => { e.preventDefault(); onSubmit(formData); }}>
             <div className="space-y-4">
-                <label className="text-sm font-bold text-night-500 uppercase tracking-widest px-1">Design Info</label>
+                <label htmlFor="design-title" className="text-sm font-bold text-night-500 uppercase tracking-widest px-1">Design Info</label>
                 <Input
+                    id="design-title"
+                    name="title"
                     placeholder="Title of your masterpiece"
                     value={formData.title}
                     onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
                     required
                 />
                 <Textarea
+                    id="design-description"
+                    name="description"
                     placeholder="What's the story behind this one? (optional)"
                     value={formData.description}
                     onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
@@ -88,11 +92,11 @@ export function UploadForm({ onSubmit, isLoading, initialPrompt }: UploadFormPro
                                     "p-3 rounded-2xl flex flex-col items-center justify-center space-y-2 border-2 transition-all",
                                     formData.tool === tool.id
                                         ? "border-pink-500 bg-pink-50 text-pink-700 shadow-sm"
-                                        : "border-pink-50 bg-white text-night-300 hover:border-pink-200"
+                                        : "border-pink-50 bg-white text-night-500 hover:border-pink-200"
                                 )}
                             >
                                 <tool.icon className="w-6 h-6" />
-                                <span className="text-[10px] font-bold truncate w-full uppercase">{tool.name}</span>
+                                <span className="text-xs font-bold truncate w-full uppercase">{tool.name}</span>
                             </button>
                         ))}
                     </div>
@@ -122,8 +126,10 @@ export function UploadForm({ onSubmit, isLoading, initialPrompt }: UploadFormPro
             </div>
 
             <div className="space-y-4">
-                <label className="text-sm font-bold text-night-500 uppercase tracking-widest px-1">Tags</label>
+                <label htmlFor="design-tags" className="text-sm font-bold text-night-500 uppercase tracking-widest px-1">Tags</label>
                 <Input
+                    id="design-tags"
+                    name="tags"
                     placeholder="Type a tag and press enter"
                     value={currentTag}
                     onChange={e => setCurrentTag(e.target.value)}
@@ -138,7 +144,7 @@ export function UploadForm({ onSubmit, isLoading, initialPrompt }: UploadFormPro
                             </button>
                         </Badge>
                     ))}
-                    {formData.tags.length === 0 && <p className="text-xs text-night-300 italic">No tags added yet</p>}
+                    {formData.tags.length === 0 && <p className="text-xs text-night-500 italic">No tags added yet</p>}
                 </div>
             </div>
 
@@ -150,7 +156,7 @@ export function UploadForm({ onSubmit, isLoading, initialPrompt }: UploadFormPro
                         onClick={() => setFormData(prev => ({ ...prev, workType: "practice" }))}
                         className={cn(
                             "px-6 py-2 rounded-full text-xs font-bold transition-all",
-                            formData.workType === "practice" ? "bg-pink-500 text-white shadow-sm" : "text-night-400"
+                            formData.workType === "practice" ? "bg-pink-500 text-white shadow-sm" : "text-night-600"
                         )}
                     >
                         Practice
@@ -160,7 +166,7 @@ export function UploadForm({ onSubmit, isLoading, initialPrompt }: UploadFormPro
                         onClick={() => setFormData(prev => ({ ...prev, workType: "client" }))}
                         className={cn(
                             "px-6 py-2 rounded-full text-xs font-bold transition-all",
-                            formData.workType === "client" ? "bg-pink-500 text-white shadow-sm" : "text-night-400"
+                            formData.workType === "client" ? "bg-pink-500 text-white shadow-sm" : "text-night-600"
                         )}
                     >
                         Client Work

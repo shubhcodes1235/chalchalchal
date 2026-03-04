@@ -23,7 +23,7 @@ export function UsMoment() {
                 <h2 className="text-3xl font-handwritten font-bold text-night-900">
                     {currentPerson === 'shubham' ? "Working for the dream, together." : "Building the future, together."}
                 </h2>
-                <p className="text-night-400 max-w-md mx-auto italic font-medium">
+                <p className="text-night-600 max-w-md mx-auto italic font-medium">
                     "Some days showing up is the win. We're proud of you today."
                 </p>
             </div>

@@ -71,3 +71,20 @@ export function subscribeToTodayWin(
         }
     });
 }
+
+export function subscribeToAllWins(
+    callback: (wins: DailyWin[]) => void
+) {
+    const q = query(
+        collection(db, "wins"),
+        orderBy("createdAt", "desc")
+    );
+
+    return onSnapshot(q, (snapshot) => {
+        const wins: DailyWin[] = [];
+        snapshot.forEach((doc) => {
+            wins.push(doc.data() as DailyWin);
+        });
+        callback(wins);
+    });
+}

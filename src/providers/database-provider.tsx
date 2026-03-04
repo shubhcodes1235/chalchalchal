@@ -7,6 +7,8 @@ import { seedDatabase } from '@/lib/db/seed-data';
 import { runMigrations } from '@/lib/db/migrations';
 import { motion, AnimatePresence } from 'framer-motion';
 import { startCloudSync } from '@/lib/services/sync.service';
+import { startHeartbeat } from '@/lib/firebase/services/presence';
+import { checkDailyStreak } from '@/lib/firebase/services/streak';
 import { useAppStore } from '@/lib/store/app-store';
 
 interface DatabaseContextType {
@@ -30,6 +32,9 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
 
                 await runMigrations();
                 await seedDatabase();
+                
+                // Firestore sync can happen in the background
+                checkDailyStreak().catch(err => console.warn("Streak check postponed:", err));
 
                 clearTimeout(timeoutId);
                 setIsInitialized(true);
@@ -46,8 +51,13 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (isInitialized) {
             const person = currentPerson === 'both' ? 'shubham' : currentPerson;
-            const unsubscribe = startCloudSync(person);
-            return () => unsubscribe();
+            const unsubSync = startCloudSync(person);
+            const unsubHeartbeat = startHeartbeat(person);
+            
+            return () => {
+                unsubSync();
+                unsubHeartbeat();
+            };
         }
     }, [isInitialized, currentPerson]);
 

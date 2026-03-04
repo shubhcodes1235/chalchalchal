@@ -32,11 +32,11 @@ export default function TimelinePage() {
         <PageWrapper className="max-w-5xl py-12 space-y-24">
             {/* Header: Emotional Intro */}
             <div className="text-center space-y-6 pt-10">
-                <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-pink-100 rounded-full text-pink-700 text-[10px] font-black uppercase tracking-widest shadow-sm">
+                <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-pink-100 rounded-full text-pink-700 text-xs font-black uppercase tracking-widest shadow-sm">
                     <History className="w-3 h-3" />
                     <span>Reflection Mode</span>
                 </div>
-                <h1 className="text-6xl md:text-8xl font-black text-night-950 tracking-tightest leading-tight">
+                <h1 className="text-6xl md:text-8xl font-black text-night-950 tracking-tight leading-tight">
                     Our Story of <br />
                     <span className="text-pink-600">Becoming.</span>
                 </h1>
@@ -46,7 +46,7 @@ export default function TimelinePage() {
                 <motion.div
                     animate={{ y: [0, 10, 0] }}
                     transition={{ duration: 2, repeat: Infinity }}
-                    className="pt-12 text-night-300"
+                    className="pt-12 text-night-500"
                 >
                     <ArrowDown className="mx-auto w-10 h-10" />
                 </motion.div>
@@ -114,7 +114,7 @@ export default function TimelinePage() {
 
                                                         {design.isFirstDesign && (
                                                             <div className="absolute top-4 left-4 z-20">
-                                                                <div className="bg-pink-600 text-white text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-lg flex items-center space-x-2 border-2 border-white/30">
+                                                                <div className="bg-pink-600 text-white text-xs font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-lg flex items-center space-x-2 border-2 border-white/30">
                                                                     <Sparkles className="w-3 h-3" />
                                                                     <span>Foundation Day</span>
                                                                 </div>
@@ -132,7 +132,7 @@ export default function TimelinePage() {
                                                                 <h3 className="text-2xl font-black text-night-950 tracking-tight leading-tight">
                                                                     {design.title}
                                                                 </h3>
-                                                                <p className="text-xs text-night-400 font-bold uppercase tracking-widest mt-1">
+                                                                <p className="text-xs text-night-600 font-bold uppercase tracking-widest mt-1">
                                                                     {format(design.createdAt, 'do MMMM')} • {tool?.name}
                                                                 </p>
                                                             </div>
@@ -179,7 +179,7 @@ export default function TimelinePage() {
                             <div className="relative w-full h-full flex items-center justify-center p-4">
                                 <div className="absolute top-6 left-8 z-50 text-white space-y-1">
                                     <h2 className="text-2xl font-black tracking-tight">{d.title}</h2>
-                                    <p className="text-sm opacity-60 font-bold uppercase tracking-[0.2em]">{format(d.createdAt, 'PPP')}</p>
+                                    <p className="text-sm opacity-80 font-bold uppercase tracking-widest">{format(d.createdAt, 'PPP')}</p>
                                 </div>
 
                                 <div className="relative w-full h-[85vh]">

@@ -81,6 +81,8 @@ export default function GratitudePage() {
                 <div className="space-y-4">
                     <label className="text-sm font-bold uppercase tracking-widest text-night-500">I am grateful for...</label>
                     <Input
+                        id="gratitude-content"
+                        name="gratitude-content"
                         placeholder="e.g. 'That extra cup of chai' or 'Khushi's feedback'"
                         value={content}
                         onChange={e => setContent(e.target.value)}
@@ -113,13 +115,13 @@ export default function GratitudePage() {
                                             "{entry.content}"
                                         </p>
                                         <div className="flex items-center justify-between">
-                                            <div className="flex items-center text-[10px] text-night-400 font-bold uppercase tracking-widest">
+                                            <div className="flex items-center text-xs text-night-600 font-bold uppercase tracking-widest">
                                                 <CalendarDays className="w-3 h-3 mr-1" />
                                                 {format(new Date(entry.createdAt), 'do MMMM, yyyy')}
                                             </div>
                                             <button
                                                 onClick={() => deleteEntry(entry.id)}
-                                                className="text-night-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                                                className="text-night-500 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
@@ -133,7 +135,7 @@ export default function GratitudePage() {
 
                 {entries && entries.length === 0 && (
                     <div className="text-center py-20 bg-pink-50/50 rounded-4xl border-dashed border-2 border-pink-100">
-                        <p className="text-night-300 italic">No entries yet. Start your day with a happy thought.</p>
+                        <p className="text-night-500 italic">No entries yet. Start your day with a happy thought.</p>
                     </div>
                 )}
             </div>

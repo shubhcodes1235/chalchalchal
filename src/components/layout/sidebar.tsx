@@ -4,7 +4,7 @@
 import React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, FolderHeart, Plus, MessageSquareHeart, LineChart, Quote, User2 } from "lucide-react"
+import { Home, FolderHeart, Plus, MessageSquareHeart, LineChart, Quote, User2, Settings } from "lucide-react"
 import { cn } from "@/lib/utils/cn"
 import { motion } from "framer-motion"
 import { useLiveQuery } from "dexie-react-hooks"
@@ -16,6 +16,7 @@ const navItems = [
     { icon: Plus, label: "Upload Design", href: "/upload" },
     { icon: MessageSquareHeart, label: "Friendship Board", href: "/board" },
     { icon: LineChart, label: "Progress Hub", href: "/progress" },
+    { icon: Settings, label: "Settings", href: "/settings" },
 ]
 
 export function Sidebar() {
@@ -32,8 +33,8 @@ export function Sidebar() {
                     D
                 </div>
                 <div className="flex flex-col">
-                    <span className="text-lg font-black text-night-950 leading-tight tracking-tightest">Dream & Design</span>
-                    <span className="text-[10px] text-pink-500 font-bold tracking-[0.25em] uppercase opacity-70 mt-0.5">Companion</span>
+                    <span className="text-lg font-black text-night-950 leading-tight tracking-tight">Dream & Design</span>
+                    <span className="text-xs text-pink-500 font-bold tracking-widest uppercase opacity-90 mt-0.5">Companion</span>
                 </div>
             </div>
 
@@ -48,10 +49,10 @@ export function Sidebar() {
                                 whileHover={{ x: 4 }}
                                 className={cn(
                                     "flex items-center space-x-4 px-4 py-3 rounded-2xl transition-all duration-300 group",
-                                    isActive ? "bg-white shadow-soft text-night-950 font-black" : "text-night-400 hover:text-night-900"
+                                    isActive ? "bg-white shadow-soft text-night-950 font-black" : "text-night-600 hover:text-night-900"
                                 )}
                             >
-                                <Icon className={cn("w-5 h-5 opacity-70 group-hover:opacity-100", isActive && "opacity-100 text-pink-500")} />
+                                <Icon className={cn("w-5 h-5 opacity-90 group-hover:opacity-100", isActive && "opacity-100 text-pink-500")} />
                                 <span className="text-sm tracking-tight">{item.label}</span>
                             </motion.div>
                         </Link>
@@ -74,8 +75,8 @@ export function Sidebar() {
                             )}>👧</div>
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-night-950 leading-none mb-1">Us</span>
-                            <span className="text-[9px] text-night-400 font-bold uppercase tracking-widest">{currentPerson} active</span>
+                            <span className="text-xs font-black text-night-950 leading-none mb-1">Us</span>
+                            <span className="text-sm text-night-600 font-bold uppercase tracking-widest">{currentPerson} active</span>
                         </div>
                     </div>
                     <div className="bg-white px-2 py-1 rounded-full border border-night-100 flex items-center space-x-1 shadow-sm">
@@ -84,7 +85,7 @@ export function Sidebar() {
                     </div>
                 </div>
 
-                <p className="mt-4 px-2 text-[9px] text-night-400 font-bold italic opacity-60">
+                <p className="mt-4 px-2 text-sm text-night-600 font-bold italic opacity-80">
                     Chal chal chal — together.
                 </p>
             </div>

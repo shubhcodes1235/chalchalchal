@@ -63,18 +63,18 @@ export function UploadZone({ file, onFileSelect }: UploadZoneProps) {
                                 : "border-pink-100 hover:border-pink-300 hover:bg-white"
                         )}
                     >
-                        <input {...getInputProps()} />
+                        <input {...getInputProps()} id="design-upload-input" name="design-file" />
                         <div className="w-20 h-20 rounded-full bg-pink-50 flex items-center justify-center text-pink-400 group-hover:scale-110 transition-transform">
                             <Upload className="w-10 h-10" />
                         </div>
                         <div className="text-center">
                             <p className="text-xl font-handwritten font-bold text-night-700">Drop your masterpiece here 🎨</p>
-                            <p className="text-sm text-night-400">or click to browse files</p>
+                            <p className="text-sm text-night-600">or click to browse files</p>
                         </div>
                         <div className="flex space-x-2 opacity-50">
-                            <span className="px-2 py-1 bg-white border border-pink-100 rounded text-[10px] font-bold">JPG</span>
-                            <span className="px-2 py-1 bg-white border border-pink-100 rounded text-[10px] font-bold">PNG</span>
-                            <span className="px-2 py-1 bg-white border border-pink-100 rounded text-[10px] font-bold">WEBP</span>
+                            <span className="px-2 py-1 bg-white border border-pink-100 rounded text-xs font-bold">JPG</span>
+                            <span className="px-2 py-1 bg-white border border-pink-100 rounded text-xs font-bold">PNG</span>
+                            <span className="px-2 py-1 bg-white border border-pink-100 rounded text-xs font-bold">WEBP</span>
                         </div>
                     </motion.div>
                 )}

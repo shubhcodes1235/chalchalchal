@@ -57,8 +57,8 @@ export function DreamProgressBar() {
                             {/* Label - Absolute to not affect flex spacing, but centered */}
                             <div className="absolute -bottom-8 w-24 text-center">
                                 <span className={cn(
-                                    "text-[9px] uppercase tracking-widest font-black transition-all block truncate px-1",
-                                    m.isCompleted ? "text-pink-400 opacity-100" : "text-night-300 opacity-0 group-hover:opacity-100"
+                                    "text-sm uppercase tracking-widest font-black transition-all block truncate px-1",
+                                    m.isCompleted ? "text-pink-400 opacity-100" : "text-night-500 opacity-0 group-hover:opacity-100"
                                 )}>
                                     {m.title}
                                 </span>
@@ -68,7 +68,7 @@ export function DreamProgressBar() {
                 </div>
             </div>
             <div className="text-center opacity-40">
-                <span className="text-[9px] uppercase tracking-[0.4em] font-black text-night-400">
+                <span className="text-sm uppercase tracking-widest font-black text-night-600">
                     Step by step. Every mark counts.
                 </span>
             </div>

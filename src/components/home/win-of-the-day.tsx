@@ -79,10 +79,12 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                             className="flex flex-col space-y-3"
                         >
                             <Input
+                                id="win-minimal"
+                                name="win-minimal"
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                                 placeholder="What was a small win today?"
-                                className="text-center rounded-xl h-10 bg-white/30 border-none focus-visible:ring-pink-200 placeholder:text-night-300/60 text-sm"
+                                className="text-center rounded-xl h-10 bg-white/30 border-none focus-visible:ring-pink-200 placeholder:text-night-500/60 text-sm"
                             />
                             {content.trim() && (
                                 <Button type="submit" size="sm" variant="ghost" className="text-pink-400 hover:text-pink-600 hover:bg-transparent h-auto py-1 px-4 text-xs font-black uppercase tracking-widest">
@@ -104,7 +106,7 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                         <Trophy className="w-5 h-5 shrink-0" />
                     </div>
                     <div className="relative">
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-night-400 font-bold opacity-70">Reflection</span>
+                        <span className="text-xs uppercase tracking-widest text-night-600 font-bold opacity-90">Reflection</span>
                         <div className="absolute -bottom-1 left-0 w-6 h-0.5 bg-primary/30 rounded-full" />
                     </div>
                 </div>
@@ -124,7 +126,7 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                             </div>
                             <div className="space-y-1 pt-1">
                                 <p className="text-night-800 font-bold text-lg leading-tight tracking-tight italic">"{todayWin?.content}"</p>
-                                <div className="flex items-center text-[10px] text-pink-500 font-black uppercase tracking-widest">
+                                <div className="flex items-center text-xs text-pink-500 font-black uppercase tracking-widest">
                                     <CheckCircle2 className="w-3 h-3 mr-1" />
                                     Moment Logged
                                 </div>
@@ -141,6 +143,8 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                             <h3 className="text-xl font-bold text-night-800 leading-tight">What was a small win today?</h3>
                             <div className="flex space-x-2">
                                 <Input
+                                    id="win-full"
+                                    name="win-full"
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
                                     placeholder="Even opening this site counts..."

@@ -71,7 +71,7 @@ export default function VaultPage() {
                                     </div>
                                     <div className="space-y-1">
                                         <h3 className="text-xl font-bold text-night-900">{section.title}</h3>
-                                        <p className="text-sm text-night-400">{section.desc}</p>
+                                        <p className="text-sm text-night-600">{section.desc}</p>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -81,7 +81,7 @@ export default function VaultPage() {
             </div>
 
             <div className="pt-12 text-center">
-                <p className="text-xs font-bold uppercase tracking-[0.3em] text-pink-300">End-to-End Encrypted in our Hearts</p>
+                <p className="text-xs font-bold uppercase tracking-[0.15em] text-pink-300">End-to-End Encrypted in our Hearts</p>
             </div>
         </PageWrapper>
     )

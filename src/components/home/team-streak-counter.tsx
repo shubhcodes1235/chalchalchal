@@ -34,7 +34,7 @@ export function TeamStreakCounter() {
                 </div>
                 <div className="flex flex-col text-left">
                     <div className="relative inline-block mb-1">
-                        <p className="text-[10px] uppercase tracking-[0.2em] text-night-400 font-bold opacity-70">Our Momentum</p>
+                        <p className="text-xs uppercase tracking-widest text-night-600 font-bold opacity-90">Our Momentum</p>
                         <div className="absolute -bottom-1 left-0 w-8 h-0.5 bg-primary/30 rounded-full" />
                     </div>
                     {count === 0 ? (
@@ -46,7 +46,7 @@ export function TeamStreakCounter() {
                                 <span className="text-lg font-bold text-night-700">Days Together</span>
                                 <span className="text-2xl">🔥</span>
                             </div>
-                            <p className="text-[10px] text-pink-400 font-bold mt-1 tracking-wide animate-pulse-gentle">
+                            <p className="text-xs text-pink-400 font-bold mt-1 tracking-wide animate-pulse-gentle">
                                 {currentPerson === 'shubham' ? "Khushi is right here with you ✨" : "Shubham noticed your progress 💖"}
                             </p>
                         </div>

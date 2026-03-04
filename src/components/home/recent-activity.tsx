@@ -16,7 +16,7 @@ export function RecentActivity() {
     if (!recentDesigns || recentDesigns.length === 0) {
         return (
             <div className="text-center py-12 space-y-4">
-                <p className="text-night-400 italic">No activity yet. Time to create!</p>
+                <p className="text-night-600 italic">No activity yet. Time to create!</p>
                 <Link href="/upload">
                     <span className="text-pink-500 font-bold hover:underline cursor-pointer">Start your first design →</span>
                 </Link>
@@ -46,7 +46,7 @@ export function RecentActivity() {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h4 className="font-bold text-night-900 truncate">{design.title}</h4>
-                                    <p className="text-xs text-night-400">
+                                    <p className="text-xs text-night-600">
                                         {formatDistanceToNow(design.createdAt, { addSuffix: true })}
                                     </p>
                                 </div>

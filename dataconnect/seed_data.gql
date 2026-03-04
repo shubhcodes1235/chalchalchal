@@ -1,0 +1,73 @@
+mutation CreateDemoData @transaction @auth(level: USER, insecureReason: "This operation is for seeding demo data, and can be run by any authenticated user.") {
+  user1: user_insert(data: {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    displayName: "Alice Smith",
+    email: "alice.smith@example.com",
+    createdAt: "2023-01-01T10:00:00Z"
+  })
+  user2: user_insert(data: {
+    id: "550e8400-e29b-41d4-a716-446655440001",
+    displayName: "Bob Johnson",
+    email: "bob.johnson@example.com",
+    createdAt: "2023-01-05T11:30:00Z"
+  })
+  movie1: movie_insert(data: {
+    id: "550e8400-e29b-41d4-a716-446655440002",
+    title: "The Great Adventure",
+    year: 2022,
+    summary: "A thrilling journey through unknown lands.",
+    genres: ["Adventure", "Action"],
+    runtime: 120,
+    createdAt: "2023-01-10T12:00:00Z"
+  })
+  movie2: movie_insert(data: {
+    id: "550e8400-e29b-41d4-a716-446655440003",
+    title: "Code Red",
+    year: 2023,
+    summary: "A suspenseful thriller about a cyber attack.",
+    genres: ["Thriller", "Mystery"],
+    runtime: 95,
+    createdAt: "2023-01-15T14:45:00Z"
+  })
+  movieList1: movieList_insert(data: {
+    id: "550e8400-e29b-41d4-a716-446655440004",
+    userId_expr: "user1.id",
+    name: "Alice's Favorites",
+    description: "My top picks for a movie night.",
+    isPublic: true,
+    shareLink: "http://example.com/alice-faves",
+    createdAt: "2023-01-20T16:00:00Z",
+    updatedAt: "2023-01-20T16:00:00Z"
+  })
+  movieListItem1: movieListItem_insert(data: {
+    movieListId_expr: "movieList1.id",
+    movieId_expr: "movie1.id",
+    position: 1,
+    note: "Absolutely loved this movie!",
+  })
+  movieListItem2: movieListItem_insert(data: {
+    movieListId_expr: "movieList1.id",
+    movieId_expr: "movie2.id",
+    position: 2,
+    note: "Kept me on the edge of my seat.",
+  })
+  watch1: watch_insert(data: {
+    id: "550e8400-e29b-41d4-a716-446655440005",
+    userId_expr: "user1.id",
+    movieId_expr: "movie1.id",
+    watchDate: "2023-01-22",
+    location: "Home",
+    createdAt: "2023-01-22T18:00:00Z"
+  })
+  review1: review_insert(data: {
+    id: "550e8400-e29b-41d4-a716-446655440006",
+    movieId_expr: "movie1.id",
+    userId_expr: "user1.id",
+    watchId_expr: "watch1.id",
+    rating: 5,
+    reviewText: "Fantastic film, highly recommend!",
+    isPublic: true,
+    createdAt: "2023-01-22T19:00:00Z",
+    updatedAt: "2023-01-22T19:00:00Z"
+  })
+}

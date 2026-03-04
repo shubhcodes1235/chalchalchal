@@ -21,11 +21,12 @@ const firebaseConfig = {
 // Initialize Firebase (Singleton Pattern)
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-// Initialize Firestore with persistent cache
+// Initialize Firestore with persistent cache and auto-detect long polling
 export const db = initializeFirestore(app, {
   localCache: persistentLocalCache({
     tabManager: persistentMultipleTabManager()
-  })
+  }),
+  experimentalAutoDetectLongPolling: true
 });
 
 export const storage = getStorage(app);

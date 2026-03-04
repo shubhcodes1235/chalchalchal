@@ -125,7 +125,7 @@ export default function SettingsPage() {
     return (
         <PageWrapper className="max-w-3xl space-y-8 pb-32 pt-4">
             <div className="space-y-1">
-                <h1 className="text-4xl font-black text-night-950 tracking-tightest">Settings</h1>
+                <h1 className="text-4xl font-black text-night-950 tracking-tight">Settings</h1>
                 <p className="text-night-600 font-medium">Customize your sanctuary exactly how you like it.</p>
             </div>
 
@@ -139,7 +139,7 @@ export default function SettingsPage() {
 
             {/* Profile Switcher */}
             <section className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-widest text-night-400 flex items-center gap-2 px-1">
+                <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
                     <User className="w-3.5 h-3.5" /> Profile Selection
                 </h3>
                 <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden">
@@ -148,7 +148,7 @@ export default function SettingsPage() {
                             {[
                                 { id: 'shubham', label: 'Shubham', emoji: '👦', color: 'blue' },
                                 { id: 'khushi', label: 'Khushi', emoji: '👧', color: 'pink' },
-                                { id: 'both', label: 'Together', emoji: '💍', color: 'purple' }
+                                { id: 'both', label: 'Together', emoji: '✨', color: 'purple' }
                             ].map((p) => (
                                 <button
                                     key={p.id}
@@ -169,7 +169,7 @@ export default function SettingsPage() {
                                             ? (p.id === 'shubham' ? "text-blue-600" :
                                                 p.id === 'khushi' ? "text-pink-600" :
                                                     "text-purple-600")
-                                            : "text-night-400"
+                                            : "text-night-600"
                                     )}>
                                         {p.label}
                                     </span>
@@ -182,7 +182,7 @@ export default function SettingsPage() {
 
             {/* Cloud Sync Diagnostic */}
             <section className="space-y-4">
-                <h3 className="text-xs font-black uppercase tracking-widest text-night-400 flex items-center gap-2 px-1">
+                <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
                     <Wifi className="w-3.5 h-3.5" /> Cloud Connection
                 </h3>
                 <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden bg-gradient-to-br from-white to-night-50">
@@ -195,7 +195,7 @@ export default function SettingsPage() {
                             <Button
                                 variant="outline"
                                 onClick={pingPartner}
-                                className="rounded-xl font-black text-[10px] h-11 px-6 bg-white border-2 border-night-100 hover:border-night-200"
+                                className="rounded-xl font-black text-xs h-11 px-6 bg-white border-2 border-night-100 hover:border-night-200"
                             >
                                 <Send className="w-4 h-4 mr-2" />
                                 PING PARTNER
@@ -208,7 +208,7 @@ export default function SettingsPage() {
             <div className="space-y-10">
                 {/* 1. Appearance Section */}
                 <section className="space-y-4">
-                    <h3 className="text-xs font-black uppercase tracking-widest text-night-400 flex items-center gap-2 px-1">
+                    <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
                         <Palette className="w-3.5 h-3.5" /> Appearance
                     </h3>
                     <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden">
@@ -216,7 +216,7 @@ export default function SettingsPage() {
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="font-bold text-night-900">Theme Mode</p>
-                                    <p className="text-xs text-night-400">Sunrise is recommended for focus.</p>
+                                    <p className="text-xs text-night-600">Sunrise is recommended for focus.</p>
                                 </div>
                                 <div className="flex bg-night-50 p-1 rounded-xl border border-night-100/50">
                                     {[
@@ -229,7 +229,7 @@ export default function SettingsPage() {
                                             onClick={() => updateSetting('theme', t.id)}
                                             className={cn(
                                                 "flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-black transition-all",
-                                                settings.theme === t.id ? "bg-white text-night-900 shadow-sm border border-night-100" : "text-night-400 hover:text-night-600"
+                                                settings.theme === t.id ? "bg-white text-night-900 shadow-sm border border-night-100" : "text-night-600 hover:text-night-600"
                                             )}
                                         >
                                             <t.icon className="w-3.5 h-3.5" />
@@ -242,12 +242,12 @@ export default function SettingsPage() {
                             <div className="flex items-center justify-between border-t border-night-50 pt-6">
                                 <div className="space-y-1">
                                     <p className="font-bold text-night-900">Hand-drawn Textures</p>
-                                    <p className="text-xs text-night-400">Adds paper-like grain and texture.</p>
+                                    <p className="text-xs text-night-600">Adds paper-like grain and texture.</p>
                                 </div>
                                 <Button
                                     variant={settings.seasonalThemeEnabled ? "primary" : "outline"}
                                     size="sm"
-                                    className="rounded-full w-14 h-8 px-0 font-black text-[10px]"
+                                    className="rounded-full w-14 h-8 px-0 font-black text-xs"
                                     onClick={() => updateSetting('seasonalThemeEnabled', !settings.seasonalThemeEnabled)}
                                 >
                                     {settings.seasonalThemeEnabled ? "ON" : "OFF"}
@@ -261,17 +261,17 @@ export default function SettingsPage() {
                 {/* 3. Backup & Restore Section */}
                 <section className="space-y-4">
                     <div className="space-y-1">
-                        <h3 className="text-xs font-black uppercase tracking-widest text-night-400 flex items-center gap-2 px-1">
+                        <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
                             <ShieldCheck className="w-3.5 h-3.5" /> Backup & Restore
                         </h3>
-                        <p className="text-[10px] text-night-400 font-bold px-1">Your progress is precious. Keep it safe.</p>
+                        <p className="text-xs text-night-600 font-bold px-1">Your progress is precious. Keep it safe.</p>
                     </div>
                     <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden border-b-4 border-b-green-100">
                         <CardContent className="p-6 space-y-6">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="font-bold text-night-900">Create Backup File</p>
-                                    <p className="text-xs text-night-400">Saves all your designs, notes, progress, and memories.</p>
+                                    <p className="text-xs text-night-600">Saves all your designs, notes, progress, and memories.</p>
                                 </div>
                                 <Button variant="outline" size="sm" onClick={exportData} className="rounded-xl font-bold">
                                     <Download className="w-3.5 h-3.5 mr-2" />
@@ -282,7 +282,7 @@ export default function SettingsPage() {
                             <div className="flex items-center justify-between border-t border-night-50 pt-6">
                                 <div className="space-y-1">
                                     <p className="font-bold text-night-900">Restore from Backup</p>
-                                    <p className="text-xs text-night-400">Recover your progress from a previously saved backup.</p>
+                                    <p className="text-xs text-night-600">Recover your progress from a previously saved backup.</p>
                                 </div>
                                 <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className="rounded-xl font-bold">
                                     <Upload className="w-3.5 h-3.5 mr-2" />
@@ -290,6 +290,8 @@ export default function SettingsPage() {
                                 </Button>
                                 <input
                                     type="file"
+                                    id="restore-file"
+                                    name="restore-file"
                                     ref={fileInputRef}
                                     className="hidden"
                                     accept=".json"
@@ -300,13 +302,13 @@ export default function SettingsPage() {
                             <div className="flex items-center justify-between border-t border-night-50 pt-6">
                                 <div className="space-y-1">
                                     <p className="font-bold text-night-900">Automatic Backup</p>
-                                    <p className="text-xs text-night-400">Your progress is backed up automatically on this device.</p>
+                                    <p className="text-xs text-night-600">Your progress is backed up automatically on this device.</p>
                                 </div>
                                 <Button
                                     variant="primary"
                                     size="sm"
                                     disabled
-                                    className="rounded-full w-14 h-8 px-0 font-black text-[10px] opacity-100 bg-green-100 text-green-700 border-none"
+                                    className="rounded-full w-14 h-8 px-0 font-black text-xs opacity-100 bg-green-100 text-green-700 border-none"
                                 >
                                     ON
                                 </Button>
@@ -317,7 +319,7 @@ export default function SettingsPage() {
 
                 {/* 4. Data & Privacy Section */}
                 <section className="space-y-4">
-                    <h3 className="text-xs font-black uppercase tracking-widest text-night-400 flex items-center gap-2 px-1">
+                    <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
                         <RefreshCw className="w-3.5 h-3.5" /> Data & Privacy
                     </h3>
                     <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden">
@@ -325,7 +327,7 @@ export default function SettingsPage() {
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="font-bold text-night-900">Start Fresh</p>
-                                    <p className="text-xs text-night-400 max-w-[200px]">Clears all data permanently. We strongly recommend creating a backup first.</p>
+                                    <p className="text-xs text-night-600 max-w-[200px]">Clears all data permanently. We strongly recommend creating a backup first.</p>
                                 </div>
                                 <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
                                     <DialogTrigger asChild>
@@ -343,9 +345,11 @@ export default function SettingsPage() {
                                                 This will permanently delete all your designs, notes, streaks, and progress. This cannot be undone unless you have a backup.
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-xs font-black uppercase tracking-widest text-night-400">Type "START FRESH" to confirm</label>
+                                                <label className="text-xs font-black uppercase tracking-widest text-night-600">Type "START FRESH" to confirm</label>
                                                 <input
                                                     type="text"
+                                                    id="fresh-start-confirm"
+                                                    name="confirm-reset"
                                                     value={resetConfirmation}
                                                     onChange={e => setResetConfirmation(e.target.value)}
                                                     placeholder="START FRESH"
@@ -381,7 +385,7 @@ export default function SettingsPage() {
                         <p className="text-night-600 text-sm font-black tracking-tight flex items-center justify-center">
                             Handcrafted with <Heart className="inline w-4 h-4 text-pink-500 fill-pink-500 mx-1.5 animate-pulse-soft" /> for Shubham & Khushi.
                         </p>
-                        <p className="text-[10px] text-night-400 font-bold uppercase tracking-[0.2em] opacity-60">Version 1.0.0 • Offline First</p>
+                        <p className="text-xs text-night-600 font-bold uppercase tracking-widest opacity-80">Version 1.0.0 • Offline First</p>
                     </div>
                 </div>
             </div>

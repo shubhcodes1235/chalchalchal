@@ -14,7 +14,7 @@ export function ManifestationQuote() {
             animate={{ opacity: 0.4 }}
             className="w-full text-center"
         >
-            <p className="text-xs font-medium text-night-400 tracking-[0.1em] max-w-xl mx-auto">
+            <p className="text-xs font-medium text-night-600 tracking-[0.1em] max-w-xl mx-auto">
                 {settings?.manifestationQuote || "Small steps are still steps."}
             </p>
         </motion.div>

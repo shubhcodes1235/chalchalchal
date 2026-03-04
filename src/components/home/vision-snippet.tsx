@@ -43,7 +43,7 @@ export function VisionSnippet() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
 
             <div className="absolute bottom-8 left-8 text-white space-y-1">
-                <div className="flex items-center space-x-2 text-[11px] font-black uppercase tracking-[0.2em] bg-white/20 backdrop-blur-md px-3 py-1 rounded-full w-fit">
+                <div className="flex items-center space-x-2 text-sm font-black uppercase tracking-widest bg-white/20 backdrop-blur-md px-3 py-1 rounded-full w-fit">
                     <Sparkles className="w-3 h-3 text-yellow-300" />
                     <span>Manifesting</span>
                 </div>

@@ -38,7 +38,7 @@ export function FocusCard() {
 
             <CardContent className="p-8 flex flex-col h-full relative z-10">
                 <div className="flex items-center justify-between mb-auto">
-                    <div className="flex items-center space-x-2 text-[10px] uppercase tracking-[0.2em] font-black text-pink-400">
+                    <div className="flex items-center space-x-2 text-xs uppercase tracking-widest font-black text-pink-400">
                         <Target className="w-4 h-4" />
                         <span>Daily One Thing</span>
                     </div>
@@ -56,7 +56,7 @@ export function FocusCard() {
                             </h3>
                             <button
                                 onClick={() => handleSetFocus("")}
-                                className="text-[10px] uppercase font-bold text-white/40 hover:text-white transition-colors flex items-center space-x-2 bg-white/5 px-3 py-1.5 rounded-full w-fit hover:bg-white/10"
+                                className="text-xs uppercase font-bold text-white/40 hover:text-white transition-colors flex items-center space-x-2 bg-white/5 px-3 py-1.5 rounded-full w-fit hover:bg-white/10"
                             >
                                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                                 <span>Active Target</span>
@@ -72,6 +72,8 @@ export function FocusCard() {
                                 What is the <span className="text-pink-500 underline decoration-4 underline-offset-4">ONE thing</span> that moves the needle today?
                             </h3>
                             <Input
+                                id="focus-needle"
+                                name="focus-needle"
                                 placeholder="Design 3 screens..."
                                 className="bg-white/10 border-transparent text-white placeholder:text-white/20 rounded-2xl h-16 text-xl font-medium focus-visible:ring-pink-500 focus-visible:bg-white/5 transition-all"
                                 onKeyDown={(e) => {

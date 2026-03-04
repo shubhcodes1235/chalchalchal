@@ -53,4 +53,4 @@ Button.displayName = "Button"
 export { Button, buttonVariants }
 
 // Animated version
-export const AnimatedButton = motion(Button);
+export const AnimatedButton = motion.create(Button);

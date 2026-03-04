@@ -48,7 +48,7 @@ export default function EntryPage() {
         <motion.h2
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-raspberry font-bold text-[10px] md:text-xs tracking-[0.3em] uppercase opacity-80 mb-2"
+          className="text-raspberry font-bold text-xs md:text-xs tracking-[0.15em] uppercase opacity-80 mb-2"
         >
           {greeting}
         </motion.h2>
@@ -58,7 +58,7 @@ export default function EntryPage() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          <div className="text-4xl md:text-6xl text-deep-plum font-poppins font-black tracking-tightest transition-colors duration-300 drop-shadow-sm uppercase">
+          <div className="text-4xl md:text-6xl text-deep-plum font-poppins font-black tracking-tight transition-colors duration-300 drop-shadow-sm uppercase">
             <TypingAnimation
               sequence={["Kaun hai aaj?", 2000, "Ready to dream?", 1500, "Chal chal chal!", 2000]}
               repeat={Infinity}
@@ -77,7 +77,7 @@ export default function EntryPage() {
               className="space-y-10"
             >
               <div className="space-y-2">
-                <h3 className="text-sm md:text-base font-bold text-deep-plum opacity-60 uppercase tracking-[0.3em]">Who's here today?</h3>
+                <h3 className="text-sm md:text-base font-bold text-deep-plum opacity-80 uppercase tracking-[0.15em]">Who's here today?</h3>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
@@ -102,11 +102,11 @@ export default function EntryPage() {
                         </div>
                         <div className="flex flex-col space-y-1">
                           <span className="text-2xl font-poppins font-bold tracking-tight text-deep-plum">{p.name}</span>
-                          <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-raspberry/60">Let's do this!</span>
+                          <span className="text-xs uppercase tracking-widest font-bold text-raspberry/60">Let's do this!</span>
                         </div>
 
                         <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                          <span className="text-[8px] uppercase tracking-wider bg-blush-50 px-2 py-1 rounded-full text-raspberry font-bold">
+                          <span className="text-xs uppercase tracking-wider bg-blush-50 px-2 py-1 rounded-full text-raspberry font-bold">
                             Partner waiting
                           </span>
                         </div>
@@ -126,7 +126,7 @@ export default function EntryPage() {
             >
               <div className="space-y-2">
                 <h3 className="text-3xl md:text-4xl font-poppins font-bold text-deep-plum transition-colors duration-300 tracking-tight">Welcome back, {useAppStore.getState().currentPerson === 'shubham' ? 'Shubham ✨' : 'Khushi ✨'}</h3>
-                <p className="text-xl text-deep-plum opacity-70 font-bold">Aaj kya karna hai?</p>
+                <p className="text-xl text-deep-plum opacity-90 font-bold">Aaj kya karna hai?</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -150,7 +150,7 @@ export default function EntryPage() {
                       <CardContent className="p-8 flex flex-col items-center text-center space-y-4">
                         <div className="w-16 h-16 rounded-full bg-blush-50 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500">{m.icon}</div>
                         <h4 className="font-poppins font-bold text-lg text-deep-plum leading-tight">{m.title}</h4>
-                        <p className="text-sm text-deep-plum opacity-60 leading-relaxed font-bold">{m.desc}</p>
+                        <p className="text-sm text-deep-plum opacity-80 leading-relaxed font-bold">{m.desc}</p>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -159,7 +159,7 @@ export default function EntryPage() {
               <Button
                 variant="ghost"
                 onClick={() => setStep('person')}
-                className="text-raspberry hover:text-raspberry/80 font-bold opacity-60 hover:opacity-100"
+                className="text-raspberry hover:text-raspberry/80 font-bold opacity-80 hover:opacity-100"
               >
                 Wait, it's not me!
               </Button>

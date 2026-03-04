@@ -18,9 +18,17 @@ export function subscribeToPartnerStatus(
     return onSnapshot(doc(db, "partners", partnerUid), (snapshot) => {
         if (snapshot.exists()) {
             const data = snapshot.data();
-            // Handle the case where lastSeen might be missing or not a timestamp yet
             const lastSeen = data.lastSeen?.toDate?.() || null;
-            callback(data.isOnline, lastSeen);
+            
+            let isOnline = data.isOnline;
+            if (lastSeen) {
+                const now = new Date();
+                const diff = (now.getTime() - lastSeen.getTime()) / 60000;
+                // If last seen more than 2 minutes ago, consider offline
+                if (diff > 2) isOnline = false;
+            }
+            
+            callback(isOnline, lastSeen);
         } else {
             callback(false, null);
         }

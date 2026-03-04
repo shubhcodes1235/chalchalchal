@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils/cn"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useAppStore } from "@/lib/store/app-store"
 import { EmergencyButton } from "@/components/layout/emergency-button"
+import { subscribeToPartnerStatus } from "@/lib/firebase/services/presence"
 
 const pageTitles: Record<string, string> = {
     "/home": "Workspace",
@@ -27,6 +28,17 @@ const pageTitles: Record<string, string> = {
 export function Header() {
     const pathname = usePathname()
     const { currentPerson, setCurrentPerson } = useAppStore()
+    const [shubhamOnline, setShubhamOnline] = React.useState(false)
+    const [khushiOnline, setKhushiOnline] = React.useState(false)
+
+    React.useEffect(() => {
+        const unsubS = subscribeToPartnerStatus('shubham', (online) => setShubhamOnline(online))
+        const unsubK = subscribeToPartnerStatus('khushi', (online) => setKhushiOnline(online))
+        return () => {
+            unsubS()
+            unsubK()
+        }
+    }, [])
 
     const title = pageTitles[pathname] || "Dream & Design"
 
@@ -45,29 +57,33 @@ export function Header() {
                     <h1 className="text-sm font-black text-night-900 tracking-widest uppercase opacity-80">
                         {title}
                     </h1>
-                    <p className="text-[9px] text-pink-500 font-bold uppercase tracking-[0.2em] mt-1 flex items-center gap-1.5">
+                    <p className="text-sm text-pink-500 font-bold uppercase tracking-widest mt-1 flex items-center gap-1.5">
                         <span>Chal chal chal</span>
                         <span className="w-1 h-1 rounded-full bg-pink-200" />
-                        <span className="opacity-60 lowercase">start where you are</span>
+                        <span className="opacity-80 lowercase">start where you are</span>
                     </p>
                 </div>
 
                 <div className="flex items-center space-x-4">
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogTrigger asChild>
-                            <button className="flex items-center space-x-2 bg-night-50 hover:bg-white pl-1 pr-3 py-1 rounded-full border border-night-100 transition-all shadow-sm hover:shadow-md group">
+                            <button className="flex items-center space-x-2 bg-night-50 hover:bg-white pl-1 pr-1 sm:pr-3 py-1 rounded-full border border-night-100 transition-all shadow-sm hover:shadow-md group">
                                 <div className="flex -space-x-1.5">
                                     <div className={cn(
-                                        "w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-sm shadow-sm transition-all",
+                                        "w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-sm shadow-sm transition-all relative",
                                         currentPerson === 'shubham' || currentPerson === 'both' ? "bg-blue-100 z-10" : "bg-night-100 opacity-40 scale-90"
-                                    )}>👦</div>
+                                    )}>👦
+                                        {shubhamOnline && <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-green-500 border border-white" />}
+                                    </div>
                                     <div className={cn(
-                                        "w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-sm shadow-sm transition-all",
+                                        "w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-sm shadow-sm transition-all relative",
                                         currentPerson === 'khushi' || currentPerson === 'both' ? "bg-pink-100 z-10" : "bg-night-100 opacity-40 scale-90"
-                                    )}>👧</div>
+                                    )}>👧
+                                        {khushiOnline && <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-green-500 border border-white" />}
+                                    </div>
                                 </div>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-night-600 group-hover:text-night-900">
-                                    {currentPerson === 'both' ? 'Us' : currentPerson}
+                                <span className="text-xs font-black uppercase tracking-widest text-night-600 group-hover:text-night-900 hidden sm:inline">
+                                    {currentPerson === 'both' ? 'Together' : currentPerson}
                                 </span>
                             </button>
                         </DialogTrigger>
@@ -77,22 +93,26 @@ export function Header() {
                             </DialogHeader>
                             <div className="grid gap-3 pt-4">
                                 <button onClick={() => handleSwitch('shubham')} className={cn("flex items-center p-3 rounded-2xl border-2 transition-all space-x-4", currentPerson === 'shubham' ? "border-blue-200 bg-blue-50" : "border-transparent hover:bg-night-50")}>
-                                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-xl">👦</div>
-                                    <div className="text-left">
-                                        <div className="font-black text-night-900 text-sm">Shubham</div>
-                                        <div className="text-[10px] font-bold text-night-400 uppercase tracking-wider">Builder Mode</div>
+                                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-xl relative">👦
+                                        {shubhamOnline && <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-white" />}
                                     </div>
-                                    {currentPerson === 'shubham' && <div className="ml-auto w-2 h-2 rounded-full bg-blue-500" />}
-                                </button>
+                                    <div className="text-left">
+                                         <div className="font-black text-night-900 text-sm">Shubham</div>
+                                         <div className="text-xs font-bold text-night-600 uppercase tracking-wider">{shubhamOnline ? 'Online' : 'Builder Mode'}</div>
+                                     </div>
+                                     {currentPerson === 'shubham' && <div className="ml-auto w-2 h-2 rounded-full bg-blue-500" />}
+                                 </button>
 
-                                <button onClick={() => handleSwitch('khushi')} className={cn("flex items-center p-3 rounded-2xl border-2 transition-all space-x-4", currentPerson === 'khushi' ? "border-pink-200 bg-pink-50" : "border-transparent hover:bg-night-50")}>
-                                    <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-xl">👧</div>
-                                    <div className="text-left">
-                                        <div className="font-black text-night-900 text-sm">Khushi</div>
-                                        <div className="text-[10px] font-bold text-night-400 uppercase tracking-wider">Dreamer Mode</div>
+                                 <button onClick={() => handleSwitch('khushi')} className={cn("flex items-center p-3 rounded-2xl border-2 transition-all space-x-4", currentPerson === 'khushi' ? "border-pink-200 bg-pink-50" : "border-transparent hover:bg-night-50")}>
+                                     <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-xl relative">👧
+                                        {khushiOnline && <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-white" />}
                                     </div>
-                                    {currentPerson === 'khushi' && <div className="ml-auto w-2 h-2 rounded-full bg-pink-500" />}
-                                </button>
+                                    <div className="text-left">
+                                         <div className="font-black text-night-900 text-sm">Khushi</div>
+                                         <div className="text-xs font-bold text-night-600 uppercase tracking-wider">{khushiOnline ? 'Online' : 'Dreamer Mode'}</div>
+                                     </div>
+                                     {currentPerson === 'khushi' && <div className="ml-auto w-2 h-2 rounded-full bg-pink-500" />}
+                                 </button>
 
                                 <button onClick={() => handleSwitch('both')} className={cn("flex items-center p-3 rounded-2xl border-2 transition-all space-x-4", currentPerson === 'both' ? "border-purple-200 bg-purple-50" : "border-transparent hover:bg-night-50")}>
                                     <div className="flex -space-x-2">
@@ -101,7 +121,7 @@ export function Header() {
                                     </div>
                                     <div className="text-left pl-2">
                                         <div className="font-black text-night-900 text-sm">Together</div>
-                                        <div className="text-[10px] font-bold text-night-400 uppercase tracking-wider">Our Space</div>
+                                        <div className="text-xs font-bold text-night-600 uppercase tracking-wider">Our Space</div>
                                     </div>
                                     {currentPerson === 'both' && <div className="ml-auto w-2 h-2 rounded-full bg-purple-500" />}
                                 </button>
@@ -109,13 +129,13 @@ export function Header() {
                         </DialogContent>
                     </Dialog>
 
-                    <div className="hidden md:flex items-center space-x-1 border-l border-night-100 pl-4 ml-2">
+                    <div className="flex items-center space-x-1 border-l border-night-100 pl-3 md:pl-4 ml-1 md:ml-2">
                         {/* Settings icon */}
                         <Link href="/settings">
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="rounded-xl w-9 h-9 text-night-400 hover:text-night-900 hover:bg-night-50"
+                                className="rounded-xl w-9 h-9 text-night-600 hover:text-night-900 hover:bg-night-50"
                             >
                                 <Settings className="w-5 h-5" />
                             </Button>

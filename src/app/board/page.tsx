@@ -10,7 +10,6 @@ import { useAppStore } from "@/lib/store/app-store"
 import { StickyNote } from "@/lib/db/schemas"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
@@ -121,16 +120,16 @@ export default function BoardPage() {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-1">
-                    <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-[0.2em] text-pink-500 mb-2">
+                    <div className="flex items-center space-x-2 text-xs font-black uppercase tracking-widest text-pink-500 mb-2">
                         <Sparkles className="w-3 h-3" />
                         <span>We showed up today</span>
                     </div>
-                    <h1 className="text-4xl font-black text-night-950 tracking-tightest leading-none">Our Shared Space</h1>
+                    <h1 className="text-4xl font-black text-night-950 tracking-tight leading-none">Our Shared Space</h1>
                 </div>
 
                 <div className="flex items-center space-x-3">
                     <Link href="/archive">
-                        <Button variant="ghost" className="text-xs font-bold text-night-400 hover:text-pink-500">
+                        <Button variant="ghost" className="text-xs font-bold text-night-600 hover:text-pink-500">
                             View Gallery
                         </Button>
                     </Link>
@@ -147,8 +146,10 @@ export default function BoardPage() {
                             </DialogHeader>
                             <form onSubmit={handleSubmit} className="space-y-6 pt-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black uppercase tracking-widest text-night-400">What's on your mind?</label>
+                                    <label className="text-xs font-black uppercase tracking-widest text-night-600">What's on your mind?</label>
                                     <Textarea
+                                        id="note-content"
+                                        name="note-content"
                                         value={formData.content}
                                         onChange={e => setFormData(prev => ({ ...prev, content: e.target.value }))}
                                         placeholder="Write something sweet or inspiring..."
@@ -158,7 +159,7 @@ export default function BoardPage() {
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-night-400">Note Type</label>
+                                        <label className="text-xs font-black uppercase tracking-widest text-night-600">Note Type</label>
                                         <div className="flex flex-wrap gap-2">
                                             {NOTE_TYPES.map(type => (
                                                 <button
@@ -167,7 +168,7 @@ export default function BoardPage() {
                                                     onClick={() => setFormData(prev => ({ ...prev, type: type.id }))}
                                                     className={cn(
                                                         "p-3 rounded-xl transition-all border-2",
-                                                        formData.type === type.id ? "bg-night-950 border-night-950 text-white shadow-md scale-105" : "bg-white border-night-50 text-night-300 hover:border-night-200"
+                                                        formData.type === type.id ? "bg-night-950 border-night-950 text-white shadow-md scale-105" : "bg-white border-night-50 text-night-500 hover:border-night-200"
                                                     )}
                                                     title={type.label}
                                                 >
@@ -178,7 +179,7 @@ export default function BoardPage() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-night-400">Color</label>
+                                        <label className="text-xs font-black uppercase tracking-widest text-night-600">Color</label>
                                         <div className="flex flex-wrap gap-2">
                                             {NOTE_COLORS.map(color => (
                                                 <button
@@ -218,8 +219,8 @@ export default function BoardPage() {
                             key={p.id}
                             onClick={() => setActivePerson(p.id)}
                             className={cn(
-                                "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter transition-all flex items-center gap-1",
-                                activePerson === p.id ? "bg-night-950 text-white" : "text-night-400 hover:text-night-600"
+                                "px-3 py-1 rounded-full text-sm font-black uppercase tracking-tighter transition-all flex items-center gap-1",
+                                activePerson === p.id ? "bg-night-950 text-white" : "text-night-600 hover:text-night-600"
                             )}
                         >
                             <span>{p.emoji}</span>
@@ -234,8 +235,8 @@ export default function BoardPage() {
                     <button
                         onClick={() => setFilterType('all')}
                         className={cn(
-                            "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                            filterType === 'all' ? "bg-pink-500 text-white" : "bg-white text-night-400 border border-night-100 hover:border-night-200"
+                            "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                            filterType === 'all' ? "bg-pink-500 text-white" : "bg-white text-night-600 border border-night-100 hover:border-night-200"
                         )}
                     >
                         All Types
@@ -245,8 +246,8 @@ export default function BoardPage() {
                             key={type.id}
                             onClick={() => setFilterType(type.id)}
                             className={cn(
-                                "flex items-center space-x-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                                filterType === type.id ? "bg-pink-500 text-white" : "bg-white text-night-400 border border-night-100 hover:border-night-200"
+                                "flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                                filterType === type.id ? "bg-pink-500 text-white" : "bg-white text-night-600 border border-night-100 hover:border-night-200"
                             )}
                         >
                             <type.icon className="w-3.5 h-3.5" />
@@ -287,7 +288,7 @@ export default function BoardPage() {
                                                         note.person === 'khushi' ? "z-10" : "opacity-30 scale-90"
                                                     )}>👧</div>
                                                 </div>
-                                                <span className="text-[10px] font-black text-night-950/40 uppercase tracking-widest pl-2">
+                                                <span className="text-xs font-black text-night-950/40 uppercase tracking-widest pl-2">
                                                     {note.type}
                                                 </span>
                                             </div>
@@ -299,7 +300,7 @@ export default function BoardPage() {
                                                 }}
                                                 className={cn(
                                                     "p-1.5 rounded-lg transition-all",
-                                                    note.isPinned ? "bg-night-950 text-white shadow-lg" : "bg-black/5 text-night-300 hover:text-night-500"
+                                                    note.isPinned ? "bg-night-950 text-white shadow-lg" : "bg-black/5 text-night-500 hover:text-night-500"
                                                 )}
                                             >
                                                 <Pin className={cn("w-3.5 h-3.5", note.isPinned && "fill-current")} />
@@ -312,7 +313,7 @@ export default function BoardPage() {
                                     </div>
 
                                     <div className="mt-8 flex items-center justify-between border-t border-black/5 pt-4">
-                                        <span className="text-[10px] font-bold text-night-950/40 italic">
+                                        <span className="text-xs font-bold text-night-950/40 italic">
                                             {formatDistanceToNow(note.createdAt, { addSuffix: true })}
                                         </span>
                                         <div className="flex space-x-1">
@@ -341,7 +342,7 @@ export default function BoardPage() {
 
                     <div className="space-y-3 relative z-10">
                         <div className="text-5xl mb-6">🏡</div>
-                        <h3 className="text-3xl font-black text-night-950 tracking-tightest">Our shared space is waiting.</h3>
+                        <h3 className="text-3xl font-black text-night-950 tracking-tight">Our shared space is waiting.</h3>
                         <p className="text-night-500 font-bold max-w-sm mx-auto text-sm">
                             Leave a note for each other. It can be a dream, a reminder, or just a little boost for the day.
                         </p>
@@ -358,8 +359,8 @@ export default function BoardPage() {
                                 setIsDialogOpen(true);
                             }}>
                                 <div className="text-2xl">{p.icon}</div>
-                                <h4 className="text-[10px] font-black uppercase tracking-widest text-night-900">{p.title}</h4>
-                                <p className="text-xs text-night-400 font-bold leading-relaxed group-hover:text-night-900 transition-colors">{p.prompt}</p>
+                                <h4 className="text-xs font-black uppercase tracking-widest text-night-900">{p.title}</h4>
+                                <p className="text-xs text-night-600 font-bold leading-relaxed group-hover:text-night-900 transition-colors">{p.prompt}</p>
                             </div>
                         ))}
                     </div>

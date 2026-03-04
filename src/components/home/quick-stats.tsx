@@ -35,7 +35,7 @@ export function QuickStats() {
                         <stat.icon className="w-5 h-5" />
                     </div>
                     <div className="flex flex-col">
-                        <span className={cn("text-lg font-bold tracking-tight", stat.value === 0 ? "text-night-300 font-medium italic text-base" : "text-night-800")}>
+                        <span className={cn("text-lg font-bold tracking-tight", stat.value === 0 ? "text-night-500 font-medium italic text-base" : "text-night-800")}>
                             {stat.value === 0 ? (
                                 i === 0 ? "First mark waiting" :
                                     i === 1 ? "Just beginning" :
@@ -46,7 +46,7 @@ export function QuickStats() {
                                 </span>
                             )}
                         </span>
-                        <span className="text-[11px] text-night-400 font-medium italic opacity-60 mt-1">
+                        <span className="text-sm text-night-600 font-medium italic opacity-80 mt-1">
                             {i === 0 ? "first bricks laid" :
                                 i === 1 ? "steps taken together" :
                                     i === 2 ? "fruits of your labor" : "momentum building"}

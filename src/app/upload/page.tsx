@@ -126,7 +126,7 @@ function UploadPageContent() {
         <PageWrapper className="max-w-4xl">
             <div className="space-y-12 pt-4">
                 <div className="space-y-1">
-                    <h1 className="text-4xl font-black text-night-950 tracking-tightest leading-none">New Creation</h1>
+                    <h1 className="text-4xl font-black text-night-950 tracking-tight leading-none">New Creation</h1>
                 </div>
 
                 <div className="space-y-8">

@@ -4,7 +4,7 @@
 import React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, FolderHeart, Plus, LayoutDashboard, LineChart, MessageSquareHeart } from "lucide-react"
+import { Home, FolderHeart, Plus, LayoutDashboard, LineChart, MessageSquareHeart, Settings } from "lucide-react"
 import { cn } from "@/lib/utils/cn"
 import { motion } from "framer-motion"
 
@@ -51,7 +51,7 @@ export function BottomNavbar() {
                                 <Icon
                                     className={cn(
                                         "w-6 h-6 transition-colors duration-300",
-                                        isActive ? "text-night-950 stroke-[2.5px]" : "text-night-300"
+                                        isActive ? "text-night-950 stroke-[2.5px]" : "text-night-500"
                                     )}
                                 />
                                 {isActive && (

@@ -93,7 +93,9 @@ export async function checkDailyStreak() {
             });
         }
     } catch (error) {
-        console.error("Failed to check daily streak:", error);
-        // Continue silently as this is non-critical for the initial view
+        // Suppress expected offline errors during local development
+        if (error instanceof Error && !error.message.includes('offline')) {
+            console.warn("Could not sync daily streak. Working in offline mode.");
+        }
     }
 }

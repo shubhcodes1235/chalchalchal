@@ -2,8 +2,12 @@
 import { subscribeToDesigns, Design as FirebaseDesign } from "@/lib/firebase/services/designs";
 import { subscribeToNotes, StickyNote as FirebaseNote } from "@/lib/firebase/services/notes";
 import { subscribeToOtherActivities, logActivityToFirebase } from "@/lib/firebase/services/activity";
+import { subscribeToAllWins } from "@/lib/firebase/services/wins";
+import { subscribeToStreak } from "@/lib/firebase/services/streak";
 import { designsRepo } from "@/lib/db/repositories/designs.repo";
 import { notesRepo } from "@/lib/db/repositories/notes.repo";
+import { winsRepo } from "@/lib/db/repositories/wins.repo";
+import { streaksRepo } from "@/lib/db/repositories/streaks.repo";
 import { db } from "@/lib/db/database";
 import { Design as LocalDesign, StickyNote as LocalNote } from "@/lib/db/schemas";
 import { toast } from "react-hot-toast";
@@ -99,6 +103,45 @@ export function startCloudSync(currentPerson: string) {
         });
     });
     unsubscribes.push(unsubActivity);
+    
+    // 4. SYNC WINS
+    const unsubWins = subscribeToAllWins(async (firebaseWins) => {
+        console.log(`📥 Received ${firebaseWins.length} wins from Cloud`);
+        for (const fbWin of firebaseWins) {
+            try {
+                const localWin = await winsRepo.getWinByDate(fbWin.date, fbWin.person);
+                if (!localWin) {
+                    await winsRepo.addWin({
+                        person: fbWin.person,
+                        content: fbWin.content,
+                        date: fbWin.date
+                    });
+                }
+            } catch (err) {
+                console.error("❌ Sync win failed:", fbWin.id, err);
+            }
+        }
+    });
+    unsubscribes.push(unsubWins);
+
+    // 5. SYNC STREAK
+    const unsubStreak = subscribeToStreak(async (cloudStreak) => {
+        if (!cloudStreak) return;
+        console.log(`📥 Received Streak update from Cloud: ${cloudStreak.currentStreak} days`);
+        try {
+            const localStreak = await streaksRepo.getStreakData();
+            if (localStreak) {
+                await db.streakData.update('main-streak', {
+                    currentStreak: cloudStreak.currentStreak,
+                    longestStreak: cloudStreak.longestStreak,
+                    lastActiveDate: cloudStreak.lastActiveDate
+                });
+            }
+        } catch (err) {
+            console.error("❌ Sync streak failed:", err);
+        }
+    });
+    unsubscribes.push(unsubStreak);
 
     return () => unsubscribes.forEach(unsub => unsub());
 }

@@ -42,7 +42,7 @@ export function PartnerFeed() {
         }
     };
 
-    if (loading) return <div className="p-8 text-center text-night-400">Loading updates...</div>;
+    if (loading) return <div className="p-8 text-center text-night-600">Loading updates...</div>;
 
     return (
         <div className="space-y-8 w-full max-w-2xl mx-auto section-connect">
@@ -52,7 +52,7 @@ export function PartnerFeed() {
 
             {designs.length === 0 ? (
                 <div className="text-center p-12 bg-white shadow-soft rounded-[2.5rem] border border-pink-100">
-                    <p className="text-night-400 font-bold italic">No updates yet! Time to create something? ✨</p>
+                    <p className="text-night-600 font-bold italic">No updates yet! Time to create something? ✨</p>
                 </div>
             ) : (
                 <div className="grid gap-8">
@@ -70,7 +70,7 @@ export function PartnerFeed() {
                                     alt={design.title}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
-                                <div className="absolute top-6 right-6 bg-deep-plum/80 backdrop-blur text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em]">
+                                <div className="absolute top-6 right-6 bg-deep-plum/80 backdrop-blur text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">
                                     {design.tool}
                                 </div>
                             </div>
@@ -83,7 +83,7 @@ export function PartnerFeed() {
 
                                 <div className="flex flex-wrap gap-2 pt-2">
                                     {design.tags?.map(tag => (
-                                        <span key={tag} className="text-[10px] font-black uppercase tracking-widest bg-pink-50 text-pink-500 px-3 py-1 rounded-full border border-pink-100">#{tag}</span>
+                                        <span key={tag} className="text-xs font-black uppercase tracking-widest bg-pink-50 text-pink-500 px-3 py-1 rounded-full border border-pink-100">#{tag}</span>
                                     ))}
                                 </div>
 

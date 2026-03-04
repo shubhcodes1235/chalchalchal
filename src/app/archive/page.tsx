@@ -68,15 +68,15 @@ export default function ArchivePage() {
         <PageWrapper className="space-y-6 pt-4 pb-32">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-4xl font-black text-night-950 tracking-tightest leading-none">Our Journey</h1>
-                    <p className="text-[10px] text-pink-500 font-bold uppercase tracking-[0.2em] opacity-60">
+                    <h1 className="text-4xl font-black text-night-950 tracking-tight leading-none">Our Journey</h1>
+                    <p className="text-xs text-pink-500 font-bold uppercase tracking-widest opacity-80">
                         {designs?.length || 0} memories collected
                     </p>
                 </div>
 
                 <div className="flex items-center space-x-2">
                     <Link href="/board">
-                        <Button variant="ghost" className="text-xs font-bold text-night-400 hover:text-pink-500">
+                        <Button variant="ghost" className="text-xs font-bold text-night-600 hover:text-pink-500">
                             Reflect
                         </Button>
                     </Link>
@@ -98,8 +98,8 @@ export default function ArchivePage() {
                                     key={p.id}
                                     onClick={() => setActivePerson(p.id)}
                                     className={cn(
-                                        "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter transition-all flex items-center gap-1",
-                                        activePerson === p.id ? "bg-night-950 text-white" : "text-night-400 hover:text-night-600"
+                                        "px-3 py-1 rounded-full text-sm font-black uppercase tracking-tighter transition-all flex items-center gap-1",
+                                        activePerson === p.id ? "bg-night-950 text-white" : "text-night-600 hover:text-night-600"
                                     )}
                                 >
                                     <span>{p.emoji}</span>
@@ -111,8 +111,8 @@ export default function ArchivePage() {
                         <button
                             onClick={() => setActiveTool("all")}
                             className={cn(
-                                "px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all",
-                                activeTool === "all" ? "bg-night-950 text-white" : "bg-white text-night-400 border border-night-100 hover:border-night-300"
+                                "px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all",
+                                activeTool === "all" ? "bg-night-950 text-white" : "bg-white text-night-600 border border-night-100 hover:border-night-300"
                             )}
                         >
                             All
@@ -124,8 +124,8 @@ export default function ArchivePage() {
                                     key={tool.id}
                                     onClick={() => setActiveTool(tool.id)}
                                     className={cn(
-                                        "flex items-center space-x-1.5 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all",
-                                        activeTool === tool.id ? "bg-night-950 text-white" : "bg-white text-night-400 border border-night-100 hover:border-night-300"
+                                        "flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all",
+                                        activeTool === tool.id ? "bg-night-950 text-white" : "bg-white text-night-600 border border-night-100 hover:border-night-300"
                                     )}
                                 >
                                     <Icon className="w-3 h-3" />
@@ -136,12 +136,14 @@ export default function ArchivePage() {
                     </div>
 
                     <div className="relative w-full sm:w-auto min-w-[200px] group">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-night-400 group-focus-within:text-pink-500 transition-colors" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-night-600 group-focus-within:text-pink-500 transition-colors" />
                         <Input
+                            id="archive-search"
+                            name="search"
                             placeholder="Search memories..."
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            className="pl-9 rounded-xl border-night-100 focus-visible:ring-pink-200 h-10 bg-white text-night-950 placeholder:text-night-300 font-bold text-xs w-full shadow-sm"
+                            className="pl-9 rounded-xl border-night-100 focus-visible:ring-pink-200 h-10 bg-white text-night-950 placeholder:text-night-500 font-bold text-xs w-full shadow-sm"
                         />
                     </div>
                 </div>
@@ -150,19 +152,20 @@ export default function ArchivePage() {
             {/* Gallery Grid - Denser 'Browse' Feel */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
                 <AnimatePresence mode="popLayout">
-                    {filteredDesigns.map((design) => (
+                    {filteredDesigns.map((design, index) => (
                         <DesignCard
                             key={design.id}
                             design={design}
                             onClick={(d) => setSelectedDesignId(d.id || null)}
+                            priority={index < 4}
                         />
                     ))}
 
                     {/* Expectant Ghost Card if few items */}
                     {filteredDesigns.length > 0 && filteredDesigns.length < 6 && (
-                        <div className="border border-dashed border-night-200 rounded-3xl flex flex-col items-center justify-center p-8 text-night-300 aspect-square group hover:border-pink-300 transition-colors cursor-pointer" onClick={() => window.location.href = '/upload'}>
+                        <div className="border border-dashed border-night-200 rounded-3xl flex flex-col items-center justify-center p-8 text-night-500 aspect-square group hover:border-pink-300 transition-colors cursor-pointer" onClick={() => window.location.href = '/upload'}>
                             <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">✨</div>
-                            <span className="text-[9px] font-black uppercase tracking-widest">Add more</span>
+                            <span className="text-sm font-black uppercase tracking-widest">Add more</span>
                         </div>
                     )}
                 </AnimatePresence>
@@ -174,13 +177,13 @@ export default function ArchivePage() {
                         <div className="text-6xl grayscale opacity-30">🔍</div>
                         <div className="space-y-1">
                             <h3 className="text-lg font-black text-night-950">No memories found</h3>
-                            <p className="text-xs text-night-400 font-bold">Try adjusting your filters or search.</p>
+                            <p className="text-xs text-night-600 font-bold">Try adjusting your filters or search.</p>
                         </div>
                         <Button
                             variant="outline"
                             size="sm"
                             onClick={() => { setActiveTool("all"); setCurrentPerson("both"); setSearchQuery(""); }}
-                            className="text-[10px] uppercase font-black tracking-widest rounded-xl"
+                            className="text-xs uppercase font-black tracking-widest rounded-xl"
                         >
                             Clear all filters
                         </Button>
@@ -199,9 +202,9 @@ export default function ArchivePage() {
                                 <div className="absolute top-8 left-8 z-50 text-white space-y-1">
                                     <h2 className="text-2xl font-black tracking-tight">{d.title}</h2>
                                     <div className="flex items-center space-x-3">
-                                        <p className="text-[10px] opacity-70 font-black uppercase tracking-widest">{tool?.name}</p>
+                                        <p className="text-xs opacity-90 font-black uppercase tracking-widest">{tool?.name}</p>
                                         <span className="w-1 h-1 rounded-full bg-white/30" />
-                                        <p className="text-[10px] opacity-70 font-black uppercase tracking-widest">{d.person}</p>
+                                        <p className="text-xs opacity-90 font-black uppercase tracking-widest">{d.person}</p>
                                     </div>
 
                                     {/* CONTEXTUAL LINE FOR KHUSHI */}
@@ -239,31 +242,31 @@ export default function ArchivePage() {
                                         }}
                                         className="group"
                                     >
-                                        <div className="flex flex-col items-center space-y-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex flex-col items-center space-y-2 opacity-80 group-hover:opacity-100 transition-opacity">
                                             <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center">
                                                 <Flame className="w-6 h-6 text-orange-500 fill-orange-500" />
                                             </div>
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-white">{d.hypeCount || 0} Hype</span>
+                                            <span className="text-sm font-black uppercase tracking-widest text-white">{d.hypeCount || 0} Hype</span>
                                         </div>
                                     </button>
 
                                     <div className="w-px h-10 bg-white/10" />
 
                                     <Link href="/board" className="group">
-                                        <div className="flex flex-col items-center space-y-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex flex-col items-center space-y-2 opacity-80 group-hover:opacity-100 transition-opacity">
                                             <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
                                                 <MessageSquareHeart className="w-6 h-6 text-white" />
                                             </div>
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-white">Share a thought</span>
+                                            <span className="text-sm font-black uppercase tracking-widest text-white">Share a thought</span>
                                         </div>
                                     </Link>
                                     <div className="w-px h-10 bg-white/10" />
                                     <Link href="/progress" className="group">
-                                        <div className="flex flex-col items-center space-y-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex flex-col items-center space-y-2 opacity-80 group-hover:opacity-100 transition-opacity">
                                             <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
                                                 <History className="w-6 h-6 text-white" />
                                             </div>
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-white">View Growth</span>
+                                            <span className="text-sm font-black uppercase tracking-widest text-white">View Growth</span>
                                         </div>
                                     </Link>
                                 </div>

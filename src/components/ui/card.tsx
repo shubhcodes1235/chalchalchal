@@ -80,4 +80,4 @@ CardFooter.displayName = "CardFooter"
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
 
-export const AnimatedCard = motion(Card);
+export const AnimatedCard = motion.create(Card);

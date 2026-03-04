@@ -40,7 +40,7 @@ export default function ReassurancePage() {
                     <Card className="bg-white/80 backdrop-blur shadow-warm border-pink-100">
                         <CardContent className="p-8 text-center space-y-2">
                             <span className="text-5xl font-bold text-pink-500">{designsCount || 0}</span>
-                            <p className="text-night-400 uppercase tracking-widest text-xs font-bold">Designs Created</p>
+                            <p className="text-night-600 uppercase tracking-widest text-xs font-bold">Designs Created</p>
                         </CardContent>
                     </Card>
                     <Card className="bg-white/80 backdrop-blur shadow-warm border-pink-100">
@@ -49,7 +49,7 @@ export default function ReassurancePage() {
                                 {/* Placeholder for days active */}
                                 3
                             </span>
-                            <p className="text-night-400 uppercase tracking-widest text-xs font-bold">Days on Journey</p>
+                            <p className="text-night-600 uppercase tracking-widest text-xs font-bold">Days on Journey</p>
                         </CardContent>
                     </Card>
                 </div>

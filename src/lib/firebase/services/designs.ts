@@ -47,29 +47,26 @@ export interface Reaction {
 // UPLOAD IMAGE TO STORAGE
 // ============================================
 
-async function uploadDesignImage(
-    file: File,
-    persona: string,
-    designId: string
-): Promise<{ imageUrl: string; storagePath: string }> {
-    const fileExtension = file.name.split(".").pop();
-    const storagePath = `designs/${persona}/${designId}.${fileExtension}`;
-    const storageRef = ref(storage, storagePath);
+async function uploadToImgBB(file: File): Promise<string> {
+    const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+    const formData = new FormData();
+    formData.append("image", file);
 
-    const snapshot = await uploadBytes(storageRef, file, {
-        contentType: file.type,
-        customMetadata: {
-            uploadedBy: persona,
-            designId: designId,
-        },
+    const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+        method: "POST",
+        body: formData,
     });
 
-    const imageUrl = await getDownloadURL(snapshot.ref);
-    return { imageUrl, storagePath };
+    if (!response.ok) {
+        throw new Error("ImgBB upload failed");
+    }
+
+    const result = await response.json();
+    return result.data.url;
 }
 
 // ============================================
-// CREATE DESIGN (FIRESTORE + STORAGE)
+// CREATE DESIGN (FIRESTORE + IMGBB)
 // ============================================
 
 export async function createDesignInFirebase(
@@ -78,7 +75,7 @@ export async function createDesignInFirebase(
         title: string;
         description: string;
         tool: string;
-        toolDetail?: string; // e.g. "After Effects"
+        toolDetail?: string;
         moodRating: number;
         tags: string[];
         uploadedByPersona: 'shubham' | 'khushi' | 'both';
@@ -88,24 +85,24 @@ export async function createDesignInFirebase(
 ): Promise<Design> {
     const designId = uuidv4();
 
-    // 1. Upload Image
-    const { imageUrl, storagePath } = await uploadDesignImage(file, data.uploadedByPersona, designId);
+    // 1. Upload Image to ImgBB
+    const imageUrl = await uploadToImgBB(file);
 
-    // 2. Create Document
+    // 2. Create Document in Firestore
     const design: Design = {
         id: designId,
         title: data.title,
         description: data.description,
         imageUrl,
-        thumbnailUrl: imageUrl, // Using same for now
-        storagePath,
+        thumbnailUrl: imageUrl,
+        storagePath: "imgbb", // Marker that we are using ImgBB
         tool: data.tool,
         toolDetail: data.toolDetail,
         moodRating: data.moodRating,
         tags: data.tags,
         isHallOfFame: false,
         uploadedByPersona: data.uploadedByPersona,
-        reactions: [], // Init empty
+        reactions: [],
         createdAt: serverTimestamp(),
     };
 
