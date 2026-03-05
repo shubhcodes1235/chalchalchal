@@ -60,8 +60,8 @@ export const DesignCard = React.forwardRef<HTMLDivElement, DesignCardProps>(
 
                         {/* Minimal Person Indicator */}
                         <div className="absolute top-2 right-2 z-10">
-                            <div className="w-6 h-6 rounded-full bg-white shadow-lg flex items-center justify-center text-xs border border-night-100 font-bold">
-                                {design.person === 'shubham' ? '👦' : '👧'}
+                            <div className="w-6 h-6 rounded-full overflow-hidden bg-white shadow-lg flex items-center justify-center text-xs border border-night-100 leading-none">
+                                <Image src={design.person === 'shubham' ? '/shubham.jpg' : '/khushi.jpg'} alt={design.person} width={24} height={24} className="w-full h-full object-cover" />
                             </div>
                         </div>
                     </div>

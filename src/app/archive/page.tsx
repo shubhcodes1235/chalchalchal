@@ -90,19 +90,25 @@ export default function ArchivePage() {
                         {/* Person Toggle */}
                         <div className="flex bg-white border border-night-100 rounded-full p-1 mr-2">
                             {[
-                                { id: 'all', label: 'All', emoji: '✨' },
-                                { id: 'shubham', label: 'Shubham', emoji: '👦' },
-                                { id: 'khushi', label: 'Khushi', emoji: '👧' }
+                                { id: 'all', label: 'All', icon: <span className="text-xs">✨</span> },
+                                { id: 'shubham', label: 'Shubham', image: '/shubham.jpg' },
+                                { id: 'khushi', label: 'Khushi', image: '/khushi.jpg' }
                             ].map(p => (
                                 <button
                                     key={p.id}
                                     onClick={() => setActivePerson(p.id)}
                                     className={cn(
-                                        "px-3 py-1 rounded-full text-sm font-black uppercase tracking-tighter transition-all flex items-center gap-1",
+                                        "px-3 py-1 rounded-full text-sm font-black uppercase tracking-tighter transition-all flex items-center gap-1.5",
                                         activePerson === p.id ? "bg-night-950 text-white" : "text-night-600 hover:text-night-600"
                                     )}
                                 >
-                                    <span>{p.emoji}</span>
+                                    <div className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center bg-night-100">
+                                        {p.image ? (
+                                            <Image src={p.image} alt={p.label} width={20} height={20} className="w-full h-full object-cover" />
+                                        ) : (
+                                            p.icon
+                                        )}
+                                    </div>
                                     <span>{p.label}</span>
                                 </button>
                             ))}
@@ -204,7 +210,12 @@ export default function ArchivePage() {
                                     <div className="flex items-center space-x-3">
                                         <p className="text-xs opacity-90 font-black uppercase tracking-widest">{tool?.name}</p>
                                         <span className="w-1 h-1 rounded-full bg-white/30" />
-                                        <p className="text-xs opacity-90 font-black uppercase tracking-widest">{d.person}</p>
+                                        <div className="flex items-center space-x-1.5 opacity-90 font-black uppercase tracking-widest text-xs">
+                                            <div className="w-5 h-5 rounded-full overflow-hidden border border-white/20">
+                                                <Image src={d.person === 'shubham' ? '/shubham.jpg' : '/khushi.jpg'} alt={d.person} width={20} height={20} className="w-full h-full object-cover" />
+                                            </div>
+                                            <span>{d.person}</span>
+                                        </div>
                                     </div>
 
                                     {/* CONTEXTUAL LINE FOR KHUSHI */}

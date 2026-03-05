@@ -13,6 +13,7 @@ import { TOOLS } from "@/lib/constants/tools"
 import { format, subDays, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns"
 import { Sparkles, Heart } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { cn } from "@/lib/utils/cn"
 
 export default function ProgressPage() {
@@ -260,8 +261,12 @@ export default function ProgressPage() {
                 </div>
 
                 <div className="flex items-center justify-center -space-x-3 pt-4">
-                    <div className="w-12 h-12 rounded-full border-4 border-white/20 bg-blue-100 flex items-center justify-center text-xl shadow-lg">👦</div>
-                    <div className="w-12 h-12 rounded-full border-4 border-white/20 bg-pink-100 flex items-center justify-center text-xl shadow-lg">👧</div>
+                    <div className="w-12 h-12 rounded-full border-4 border-white/20 overflow-hidden bg-blue-100 flex items-center justify-center shadow-lg">
+                        <Image src="/shubham.jpg" alt="S" width={48} height={48} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="w-12 h-12 rounded-full border-4 border-white/20 overflow-hidden bg-pink-100 flex items-center justify-center shadow-lg">
+                        <Image src="/khushi.jpg" alt="K" width={48} height={48} className="w-full h-full object-cover" />
+                    </div>
                 </div>
             </Card>
         </PageWrapper>

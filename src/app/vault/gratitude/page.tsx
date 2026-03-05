@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Sparkles, Heart, Trash2, CalendarDays } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
+import { cn } from "@/lib/utils/cn"
 import { format } from "date-fns"
 import { nanoid } from "nanoid"
 
@@ -65,16 +67,28 @@ export default function GratitudePage() {
                         <button
                             type="button"
                             onClick={() => setAuthor('shubham')}
-                            className={`px-6 py-2 rounded-full transition-all font-bold ${author === 'shubham' ? 'bg-blue-500 text-white shadow-lg scale-105' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
+                            className={`group flex items-center gap-2 p-1 pr-4 rounded-full transition-all font-black text-xs uppercase tracking-widest ${author === 'shubham' ? 'bg-blue-500 text-white shadow-lg scale-105' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
                         >
-                            👦 Shubham
+                            <div className={cn(
+                                "w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm transition-all",
+                                author !== 'shubham' && "grayscale opacity-40"
+                            )}>
+                                <Image src="/shubham.jpg" alt="S" width={32} height={32} className="w-full h-full object-cover" />
+                            </div>
+                            Shubham
                         </button>
                         <button
                             type="button"
                             onClick={() => setAuthor('khushi')}
-                            className={`px-6 py-2 rounded-full transition-all font-bold ${author === 'khushi' ? 'bg-pink-500 text-white shadow-lg scale-105' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
+                            className={`group flex items-center gap-2 p-1 pr-4 rounded-full transition-all font-black text-xs uppercase tracking-widest ${author === 'khushi' ? 'bg-pink-500 text-white shadow-lg scale-105' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
                         >
-                            👧 Khushi
+                            <div className={cn(
+                                "w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm transition-all",
+                                author !== 'khushi' && "grayscale opacity-40"
+                            )}>
+                                <Image src="/khushi.jpg" alt="K" width={32} height={32} className="w-full h-full object-cover" />
+                            </div>
+                            Khushi
                         </button>
                     </div>
                 )}
@@ -108,7 +122,9 @@ export default function GratitudePage() {
                             <Card className="border-pink-50 shadow-soft overflow-hidden hover:border-pink-200 transition-all">
                                 <CardContent className="p-6 flex items-start space-x-6">
                                     <div className="flex flex-col items-center shrink-0 space-y-1">
-                                        <span className="text-2xl">{entry.person === 'shubham' ? '👦' : '👧'}</span>
+                                        <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-100 shadow-sm leading-none bg-white">
+                                            <Image src={entry.person === 'shubham' ? '/shubham.jpg' : '/khushi.jpg'} alt={entry.person} width={40} height={40} className="w-full h-full object-cover" />
+                                        </div>
                                     </div>
                                     <div className="flex-1 space-y-2">
                                         <p className="text-night-800 text-lg italic leading-relaxed font-handwritten">

@@ -121,9 +121,9 @@ export default function TimelinePage() {
                                                             </div>
                                                         )}
 
-                                                        <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-md flex items-center justify-center text-xl border border-night-100">
-                                                            {design.person === 'shubham' ? '👦' : '👧'}
-                                                        </div>
+                                                        <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur shadow-md flex items-center justify-center text-xl border border-night-100 overflow-hidden">
+                                                             <Image src={design.person === 'shubham' ? '/shubham.jpg' : '/khushi.jpg'} alt={design.person} width={40} height={40} className="w-full h-full object-cover" />
+                                                         </div>
                                                     </div>
 
                                                     <div className="space-y-4">

@@ -14,6 +14,7 @@ import { toast } from "react-hot-toast"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import { ShieldCheck, RefreshCw, Upload, FileJson, LogOut, Users, User, Wifi, Send } from "lucide-react"
+import Image from "next/image"
 import { useAppStore } from "@/lib/store/app-store"
 import { logActivityToFirebase } from "@/lib/firebase/services/activity"
 
@@ -205,9 +206,9 @@ export default function SettingsPage() {
                     <CardContent className="p-6">
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             {[
-                                { id: 'shubham', label: 'Shubham', emoji: '👦', color: 'blue' },
-                                { id: 'khushi', label: 'Khushi', emoji: '👧', color: 'pink' },
-                                { id: 'both', label: 'Together', emoji: '✨', color: 'purple' }
+                                { id: 'shubham', label: 'Shubham', image: '/shubham.jpg', color: 'blue' },
+                                { id: 'khushi', label: 'Khushi', image: '/khushi.jpg', color: 'pink' },
+                                { id: 'both', label: 'Together', icon: <span className="text-2xl">✨</span>, color: 'purple' }
                             ].map((p) => (
                                 <button
                                     key={p.id}
@@ -217,11 +218,20 @@ export default function SettingsPage() {
                                         currentPerson === p.id
                                             ? (p.id === 'shubham' ? "border-blue-200 bg-blue-50 shadow-inner" :
                                                 p.id === 'khushi' ? "border-pink-200 bg-pink-50 shadow-inner" :
-                                                    "border-purple-200 bg-purple-50 shadow-inner")
+                                                     "border-purple-200 bg-purple-50 shadow-inner")
                                             : "border-transparent bg-night-50 hover:bg-night-100"
                                     )}
                                 >
-                                    <span className="text-3xl">{p.emoji}</span>
+                                    <div className={cn(
+                                        "w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-white shadow-sm transition-all",
+                                        currentPerson !== p.id && "grayscale opacity-40 scale-90"
+                                    )}>
+                                        {p.image ? (
+                                            <Image src={p.image} alt={p.label} width={48} height={48} className="w-full h-full object-cover" />
+                                        ) : (
+                                            p.icon
+                                        )}
+                                    </div>
                                     <span className={cn(
                                         "text-xs font-black uppercase tracking-widest",
                                         currentPerson === p.id
@@ -452,8 +462,12 @@ export default function SettingsPage() {
                 {/* Credits Section */}
                 <div className="pt-12 text-center space-y-6">
                     <div className="flex justify-center -space-x-3">
-                        <div className="w-12 h-12 rounded-full border-4 border-white bg-blue-100 flex items-center justify-center shadow-lg text-xl">👦</div>
-                        <div className="w-12 h-12 rounded-full border-4 border-white bg-pink-100 flex items-center justify-center shadow-lg text-xl">👧</div>
+                        <div className="w-12 h-12 rounded-full border-4 border-white overflow-hidden bg-blue-100 flex items-center justify-center shadow-lg">
+                            <Image src="/shubham.jpg" alt="S" width={48} height={48} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="w-12 h-12 rounded-full border-4 border-white overflow-hidden bg-pink-100 flex items-center justify-center shadow-lg">
+                            <Image src="/khushi.jpg" alt="K" width={48} height={48} className="w-full h-full object-cover" />
+                        </div>
                     </div>
                     <div className="space-y-1">
                         <p className="text-night-600 text-sm font-black tracking-tight flex items-center justify-center">
