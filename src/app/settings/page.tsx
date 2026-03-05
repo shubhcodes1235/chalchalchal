@@ -102,11 +102,37 @@ export default function SettingsPage() {
         reader.readAsText(file)
     }
 
+    const [isPurgingCloud, setIsPurgingCloud] = React.useState(false)
+
     const handleStartFresh = async () => {
         const confirmation = resetConfirmation.trim().toUpperCase();
         if (confirmation === "START FRESH") {
             try {
-                // Use a transaction for reliability
+                // If cloud purge is requested, we need Firebase tools
+                if (isPurgingCloud && isFirebaseConfigured) {
+                    const { collection, getDocs, deleteDoc, doc, writeBatch } = await import("firebase/firestore");
+                    const { db: fDb } = await import("@/lib/firebase/config");
+
+                    const collectionsToPurge = ['designs', 'notes', 'activities', 'wins', 'partners', 'streaks'];
+                    
+                    toast.loading("Purging cloud data... ☁️", { id: 'purge-cloud' });
+                    
+                    for (const collName of collectionsToPurge) {
+                        const q = collection(fDb, collName);
+                        const snapshot = await getDocs(q);
+                        
+                        // Delete in batches of 500 (Firestore limit)
+                        const docs = snapshot.docs;
+                        for (let i = 0; i < docs.length; i += 500) {
+                            const batch = writeBatch(fDb);
+                            docs.slice(i, i + 500).forEach((d) => batch.delete(d.ref));
+                            await batch.commit();
+                        }
+                    }
+                    toast.success("Cloud data purged! ☁️", { id: 'purge-cloud' });
+                }
+
+                // Use a transaction for reliability (Local)
                 await db.transaction('rw', db.tables, async () => {
                     await Promise.all(db.tables.map(table => table.clear()));
                 });
@@ -114,7 +140,7 @@ export default function SettingsPage() {
                 // Clear zustand storage
                 localStorage.removeItem('dream-design-app-storage');
                 
-                toast.success("Progress reset! Cloud sync might re-download shared data.", { duration: 5000 });
+                toast.success("Progress reset!", { duration: 5000 });
                 setTimeout(() => window.location.reload(), 2000)
             } catch (error) {
                 console.error("Reset failed:", error);
@@ -377,9 +403,22 @@ export default function SettingsPage() {
                                         <div className="py-6 space-y-4">
                                             <div className="p-4 bg-red-50 rounded-2xl text-red-700 text-sm font-medium leading-relaxed">
                                                 This will permanently delete all your local designs, notes, streaks, and progress. 
-                                                <br /><br />
-                                                <strong>Note:</strong> Since you are connected to the cloud, shared work might sync back after reload unless deleted from Firebase.
                                             </div>
+
+                                            {isFirebaseConfigured && (
+                                                <div className="flex items-center space-x-3 p-4 bg-night-50 rounded-2xl border-2 border-night-100 cursor-pointer" onClick={() => setIsPurgingCloud(!isPurgingCloud)}>
+                                                    <div className={cn(
+                                                        "w-5 h-5 rounded border-2 flex items-center justify-center transition-all",
+                                                        isPurgingCloud ? "bg-red-500 border-red-500" : "bg-white border-night-200"
+                                                    )}>
+                                                        {isPurgingCloud && <RefreshCw className="w-3 h-3 text-white animate-spin-slow" />}
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="text-xs font-black text-night-900 uppercase tracking-tight">Also Purge Cloud Data</p>
+                                                        <p className="text-[10px] text-night-500 font-bold">This will delete EVERYTHING from Firebase too (for both of you).</p>
+                                                    </div>
+                                                </div>
+                                            )}
                                             <div className="space-y-2">
                                                 <label className="text-xs font-black uppercase tracking-widest text-night-600">Type "START FRESH" to confirm</label>
                                                 <input
