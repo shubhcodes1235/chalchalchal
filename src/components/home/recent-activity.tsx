@@ -50,8 +50,8 @@ export function RecentActivity() {
                                         {formatDistanceToNow(design.createdAt, { addSuffix: true })}
                                     </p>
                                 </div>
-                                <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center text-xs shadow-inner shrink-0">
-                                    {design.person === 'shubham' ? '👦' : '👧'}
+                                <div className="w-8 h-8 rounded-full overflow-hidden bg-pink-50 flex items-center justify-center text-xs shadow-inner shrink-0 leading-none">
+                                    <Image src={design.person === 'shubham' ? '/shubham.jpg' : '/khushi.jpg'} alt={design.person} width={32} height={32} className="w-full h-full object-cover" />
                                 </div>
                             </CardContent>
                         </Card>

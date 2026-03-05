@@ -1,8 +1,9 @@
-
+// src/app/page.tsx
 "use client"
 
 import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
 import { useAppStore } from "@/lib/store/app-store"
 import { useMoodStore } from "@/lib/store/mood-store"
 import { useRouter } from "next/navigation"
@@ -11,11 +12,12 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useTimeOfDay } from "@/lib/hooks/use-time-of-day"
 import { db } from "@/lib/db/database"
+import { updatePresenceMood } from "@/lib/firebase/services/presence"
 import { cn } from "@/lib/utils/cn"
 
 export default function EntryPage() {
   const router = useRouter()
-  const { setCurrentPerson } = useAppStore()
+  const { currentPerson, setCurrentPerson } = useAppStore()
   const { setMood } = useMoodStore()
   const { greeting } = useTimeOfDay()
 
@@ -29,6 +31,12 @@ export default function EntryPage() {
 
   const handleMoodSelect = (mood: 'design' | 'vibe' | 'lost') => {
     setMood(mood)
+    // Synchronize mood to Firebase so the partner's screen can react
+    const person = useAppStore.getState().currentPerson;
+    if (person && person !== 'both') {
+      updatePresenceMood(person, mood);
+    }
+
     if (mood === 'lost') {
       router.push('/reassurance')
     } else {
@@ -82,8 +90,8 @@ export default function EntryPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
                 {[
-                  { id: 'shubham', name: 'Shubham', emoji: '👦', bg: 'bg-blush-50' },
-                  { id: 'khushi', name: 'Khushi', emoji: '👧', bg: 'bg-blush-50' }
+                  { id: 'shubham', name: 'Shubham', image: '/shubham.jpg', bg: 'bg-blue-50' },
+                  { id: 'khushi', name: 'Khushi', image: '/khushi.jpg', bg: 'bg-pink-50' }
                 ].map((p, i) => (
                   <motion.div
                     key={p.id}
@@ -97,8 +105,8 @@ export default function EntryPage() {
                       onClick={() => handlePersonSelect(p.id as 'shubham' | 'khushi')}
                     >
                       <CardContent className="p-10 flex flex-col items-center space-y-6">
-                        <div className={cn("w-28 h-28 rounded-full flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500 shadow-rose-glow border-4 border-blush-50", p.bg)}>
-                          {p.emoji}
+                        <div className={cn("w-28 h-28 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-rose-glow border-4 border-white", p.bg)}>
+                          <Image src={p.image} alt={p.name} width={112} height={112} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex flex-col space-y-1">
                           <span className="text-2xl font-poppins font-bold tracking-tight text-deep-plum">{p.name}</span>

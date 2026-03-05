@@ -1,10 +1,12 @@
 // src/providers/celebration-provider.tsx
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
+import { subscribeToPartnerPresence } from '@/lib/firebase/services/presence';
+import { useAppStore } from '@/lib/store/app-store';
 
-type CelebrationType = 'upload' | 'streak' | 'income' | 'first-upload' | 'milestone';
+type CelebrationType = 'upload' | 'streak' | 'income' | 'first-upload' | 'milestone' | 'shared-did-it';
 
 interface CelebrationContextType {
     triggerCelebration: (type: CelebrationType) => void;
@@ -14,6 +16,32 @@ const CelebrationContext = createContext<CelebrationContextType | undefined>(und
 
 export function CelebrationProvider({ children }: { children: React.ReactNode }) {
     const [, setIsActive] = useState(false);
+    const { currentPerson } = useAppStore();
+    const initialTriggerRef = useRef<any>(null);
+    const hasInitializedRef = useRef(false);
+
+    useEffect(() => {
+        if (!currentPerson || currentPerson === 'both') return;
+
+        const unsubscribe = subscribeToPartnerPresence(currentPerson, (data) => {
+            if (!hasInitializedRef.current) {
+                initialTriggerRef.current = data.confettiTrigger?.toMillis ? data.confettiTrigger.toMillis() : data.confettiTrigger;
+                hasInitializedRef.current = true;
+                return;
+            }
+
+            const currentTrigger = data.confettiTrigger?.toMillis ? data.confettiTrigger.toMillis() : data.confettiTrigger;
+            
+            if (currentTrigger && currentTrigger !== initialTriggerRef.current) {
+                // Partner triggered a confetti event for you!
+                initialTriggerRef.current = currentTrigger;
+                triggerCelebration('shared-did-it');
+            }
+        });
+
+        return () => unsubscribe();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPerson]);
 
     const fireConfetti = (type: CelebrationType) => {
         const colors = ['#FF69B4', '#FFB6C1', '#FFD700', '#FF1493'];
@@ -40,6 +68,15 @@ export function CelebrationProvider({ children }: { children: React.ReactNode })
                 spread: 70,
                 origin: { y: 0.6 },
                 colors
+            });
+        } else if (type === 'shared-did-it') {
+            // A crazy confetti explosion from the top showing your partner did something
+            confetti({
+                particleCount: 300,
+                spread: 120,
+                origin: { y: 0.2 },
+                colors: ['#00FF00', '#FFD700', '#FF69B4', '#1E90FF'],
+                startVelocity: 45
             });
         } else {
             confetti({

@@ -1,4 +1,3 @@
-
 import {
     doc,
     onSnapshot,
@@ -8,12 +7,19 @@ import {
 import { db } from "../config";
 
 // ============================================
-// REAL-TIME PARTNER STATUS
+// REAL-TIME PARTNER STATUS & SYNC
 // ============================================
 
-export function subscribeToPartnerStatus(
+export interface PresenceData {
+    isOnline: boolean;
+    lastSeen: Date | null;
+    sessionMood: string | null;
+    confettiTrigger: any;
+}
+
+export function subscribeToPartnerPresence(
     partnerUid: string,
-    callback: (isOnline: boolean, lastSeen: Date | null) => void
+    callback: (data: PresenceData) => void
 ) {
     return onSnapshot(doc(db, "partners", partnerUid), (snapshot) => {
         if (snapshot.exists()) {
@@ -28,20 +34,32 @@ export function subscribeToPartnerStatus(
                 if (diff > 2) isOnline = false;
             }
             
-            callback(isOnline, lastSeen);
+            callback({
+                isOnline,
+                lastSeen,
+                sessionMood: data.sessionMood || null,
+                confettiTrigger: data.confettiTrigger || null
+            });
         } else {
-            callback(false, null);
+            callback({ isOnline: false, lastSeen: null, sessionMood: null, confettiTrigger: null });
         }
     });
 }
 
+// Keep backward compatibility
+export function subscribeToPartnerStatus(
+    partnerUid: string,
+    callback: (isOnline: boolean, lastSeen: Date | null) => void
+) {
+    return subscribeToPartnerPresence(partnerUid, (data) => callback(data.isOnline, data.lastSeen));
+}
+
 // ============================================
-// HEARTBEAT (Keep alive)
+// HEARTBEAT & TRIGGERS
 // ============================================
 
 export function startHeartbeat(persona: string) {
-    // Update presence every 60 seconds
-    const interval = setInterval(async () => {
+    const updatePresence = async () => {
         try {
             await setDoc(
                 doc(db, "partners", persona),
@@ -54,24 +72,37 @@ export function startHeartbeat(persona: string) {
         } catch (e) {
             console.warn("Heartbeat failed:", e);
         }
-    }, 60000);
+    };
 
-    // Initial update
-    setDoc(doc(db, "partners", persona), {
-        isOnline: true,
-        lastSeen: serverTimestamp(),
-    }, { merge: true }).catch(console.error);
+    const interval = setInterval(updatePresence, 60000);
+    updatePresence(); // Initial
 
-
-    // Set offline on page unload
     if (typeof window !== "undefined") {
-        window.addEventListener("beforeunload", async () => {
-            // Best effort, might not complete
-            navigator.sendBeacon && navigator.sendBeacon(''); // Simplified beacon if needed, but Firestore REST API is complex
-            // Firestore handles some offline sensing automatically but this is explicit
-            // We can't reliably await here
+        window.addEventListener("beforeunload", () => {
+            navigator.sendBeacon && navigator.sendBeacon('');
         });
     }
 
     return () => clearInterval(interval);
+}
+
+export function triggerPartnerConfetti(targetPersona: string) {
+    return setDoc(
+        doc(db, "partners", targetPersona),
+        {
+            confettiTrigger: serverTimestamp(),
+        },
+        { merge: true }
+    ).catch(console.error);
+}
+
+export function updatePresenceMood(persona: string, mood: string | null) {
+    return setDoc(
+        doc(db, "partners", persona),
+        {
+            sessionMood: mood,
+            lastSeen: serverTimestamp(),
+        },
+        { merge: true }
+    ).catch(console.error);
 }

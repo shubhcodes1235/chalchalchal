@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation"
 import { Home, FolderHeart, Plus, MessageSquareHeart, LineChart, Quote, User2, Settings } from "lucide-react"
 import { cn } from "@/lib/utils/cn"
 import { motion } from "framer-motion"
+import Image from "next/image"
 import { useLiveQuery } from "dexie-react-hooks"
 import { db } from "@/lib/db/database"
 
@@ -66,13 +67,17 @@ export function Sidebar() {
                     <div className="flex items-center space-x-3">
                         <div className="flex -space-x-1.5">
                             <div className={cn(
-                                "w-7 h-7 rounded-full border-2 border-white bg-blue-100 flex items-center justify-center text-xs shadow-sm",
-                                currentPerson === 'shubham' ? "z-10 ring-2 ring-blue-200" : "opacity-40"
-                            )}>👦</div>
+                                "w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-blue-100 flex items-center justify-center text-xs shadow-sm",
+                                currentPerson === 'shubham' ? "z-10 ring-2 ring-blue-200" : "opacity-40 grayscale"
+                            )}>
+                                <Image src="/shubham.jpg" alt="S" width={28} height={28} className="w-full h-full object-cover" />
+                            </div>
                             <div className={cn(
-                                "w-7 h-7 rounded-full border-2 border-white bg-pink-100 flex items-center justify-center text-xs shadow-sm",
-                                currentPerson === 'khushi' ? "z-10 ring-2 ring-pink-200" : "opacity-40"
-                            )}>👧</div>
+                                "w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-pink-100 flex items-center justify-center text-xs shadow-sm",
+                                currentPerson === 'khushi' ? "z-10 ring-2 ring-pink-200" : "opacity-40 grayscale"
+                            )}>
+                                <Image src="/khushi.jpg" alt="K" width={28} height={28} className="w-full h-full object-cover" />
+                            </div>
                         </div>
                         <div className="flex flex-col">
                             <span className="text-xs font-black text-night-950 leading-none mb-1">Us</span>

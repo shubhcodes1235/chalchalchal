@@ -14,12 +14,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Plus, Pin, Trash2, Lightbulb, Heart, Target, BookOpen, Sparkles } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils/cn"
 import { formatDistanceToNow } from "date-fns"
 import { addNoteToFirebase, deleteNoteFromFirebase, togglePinInFirebase } from "@/lib/firebase/services/notes"
 import { logActivityToFirebase } from "@/lib/firebase/services/activity"
-import { toast } from "react-hot-toast"
 import { nanoid } from "nanoid"
 
 const NOTE_COLORS = [
@@ -210,19 +210,25 @@ export default function BoardPage() {
                 {/* Person Toggle */}
                 <div className="flex bg-white border border-night-100 rounded-full p-1">
                     {[
-                        { id: 'all', label: 'All', emoji: '✨' },
-                        { id: 'shubham', label: 'Shubham', emoji: '👦' },
-                        { id: 'khushi', label: 'Khushi', emoji: '👧' }
+                        { id: 'all', label: 'All', icon: <span className="text-xs">✨</span> },
+                        { id: 'shubham', label: 'Shubham', image: '/shubham.jpg' },
+                        { id: 'khushi', label: 'Khushi', image: '/khushi.jpg' }
                     ].map(p => (
                         <button
                             key={p.id}
                             onClick={() => setActivePerson(p.id)}
                             className={cn(
-                                "px-3 py-1 rounded-full text-sm font-black uppercase tracking-tighter transition-all flex items-center gap-1",
+                                "px-3 py-1 rounded-full text-sm font-black uppercase tracking-tighter transition-all flex items-center gap-1.5",
                                 activePerson === p.id ? "bg-night-950 text-white" : "text-night-600 hover:text-night-600"
                             )}
                         >
-                            <span>{p.emoji}</span>
+                            <div className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center bg-night-100">
+                                {p.image ? (
+                                    <Image src={p.image} alt={p.label} width={20} height={20} className="w-full h-full object-cover" />
+                                ) : (
+                                    p.icon
+                                )}
+                            </div>
                             <span>{p.label}</span>
                         </button>
                     ))}
@@ -279,13 +285,17 @@ export default function BoardPage() {
                                             <div className="flex items-center space-x-2">
                                                 <div className="flex -space-x-2">
                                                     <div className={cn(
-                                                        "w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-xs shadow-sm bg-blue-100",
-                                                        note.person === 'shubham' ? "z-10" : "opacity-30 scale-90"
-                                                    )}>👦</div>
+                                                        "w-8 h-8 rounded-full border-2 border-white overflow-hidden flex items-center justify-center text-xs shadow-sm bg-blue-100",
+                                                        note.person === 'shubham' ? "z-10" : "opacity-30 scale-90 grayscale"
+                                                    )}>
+                                                        <Image src="/shubham.jpg" alt="Shubham" width={32} height={32} className="w-full h-full object-cover" />
+                                                    </div>
                                                     <div className={cn(
-                                                        "w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-xs shadow-sm bg-pink-100",
-                                                        note.person === 'khushi' ? "z-10" : "opacity-30 scale-90"
-                                                    )}>👧</div>
+                                                        "w-8 h-8 rounded-full border-2 border-white overflow-hidden flex items-center justify-center text-xs shadow-sm bg-pink-100",
+                                                        note.person === 'khushi' ? "z-10" : "opacity-30 scale-90 grayscale"
+                                                    )}>
+                                                        <Image src="/khushi.jpg" alt="Khushi" width={32} height={32} className="w-full h-full object-cover" />
+                                                    </div>
                                                 </div>
                                                 <span className="text-xs font-black text-night-950/40 uppercase tracking-widest pl-2">
                                                     {note.type}

@@ -12,6 +12,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils/cn"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useAppStore } from "@/lib/store/app-store"
+import Image from "next/image"
 import { EmergencyButton } from "@/components/layout/emergency-button"
 import { subscribeToPartnerStatus } from "@/lib/firebase/services/presence"
 
@@ -70,15 +71,17 @@ export function Header() {
                             <button className="flex items-center space-x-2 bg-night-50 hover:bg-white pl-1 pr-1 sm:pr-3 py-1 rounded-full border border-night-100 transition-all shadow-sm hover:shadow-md group">
                                 <div className="flex -space-x-1.5">
                                     <div className={cn(
-                                        "w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-sm shadow-sm transition-all relative",
-                                        currentPerson === 'shubham' || currentPerson === 'both' ? "bg-blue-100 z-10" : "bg-night-100 opacity-40 scale-90"
-                                    )}>👦
+                                        "w-8 h-8 rounded-full border-2 border-white overflow-hidden flex items-center justify-center text-sm shadow-sm transition-all relative bg-blue-100",
+                                        (currentPerson === 'shubham' || currentPerson === 'both') ? "z-10" : "opacity-40 scale-90 grayscale"
+                                    )}>
+                                        <Image src="/shubham.jpg" alt="S" width={32} height={32} className="w-full h-full object-cover" />
                                         {shubhamOnline && <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-green-500 border border-white" />}
                                     </div>
                                     <div className={cn(
-                                        "w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-sm shadow-sm transition-all relative",
-                                        currentPerson === 'khushi' || currentPerson === 'both' ? "bg-pink-100 z-10" : "bg-night-100 opacity-40 scale-90"
-                                    )}>👧
+                                        "w-8 h-8 rounded-full border-2 border-white overflow-hidden flex items-center justify-center text-sm shadow-sm transition-all relative bg-pink-100",
+                                        (currentPerson === 'khushi' || currentPerson === 'both') ? "z-10" : "opacity-40 scale-90 grayscale"
+                                    )}>
+                                        <Image src="/khushi.jpg" alt="K" width={32} height={32} className="w-full h-full object-cover" />
                                         {khushiOnline && <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-green-500 border border-white" />}
                                     </div>
                                 </div>
@@ -93,7 +96,8 @@ export function Header() {
                             </DialogHeader>
                             <div className="grid gap-3 pt-4">
                                 <button onClick={() => handleSwitch('shubham')} className={cn("flex items-center p-3 rounded-2xl border-2 transition-all space-x-4", currentPerson === 'shubham' ? "border-blue-200 bg-blue-50" : "border-transparent hover:bg-night-50")}>
-                                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-xl relative">👦
+                                    <div className="w-10 h-10 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center text-xl relative">
+                                        <Image src="/shubham.jpg" alt="Shubham" width={40} height={40} className="w-full h-full object-cover" />
                                         {shubhamOnline && <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-white" />}
                                     </div>
                                     <div className="text-left">
@@ -104,7 +108,8 @@ export function Header() {
                                  </button>
 
                                  <button onClick={() => handleSwitch('khushi')} className={cn("flex items-center p-3 rounded-2xl border-2 transition-all space-x-4", currentPerson === 'khushi' ? "border-pink-200 bg-pink-50" : "border-transparent hover:bg-night-50")}>
-                                     <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-xl relative">👧
+                                     <div className="w-10 h-10 rounded-full overflow-hidden bg-pink-100 flex items-center justify-center text-xl relative">
+                                        <Image src="/khushi.jpg" alt="Khushi" width={40} height={40} className="w-full h-full object-cover" />
                                         {khushiOnline && <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-white" />}
                                     </div>
                                     <div className="text-left">
@@ -116,8 +121,12 @@ export function Header() {
 
                                 <button onClick={() => handleSwitch('both')} className={cn("flex items-center p-3 rounded-2xl border-2 transition-all space-x-4", currentPerson === 'both' ? "border-purple-200 bg-purple-50" : "border-transparent hover:bg-night-50")}>
                                     <div className="flex -space-x-2">
-                                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-sm border-2 border-white">👦</div>
-                                        <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-sm border-2 border-white">👧</div>
+                                        <div className="w-8 h-8 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center text-sm border-2 border-white">
+                                            <Image src="/shubham.jpg" alt="S" width={32} height={32} className="w-full h-full object-cover" />
+                                        </div>
+                                        <div className="w-8 h-8 rounded-full overflow-hidden bg-pink-100 flex items-center justify-center text-sm border-2 border-white">
+                                            <Image src="/khushi.jpg" alt="K" width={32} height={32} className="w-full h-full object-cover" />
+                                        </div>
                                     </div>
                                     <div className="text-left pl-2">
                                         <div className="font-black text-night-900 text-sm">Together</div>

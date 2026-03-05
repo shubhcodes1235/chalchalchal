@@ -4,6 +4,7 @@
 import React from "react"
 import { motion } from "framer-motion"
 import { Heart } from "lucide-react"
+import Image from "next/image"
 import { useAppStore } from "@/lib/store/app-store"
 
 export function UsMoment() {
@@ -29,8 +30,12 @@ export function UsMoment() {
             </div>
 
             <div className="pt-4 flex -space-x-3">
-                <div className="w-12 h-12 rounded-full border-4 border-white bg-blue-100 shadow-sm flex items-center justify-center text-xl">👦</div>
-                <div className="w-12 h-12 rounded-full border-4 border-white bg-pink-100 shadow-sm flex items-center justify-center text-xl">👧</div>
+                <div className="w-12 h-12 rounded-full border-4 border-white overflow-hidden bg-blue-100 shadow-sm flex items-center justify-center">
+                    <Image src="/shubham.jpg" alt="S" width={48} height={48} className="w-full h-full object-cover" />
+                </div>
+                <div className="w-12 h-12 rounded-full border-4 border-white overflow-hidden bg-pink-100 shadow-sm flex items-center justify-center">
+                    <Image src="/khushi.jpg" alt="K" width={48} height={48} className="w-full h-full object-cover" />
+                </div>
             </div>
         </motion.div>
     )

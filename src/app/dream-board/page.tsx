@@ -16,9 +16,12 @@ import { nanoid } from "nanoid"
 import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils/cn"
+import { triggerPartnerConfetti } from "@/lib/firebase/services/presence"
+import { useCelebration } from "@/providers/celebration-provider"
 
 export default function DreamBoardPage() {
     const { currentPerson } = useAppStore()
+    const { triggerCelebration } = useCelebration()
     const items = useLiveQuery(() =>
         db.dreamBoardItems.orderBy('createdAt').reverse().toArray()
     )
@@ -58,8 +61,8 @@ export default function DreamBoardPage() {
         <PageWrapper className="space-y-12">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-2">
-                    <h1 className="text-4xl md:text-5xl font-handwritten font-bold text-pink-700">The Dream Board</h1>
-                    <p className="text-night-500">Visualizing where we will be very soon. Dream big, design harder.</p>
+                    <h1 className="text-4xl md:text-5xl font-handwritten font-bold text-pink-700 dark:text-pink-500">The Dream Board</h1>
+                    <p className="text-night-500 dark:text-night-400">Visualizing where we will be very soon. Dream big, design harder.</p>
                 </div>
 
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -96,13 +99,13 @@ export default function DreamBoardPage() {
                                     value={formData.targetDate}
                                     onChange={e => setFormData(prev => ({ ...prev, targetDate: e.target.value }))}
                                 />
-                                <div className="flex bg-pink-50 rounded-2xl p-1">
+                                <div className="flex bg-pink-50 dark:bg-night-900 rounded-2xl p-1">
                                     <button
                                         type="button"
                                         onClick={() => setFormData(prev => ({ ...prev, category: 'personal' }))}
                                         className={cn(
                                             "flex-1 py-3 rounded-xl text-xs font-bold transition-all",
-                                            formData.category === 'personal' ? "bg-white text-pink-600 shadow-sm" : "text-night-600"
+                                            formData.category === 'personal' ? "bg-white dark:bg-card text-pink-600 shadow-sm" : "text-night-600 dark:text-night-400"
                                         )}
                                     >
                                         For Me
@@ -112,7 +115,7 @@ export default function DreamBoardPage() {
                                         onClick={() => setFormData(prev => ({ ...prev, category: 'shared' }))}
                                         className={cn(
                                             "flex-1 py-3 rounded-xl text-xs font-bold transition-all",
-                                            formData.category === 'shared' ? "bg-white text-pink-600 shadow-sm" : "text-night-600"
+                                            formData.category === 'shared' ? "bg-white dark:bg-card text-pink-600 shadow-sm" : "text-night-600 dark:text-night-400"
                                         )}
                                     >
                                         For Us
@@ -137,19 +140,19 @@ export default function DreamBoardPage() {
                         >
                             <Card className={cn(
                                 "h-full overflow-hidden border-2 relative group",
-                                item.category === 'shared' ? "border-pink-200" : "border-white"
+                                item.category === 'shared' ? "border-pink-200 dark:border-pink-800" : "border-white dark:border-night-800 bg-white dark:bg-card"
                             )}>
                                 {/* Achieved Overlay */}
                                 {item.isAchieved && (
-                                    <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-20 flex flex-col items-center justify-center text-center p-6 animate-in fade-in zoom-in">
+                                    <div className="absolute inset-0 bg-white/60 dark:bg-card/70 backdrop-blur-sm z-20 flex flex-col items-center justify-center text-center p-6 animate-in fade-in zoom-in">
                                         <div className="p-4 rounded-full bg-green-500 text-white shadow-glow mb-4">
                                             <Rocket className="w-8 h-8" />
                                         </div>
-                                        <h3 className="text-2xl font-black text-green-600">MISSION ACCOMPLISHED!</h3>
+                                        <h3 className="text-2xl font-black text-green-600 dark:text-green-400">MISSION ACCOMPLISHED!</h3>
                                     </div>
                                 )}
 
-                                <div className="aspect-video relative bg-pink-50 overflow-hidden">
+                                <div className="aspect-video relative bg-pink-50 dark:bg-night-900 overflow-hidden">
                                     {item.imageUrl ? (
                                         <img
                                             src={item.imageUrl}
@@ -157,12 +160,12 @@ export default function DreamBoardPage() {
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                         />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-4xl text-pink-200">✨</div>
+                                        <div className="w-full h-full flex items-center justify-center text-4xl text-pink-200 dark:text-night-700">✨</div>
                                     )}
                                     <div className="absolute top-4 left-4">
                                         <Badge className={cn(
-                                            "shadow-sm border-2 border-white",
-                                            item.category === 'shared' ? "bg-pink-500" : "bg-night-800"
+                                            "shadow-sm border-2 border-white dark:border-night-800",
+                                            item.category === 'shared' ? "bg-pink-500" : "bg-night-800 dark:bg-night-700"
                                         )}>
                                             {item.category === 'shared' ? 'TEAM GOAL' : 'PERSONAL'}
                                         </Badge>
@@ -170,9 +173,9 @@ export default function DreamBoardPage() {
                                 </div>
 
                                 <CardContent className="p-6 space-y-4">
-                                    <h3 className="text-xl font-bold text-night-900 leading-tight">{item.title}</h3>
+                                    <h3 className="text-xl font-bold text-night-900 dark:text-white leading-tight">{item.title}</h3>
                                     {item.targetDate && (
-                                        <div className="flex items-center text-xs font-bold text-pink-500 uppercase tracking-widest">
+                                        <div className="flex items-center text-xs font-bold text-pink-500 dark:text-pink-400 uppercase tracking-widest">
                                             <Target className="w-3.5 h-3.5 mr-2" />
                                             Target: {format(new Date(item.targetDate), 'MMM yyyy')}
                                         </div>
@@ -183,14 +186,21 @@ export default function DreamBoardPage() {
                                             size="sm"
                                             className="rounded-xl px-4"
                                             onClick={async () => {
-                                                await db.dreamBoardItems.update(item.id, { isAchieved: !item.isAchieved })
+                                                const newState = !item.isAchieved;
+                                                await db.dreamBoardItems.update(item.id, { isAchieved: newState });
+                                                if (newState) {
+                                                    triggerCelebration('milestone');
+                                                    if (currentPerson && currentPerson !== 'both') {
+                                                        triggerPartnerConfetti(currentPerson === 'shubham' ? 'khushi' : 'shubham');
+                                                    }
+                                                }
                                             }}
                                         >
                                             {item.isAchieved ? "Not yet" : "Did it! 🎉"}
                                         </Button>
                                         <button
                                             onClick={() => deleteItem(item.id)}
-                                            className="text-night-200 hover:text-red-500 transition-colors"
+                                            className="text-night-200 dark:text-night-600 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -203,9 +213,9 @@ export default function DreamBoardPage() {
             </div>
 
             {items && items.length === 0 && (
-                <div className="text-center py-24 glass rounded-4xl border-2 border-dashed border-pink-200 opacity-80">
-                    <Heart className="w-12 h-12 text-pink-300 mx-auto mb-4" />
-                    <p className="text-night-600 font-handwritten text-xl">What does our future look like?</p>
+                <div className="text-center py-24 glass rounded-4xl border-2 border-dashed border-pink-200 dark:border-night-700 opacity-80">
+                    <Heart className="w-12 h-12 text-pink-300 dark:text-night-500 mx-auto mb-4" />
+                    <p className="text-night-600 dark:text-night-400 font-handwritten text-xl">What does our future look like?</p>
                 </div>
             )}
         </PageWrapper>
