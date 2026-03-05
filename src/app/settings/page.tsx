@@ -25,7 +25,17 @@ export default function SettingsPage() {
     const [resetConfirmation, setResetConfirmation] = React.useState("")
     const fileInputRef = React.useRef<HTMLInputElement>(null)
 
-    if (!settings) return null
+    // Check if Firebase is actually configured
+    const isFirebaseConfigured = !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+
+    if (!settings) {
+        return (
+            <PageWrapper className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+                <RefreshCw className="w-10 h-10 text-night-400 animate-spin" />
+                <p className="text-night-500 font-bold">Waking up your settings...</p>
+            </PageWrapper>
+        );
+    }
 
     const updateSetting = async (key: string, value: any) => {
         await settingsRepo.updateSettings({ [key]: value })
@@ -93,20 +103,31 @@ export default function SettingsPage() {
     }
 
     const handleStartFresh = async () => {
-        if (resetConfirmation.toUpperCase() === "START FRESH") {
-            await Promise.all([
-                db.designs.clear(),
-                db.stickyNotes.clear(),
-                db.streakData.clear(),
-                db.income.clear(),
-                db.milestones.clear()
-            ])
-            toast.success("A clean slate awaits. Reloading...")
-            setTimeout(() => window.location.reload(), 1500)
+        const confirmation = resetConfirmation.trim().toUpperCase();
+        if (confirmation === "START FRESH") {
+            try {
+                // Use a transaction for reliability
+                await db.transaction('rw', db.tables, async () => {
+                    await Promise.all(db.tables.map(table => table.clear()));
+                });
+                
+                // Clear zustand storage
+                localStorage.removeItem('dream-design-app-storage');
+                
+                toast.success("Progress reset! Cloud sync might re-download shared data.", { duration: 5000 });
+                setTimeout(() => window.location.reload(), 2000)
+            } catch (error) {
+                console.error("Reset failed:", error);
+                toast.error("Database reset failed. Try clearing browser cache.");
+            }
         }
     }
 
     const pingPartner = async () => {
+        if (!isFirebaseConfigured) {
+            toast.error("Firebase is not connected! Connection impossible. 🛑");
+            return;
+        }
         const uploader = currentPerson === 'both' ? 'shubham' : currentPerson
         try {
             await logActivityToFirebase({
@@ -124,9 +145,22 @@ export default function SettingsPage() {
 
     return (
         <PageWrapper className="max-w-3xl space-y-8 pb-32 pt-4">
-            <div className="space-y-1">
-                <h1 className="text-4xl font-black text-night-950 tracking-tight">Settings</h1>
-                <p className="text-night-600 font-medium">Customize your sanctuary exactly how you like it.</p>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div className="space-y-1">
+                    <h1 className="text-4xl font-black text-night-950 tracking-tight">Settings</h1>
+                    <p className="text-night-600 font-medium">Customize your sanctuary exactly how you like it.</p>
+                </div>
+                
+                {/* Connection Status Badge */}
+                <div className={cn(
+                    "flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2",
+                    isFirebaseConfigured 
+                        ? "bg-green-50 text-green-600 border-green-100" 
+                        : "bg-red-50 text-red-600 border-red-100"
+                )}>
+                    <div className={cn("w-2 h-2 rounded-full animate-pulse", isFirebaseConfigured ? "bg-green-500" : "bg-red-500")} />
+                    {isFirebaseConfigured ? "Cloud Connected" : "Cloud Disconnected"}
+                </div>
             </div>
 
             {/* Reassurance Banner */}
@@ -342,7 +376,9 @@ export default function SettingsPage() {
                                         </DialogHeader>
                                         <div className="py-6 space-y-4">
                                             <div className="p-4 bg-red-50 rounded-2xl text-red-700 text-sm font-medium leading-relaxed">
-                                                This will permanently delete all your designs, notes, streaks, and progress. This cannot be undone unless you have a backup.
+                                                This will permanently delete all your local designs, notes, streaks, and progress. 
+                                                <br /><br />
+                                                <strong>Note:</strong> Since you are connected to the cloud, shared work might sync back after reload unless deleted from Firebase.
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-xs font-black uppercase tracking-widest text-night-600">Type "START FRESH" to confirm</label>
@@ -362,7 +398,7 @@ export default function SettingsPage() {
                                             <Button
                                                 variant="danger"
                                                 onClick={handleStartFresh}
-                                                disabled={resetConfirmation.toUpperCase() !== "START FRESH"}
+                                                disabled={resetConfirmation.trim().toUpperCase() !== "START FRESH"}
                                                 className="rounded-xl font-bold h-12 bg-red-500 text-white hover:bg-red-600 disabled:opacity-30"
                                             >
                                                 Delete Everything
