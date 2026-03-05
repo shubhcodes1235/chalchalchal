@@ -32,7 +32,7 @@ export function ManifestationStrip() {
                 transition={{ duration: 1.5 }}
                 className="w-full text-center"
             >
-                <span className="font-handwritten text-xl text-night-900 tracking-widest px-6 font-bold italic">
+                <span className="font-handwritten text-xl text-foreground tracking-widest px-6 font-bold italic">
                     {messages[index]}
                 </span>
             </motion.div>

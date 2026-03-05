@@ -64,8 +64,9 @@ const config: Config = {
                 },
             },
             fontFamily: {
-                sans: ['Inter', 'sans-serif'],
-                poppins: ['Poppins', 'sans-serif'],
+                sans: ['Outfit', 'sans-serif'],
+                body: ['Inter', 'sans-serif'],
+                display: ['Outfit', 'sans-serif'],
                 handwritten: ['Caveat', 'cursive'],
             },
             borderRadius: {

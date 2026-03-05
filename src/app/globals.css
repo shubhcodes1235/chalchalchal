@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Poppins:wght@400;500;700;800;900&family=Caveat:wght@400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400..700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -45,33 +45,36 @@
   }
 
   .dark {
-    --background: 300 100% 4%;
-    --foreground: 350 100% 98%;
+    /* Deep rich plum — not pitch black */
+    --background: 285 35% 8%;
+    --foreground: 0 0% 95%;
 
-    --card: 300 30% 6%;
-    --card-foreground: 350 100% 96%;
+    /* Cards clearly lifted from the background */
+    --card: 285 30% 12%;
+    --card-foreground: 0 0% 93%;
 
-    --popover: 300 30% 6%;
-    --popover-foreground: 350 100% 96%;
+    --popover: 285 30% 13%;
+    --popover-foreground: 0 0% 93%;
 
-    --primary: 330 100% 65%;
-    --primary-foreground: 350 100% 98%;
+    --primary: 330 90% 65%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 28% 12%;
-    --secondary-foreground: 330 100% 65%;
+    --secondary: 285 25% 18%;
+    --secondary-foreground: 330 90% 75%;
 
-    --muted: 240 28% 12%;
-    --muted-foreground: 240 5% 70%;
+    --muted: 285 25% 16%;
+    --muted-foreground: 285 10% 65%;
 
-    --accent: 240 28% 12%;
-    --accent-foreground: 330 100% 65%;
+    --accent: 285 25% 18%;
+    --accent-foreground: 330 90% 75%;
 
-    --destructive: 0 75% 35%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 240 28% 12%;
-    --input: 240 28% 12%;
-    --ring: 330 100% 65%;
+    /* Visible but subtle borders */
+    --border: 285 20% 22%;
+    --input: 285 25% 18%;
+    --ring: 330 90% 65%;
   }
 }
 
@@ -81,10 +84,12 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans selection:bg-pink-100 selection:text-pink-900;
+    @apply bg-background text-foreground font-body selection:bg-pink-100 selection:text-pink-900;
     min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.65;
+    letter-spacing: -0.01em;
     /* Blueprint design grid */
-    background-color: #fff5f7;
     background-image:
       linear-gradient(rgba(233, 30, 99, 0.05) 1.5px, transparent 1.5px),
       linear-gradient(90deg, rgba(233, 30, 99, 0.05) 1.5px, transparent 1.5px),
@@ -98,16 +103,36 @@
     background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Outfit", sans-serif;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: hsl(var(--foreground));
+  }
+
+  /* color-scheme tells the browser (scrollbars, inputs) which mode we're in */
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
   }
 
   .dark body {
-    @apply selection:bg-pink-800 selection:text-pink-100;
-    background-color: #0f0010;
+    @apply selection:bg-pink-900 selection:text-pink-100;
     background-image:
-      linear-gradient(rgba(255, 105, 180, 0.05) 1.5px, transparent 1.5px),
+      linear-gradient(rgba(255, 105, 180, 0.04) 1.5px, transparent 1.5px),
       linear-gradient(
         90deg,
-        rgba(255, 105, 180, 0.05) 1.5px,
+        rgba(255, 105, 180, 0.04) 1.5px,
         transparent 1.5px
       ),
       linear-gradient(rgba(255, 105, 180, 0.02) 1px, transparent 1px),
@@ -118,6 +143,77 @@
       20px 20px,
       20px 20px;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   UNLAYERED DARK MODE OVERRIDES
+   These live outside any @layer so they always beat Tailwind utilities.
+   Result: dark bg = bright text, light bg = dark text. Always.
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── Text colour remap ── */
+.dark .text-night-950,
+.dark .text-night-900,
+.dark .text-night-800 {
+  color: rgb(240 238 235) !important;
+}
+
+.dark .text-night-700,
+.dark .text-night-600 {
+  color: rgb(200 196 190) !important;
+}
+
+.dark .text-night-500,
+.dark .text-night-400 {
+  color: rgb(155 150 143) !important;
+}
+
+.dark .text-deep-plum {
+  color: rgb(230 225 235) !important;
+}
+
+/* ── Background remap ── */
+.dark .bg-white {
+  background-color: hsl(var(--card)) !important;
+}
+
+.dark .bg-white\/80,
+.dark .bg-white\/60,
+.dark .bg-white\/40,
+.dark .bg-white\/30 {
+  background-color: hsl(var(--card) / 0.8) !important;
+}
+
+.dark .bg-night-50 {
+  background-color: hsl(var(--muted)) !important;
+}
+
+.dark .bg-night-100 {
+  background-color: hsl(var(--muted)) !important;
+}
+
+/* Board note cards ─ light pastels become dark tinted in dark mode */
+.dark .bg-pink-100 {
+  background-color: hsl(330 30% 20%) !important;
+}
+.dark .bg-blue-100 {
+  background-color: hsl(220 30% 20%) !important;
+}
+.dark .bg-yellow-100 {
+  background-color: hsl(45 30% 18%) !important;
+}
+.dark .bg-green-100 {
+  background-color: hsl(145 25% 18%) !important;
+}
+.dark .bg-purple-100 {
+  background-color: hsl(270 30% 20%) !important;
+}
+
+/* Gradient overrides */
+.dark .from-white {
+  --tw-gradient-from: hsl(var(--card)) !important;
+  --tw-gradient-stops:
+    var(--tw-gradient-from), var(--tw-gradient-to) !important;
 }
 
 /* Interconnected line effect for sections */
@@ -157,7 +253,7 @@
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  @apply bg-pink-700/40 hover:bg-pink-600/40;
+  @apply bg-pink-600/50 hover:bg-pink-500/60;
 }
 
 /* Custom Cursor */
@@ -203,20 +299,24 @@
 }
 
 .dark .glass {
-  @apply bg-deep-plum/60 backdrop-blur-xl border border-white/10 shadow-2xl;
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl;
 }
 
 /* Typography Overrides */
 .font-handwritten {
   font-family: "Caveat", cursive;
+  letter-spacing: 0.01em;
 }
 
 .font-display {
-  font-family: "Patrick Hand", cursive;
+  font-family: "Outfit", sans-serif;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
 }
 
-.font-indie {
-  font-family: "Indie Flower", cursive;
+.font-body {
+  font-family: "Inter", sans-serif;
+  letter-spacing: -0.01em;
 }
 
 /* Transition Presets */

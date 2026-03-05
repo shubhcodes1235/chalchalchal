@@ -100,21 +100,21 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
     }
 
     return (
-        <Card className="border-none bg-white dark:bg-card shadow-soft rounded-[2.5rem] overflow-hidden group hover:shadow-glow transition-all duration-500">
+        <Card className="border-none bg-card shadow-soft rounded-[2.5rem] overflow-hidden group hover:shadow-glow transition-all duration-500">
             <CardContent className="p-8">
                 <div className="flex items-center space-x-3 mb-6">
                     <div className="p-2 rounded-2xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 shadow-sm transition-transform group-hover:rotate-12">
                         <Trophy className="w-5 h-5 shrink-0" />
                     </div>
                     <div className="relative">
-                        <span className="text-xs uppercase tracking-widest text-night-600 dark:text-night-400 font-bold opacity-90">Reflection</span>
+                        <span className="text-xs uppercase tracking-widest text-night-500 dark:text-night-400 font-body font-semibold opacity-90">Reflection</span>
                         <div className="absolute -bottom-1 left-0 w-6 h-0.5 bg-primary/30 rounded-full" />
                     </div>
                 </div>
 
                 <AnimatePresence mode="wait">
                     {loading ? (
-                        <div className="h-12 w-full animate-pulse bg-night-50 dark:bg-night-900 rounded-xl" />
+                        <div className="h-12 w-full animate-pulse bg-muted rounded-xl" />
                     ) : todayWin ? (
                         <motion.div
                             key="win-saved"
@@ -125,13 +125,13 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                             <div className="w-12 h-12 rounded-full bg-pink-50 dark:bg-pink-900/30 flex items-center justify-center shrink-0 border border-pink-100 dark:border-pink-800/50 shadow-sm transition-transform group-hover:rotate-12">
                                 <PartyPopper className="w-6 h-6 text-pink-500" />
                             </div>
-                            <div className="space-y-1 pt-1">
-                                <p className="text-night-800 dark:text-white font-bold text-lg leading-tight tracking-tight italic">"{todayWin?.content}"</p>
-                                <div className="flex items-center text-xs text-pink-500 font-black uppercase tracking-widest">
-                                    <CheckCircle2 className="w-3 h-3 mr-1" />
-                                    Moment Logged
+                                <div className="space-y-1 pt-1">
+                                    <p className="text-night-800 dark:text-white font-display font-semibold text-lg leading-snug tracking-tight italic">"{todayWin?.content}"</p>
+                                    <div className="flex items-center text-xs text-pink-500 font-body font-semibold uppercase tracking-widest">
+                                        <CheckCircle2 className="w-3 h-3 mr-1" />
+                                        Moment Logged
+                                    </div>
                                 </div>
-                            </div>
                         </motion.div>
                     ) : (
                         <motion.form
@@ -141,7 +141,7 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                             animate={{ opacity: 1 }}
                             className="space-y-5"
                         >
-                            <h3 className="text-xl font-bold text-night-800 dark:text-white leading-tight">What was a small win today?</h3>
+                            <h3 className="text-xl font-display font-semibold text-night-800 dark:text-white leading-snug tracking-tight">What was a small win today?</h3>
                             <div className="flex space-x-2">
                                 <Input
                                     id="win-full"
@@ -149,7 +149,7 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
                                     placeholder="Even opening this site counts..."
-                                    className="rounded-2xl h-14 bg-pink-50/30 dark:bg-night-900/50 text-night-900 dark:text-white border-none focus-visible:ring-pink-200 dark:focus-visible:ring-pink-800 placeholder:text-night-200 dark:placeholder:text-night-600"
+                                    className="rounded-2xl h-14 bg-muted/30 dark:bg-muted/20 border-border focus-visible:ring-primary/30 dark:focus-visible:ring-primary/40 placeholder:text-muted-foreground"
                                 />
                                 <Button type="submit" className="rounded-2xl h-14 px-8 shadow-glow bg-pink-500 hover:bg-pink-600 border-none transition-all">
                                     Log

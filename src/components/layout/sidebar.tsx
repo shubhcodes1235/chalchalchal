@@ -30,12 +30,12 @@ export function Sidebar() {
     return (
         <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 left-0 bg-transparent py-6 px-6 overflow-y-auto">
             <div className="flex items-center space-x-3 mb-10 px-2 group cursor-default">
-                <div className="w-10 h-10 rounded-2xl bg-night-950 flex items-center justify-center text-white font-black text-xl shadow-lg group-hover:scale-105 transition-transform">
+                <div className="w-10 h-10 rounded-2xl bg-night-950 dark:bg-primary/20 flex items-center justify-center text-white dark:text-primary font-display font-bold text-xl shadow-lg group-hover:scale-105 transition-transform">
                     D
                 </div>
                 <div className="flex flex-col">
-                    <span className="text-lg font-black text-night-950 leading-tight tracking-tight">Dream & Design</span>
-                    <span className="text-xs text-pink-500 font-bold tracking-widest uppercase opacity-90 mt-0.5">Companion</span>
+                    <span className="text-lg font-display font-bold text-night-950 dark:text-foreground leading-tight tracking-tight">Dream & Design</span>
+                    <span className="text-xs text-pink-500 dark:text-pink-400 font-body font-semibold tracking-widest uppercase opacity-90 mt-0.5">Companion</span>
                 </div>
             </div>
 
@@ -50,11 +50,13 @@ export function Sidebar() {
                                 whileHover={{ x: 4 }}
                                 className={cn(
                                     "flex items-center space-x-4 px-4 py-3 rounded-2xl transition-all duration-300 group",
-                                    isActive ? "bg-white shadow-soft text-night-950 font-black" : "text-night-600 hover:text-night-900"
+                                    isActive
+                                        ? "bg-white dark:bg-card shadow-soft text-night-950 dark:text-foreground font-display font-semibold"
+                                        : "text-night-600 dark:text-muted-foreground hover:text-night-900 dark:hover:text-foreground hover:bg-white/60 dark:hover:bg-muted/50"
                                 )}
                             >
                                 <Icon className={cn("w-5 h-5 opacity-90 group-hover:opacity-100", isActive && "opacity-100 text-pink-500")} />
-                                <span className="text-sm tracking-tight">{item.label}</span>
+                                <span className="text-sm font-body tracking-tight">{item.label}</span>
                             </motion.div>
                         </Link>
                     )
@@ -62,7 +64,7 @@ export function Sidebar() {
             </nav>
 
             {/* Shared Thread Summary */}
-            <div className="mt-auto pt-6 border-t border-night-100">
+            <div className="mt-auto pt-6 border-t border-night-100 dark:border-border">
                 <div className="flex items-center justify-between px-2">
                     <div className="flex items-center space-x-3">
                         <div className="flex -space-x-1.5">
@@ -80,17 +82,17 @@ export function Sidebar() {
                             </div>
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-xs font-black text-night-950 leading-none mb-1">Us</span>
-                            <span className="text-sm text-night-600 font-bold uppercase tracking-widest">{currentPerson} active</span>
+                            <span className="text-xs font-display font-semibold text-night-950 dark:text-foreground leading-none mb-1">Us</span>
+                            <span className="text-xs text-night-500 dark:text-muted-foreground font-body font-medium uppercase tracking-widest">{currentPerson} active</span>
                         </div>
                     </div>
-                    <div className="bg-white px-2 py-1 rounded-full border border-night-100 flex items-center space-x-1 shadow-sm">
+                    <div className="bg-white dark:bg-card px-2 py-1 rounded-full border border-night-100 dark:border-border flex items-center space-x-1 shadow-sm">
                         <span className="text-sm font-black text-orange-500">{streak?.currentStreak || 0}</span>
                         <span className="text-xs">🔥</span>
                     </div>
                 </div>
 
-                <p className="mt-4 px-2 text-sm text-night-600 font-bold italic opacity-80">
+                <p className="mt-4 px-2 text-sm text-night-500 dark:text-muted-foreground font-body font-medium italic opacity-75">
                     Chal chal chal — together.
                 </p>
             </div>

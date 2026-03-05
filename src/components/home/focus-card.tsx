@@ -51,7 +51,7 @@ export function FocusCard() {
                             animate={{ opacity: 1, scale: 1 }}
                             className="space-y-4"
                         >
-                            <h3 className="text-3xl md:text-5xl font-black font-poppins leading-none tracking-tight text-white break-words">
+                            <h3 className="text-3xl md:text-5xl font-black font-display leading-none tracking-tight text-white break-words">
                                 {focus}
                             </h3>
                             <button

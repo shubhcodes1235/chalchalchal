@@ -16,17 +16,17 @@ export function RecentActivity() {
     if (!recentDesigns || recentDesigns.length === 0) {
         return (
             <div className="text-center py-12 space-y-4">
-                <p className="text-night-600 italic">No activity yet. Time to create!</p>
-                <Link href="/upload">
-                    <span className="text-pink-500 font-bold hover:underline cursor-pointer">Start your first design →</span>
-                </Link>
-            </div>
+            <p className="text-muted-foreground font-body font-medium italic">No activity yet. Time to create!</p>
+            <Link href="/upload">
+                <span className="text-primary font-semibold hover:underline cursor-pointer">Start your first design →</span>
+            </Link>
+        </div>
         )
     }
 
     return (
         <div className="space-y-4">
-            <h3 className="text-sm uppercase tracking-widest text-night-500 font-bold px-1">Recent Activity</h3>
+            <h3 className="text-xs uppercase tracking-widest text-night-400 font-body font-semibold px-1">Recent Activity</h3>
             <div className="space-y-3">
                 {recentDesigns.map((design) => (
                     <Link key={design.id} href={`/archive?id=${design.id}`}>
@@ -45,8 +45,8 @@ export function RecentActivity() {
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h4 className="font-bold text-night-900 truncate">{design.title}</h4>
-                                    <p className="text-xs text-night-600">
+                                    <h4 className="font-display font-semibold text-night-900 truncate">{design.title}</h4>
+                                    <p className="text-xs text-night-400 font-body mt-0.5">
                                         {formatDistanceToNow(design.createdAt, { addSuffix: true })}
                                     </p>
                                 </div>

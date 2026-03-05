@@ -11,10 +11,10 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 primary: "bg-gradient-to-r from-raspberry to-[#FFAB91] text-white hover:shadow-rose-glow hover:opacity-90",
-                secondary: "border border-transparent bg-white text-deep-plum shadow-rose-glow hover:-translate-y-2 hover:shadow-glow hover:border-raspberry/20",
-                ghost: "hover:bg-blush-50 text-raspberry",
-                danger: "bg-red-50 text-red-600 hover:bg-red-100",
-                outline: "border-2 border-raspberry bg-transparent hover:bg-blush-50 text-raspberry",
+                secondary: "border border-border bg-card text-card-foreground shadow-rose-glow hover:-translate-y-1 hover:shadow-glow hover:border-primary/20",
+                ghost: "hover:bg-muted text-foreground hover:text-foreground",
+                danger: "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50",
+                outline: "border-2 border-primary bg-transparent hover:bg-primary/10 text-primary",
             },
             size: {
                 sm: "h-9 px-4 text-xs rounded-full",

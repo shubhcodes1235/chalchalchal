@@ -85,7 +85,7 @@ function UploadPageContent() {
                 person: uploader as any,
                 type: 'upload',
                 title: 'New Design',
-                message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} just uploaded a new masterpiece! 🎨`
+                message: `Chal chal chal! 🎨 ${uploader === 'shubham' ? 'Shubham' : 'Khushi'} just uploaded a new masterpiece! Go be proud!`
             })
 
             // 3. Update Streak

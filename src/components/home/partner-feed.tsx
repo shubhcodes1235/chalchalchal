@@ -46,13 +46,13 @@ export function PartnerFeed() {
 
     return (
         <div className="space-y-8 w-full max-w-2xl mx-auto section-connect">
-            <h2 className="text-2xl font-black text-center text-deep-plum dark:text-white mb-6 uppercase tracking-widest">
+            <h2 className="text-2xl font-display font-bold text-center text-night-950 dark:text-foreground mb-6 uppercase tracking-widest">
                 {targetPersona ? `${targetPersona.charAt(0).toUpperCase() + targetPersona.slice(1)}'s Latest` : "Latest Updates"}
             </h2>
 
             {designs.length === 0 ? (
-                <div className="text-center p-12 bg-white dark:bg-card shadow-soft rounded-[2.5rem] border border-pink-100 dark:border-night-800">
-                    <p className="text-night-600 dark:text-night-400 font-bold italic">No updates yet! Time to create something? ✨</p>
+                <div className="text-center p-12 bg-card shadow-soft rounded-[2.5rem] border border-border">
+                    <p className="text-muted-foreground font-body font-medium italic">No updates yet! Time to create something? ✨</p>
                 </div>
             ) : (
                 <div className="grid gap-8">
@@ -77,8 +77,8 @@ export function PartnerFeed() {
 
                             <div className="p-8 space-y-4">
                                 <div className="space-y-1">
-                                    <h3 className="text-2xl font-black text-deep-plum dark:text-white leading-tight">{design.title}</h3>
-                                    {design.description && <p className="text-night-600 dark:text-night-400 font-medium text-sm">{design.description}</p>}
+                                    <h3 className="text-2xl font-display font-bold text-night-950 dark:text-foreground leading-tight">{design.title}</h3>
+                                    {design.description && <p className="text-night-500 dark:text-muted-foreground font-body font-medium text-sm">{design.description}</p>}
                                 </div>
 
                                 <div className="flex flex-wrap gap-2 pt-2">
@@ -98,12 +98,12 @@ export function PartnerFeed() {
                                                 key={r.emoji}
                                                 onClick={() => handleReaction(design.id, r.emoji)}
                                                 className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${userReacted
-                                                    ? 'bg-pink-100 dark:bg-pink-900/40 ring-1 ring-pink-200 dark:ring-pink-800'
-                                                    : 'bg-night-50 dark:bg-night-900 hover:bg-white dark:hover:bg-night-800 hover:shadow-md'
-                                                    }`}
+                                                ? 'bg-pink-100 dark:bg-pink-900/40 ring-1 ring-pink-300 dark:ring-pink-700'
+                                                : 'bg-muted dark:bg-muted/60 hover:bg-card dark:hover:bg-card hover:shadow-md'
+                                                }`}
                                             >
                                                 <span className="text-xl">{r.emoji}</span>
-                                                {count > 0 && <span className="text-xs font-black text-deep-plum/60 dark:text-white/60">{count}</span>}
+                                                {count > 0 && <span className="text-xs font-bold text-foreground/60">{count}</span>}
                                             </button>
                                         );
                                     })}

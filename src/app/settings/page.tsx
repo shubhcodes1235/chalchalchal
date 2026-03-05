@@ -254,7 +254,7 @@ export default function SettingsPage() {
                 <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
                     <Wifi className="w-3.5 h-3.5" /> Cloud Connection
                 </h3>
-                <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden bg-gradient-to-br from-white to-night-50">
+                <Card className="border-border shadow-sm rounded-[2rem] overflow-hidden">
                     <CardContent className="p-6">
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="space-y-1 text-center sm:text-left">
@@ -287,7 +287,7 @@ export default function SettingsPage() {
                                     <p className="font-bold text-night-900">Theme Mode</p>
                                     <p className="text-xs text-night-600">Sunrise is recommended for focus.</p>
                                 </div>
-                                <div className="flex bg-night-50 p-1 rounded-xl border border-night-100/50">
+                                <div className="flex bg-muted p-1 rounded-xl border border-border">
                                     {[
                                         { id: 'sunrise', icon: Sun },
                                         { id: 'midnight', icon: Moon },
@@ -298,7 +298,7 @@ export default function SettingsPage() {
                                             onClick={() => updateSetting('theme', t.id)}
                                             className={cn(
                                                 "flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-black transition-all",
-                                                settings.theme === t.id ? "bg-white text-night-900 shadow-sm border border-night-100" : "text-night-600 hover:text-night-600"
+                                                settings.theme === t.id ? "bg-card text-foreground shadow-sm border border-border" : "text-muted-foreground hover:text-foreground"
                                             )}
                                         >
                                             <t.icon className="w-3.5 h-3.5" />
@@ -326,8 +326,43 @@ export default function SettingsPage() {
                     </Card>
                 </section>
 
+                {/* 2. Notifications Section */}
+                <section className="space-y-4">
+                    <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
+                        <Bell className="w-3.5 h-3.5" /> Notifications
+                    </h3>
+                    <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden border-b-4 border-b-blue-100">
+                        <CardContent className="p-6 space-y-6">
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-1">
+                                    <p className="font-bold text-night-900">Push Notifications</p>
+                                    <p className="text-xs text-night-600">Motivate each other! Get notified when your partner writes a note or uploads a design.</p>
+                                </div>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={async () => {
+                                        if ('Notification' in window) {
+                                            const permission = await Notification.requestPermission();
+                                            if (permission === 'granted') {
+                                                toast.success("Notifications enabled! 🔔");
+                                            } else {
+                                                toast.error("Notification permission denied.");
+                                            }
+                                        } else {
+                                            toast.error("Browser does not support notifications.");
+                                        }
+                                    }}
+                                    className="rounded-xl font-bold bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100"
+                                >
+                                    <Bell className="w-3.5 h-3.5 mr-2" />
+                                    Enable
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </section>
 
-                {/* 3. Backup & Restore Section */}
                 <section className="space-y-4">
                     <div className="space-y-1">
                         <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
@@ -437,7 +472,7 @@ export default function SettingsPage() {
                                                     value={resetConfirmation}
                                                     onChange={e => setResetConfirmation(e.target.value)}
                                                     placeholder="START FRESH"
-                                                    className="w-full h-12 px-4 rounded-xl border-2 border-night-100 focus:border-red-200 outline-none text-night-950 font-bold"
+                                                    className="w-full h-12 px-4 rounded-xl border-2 border-border bg-background dark:bg-muted/30 focus:border-red-400 outline-none text-foreground font-bold placeholder:text-muted-foreground"
                                                 />
                                             </div>
                                         </div>

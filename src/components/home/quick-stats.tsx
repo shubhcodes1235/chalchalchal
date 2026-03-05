@@ -27,15 +27,15 @@ export function QuickStats() {
                 <div key={i} className="flex flex-col items-center text-center space-y-2 group min-w-[120px]">
                     <div className={cn(
                         "w-12 h-12 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110 shadow-sm",
-                        i === 0 ? "bg-pink-100 text-pink-600" :
-                            i === 1 ? "bg-orange-100 text-orange-600" :
-                                i === 2 ? "bg-green-100 text-green-600" :
-                                    "bg-blue-100 text-blue-600"
+                        i === 0 ? "bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400" :
+                            i === 1 ? "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400" :
+                                i === 2 ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400" :
+                                    "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
                     )}>
                         <stat.icon className="w-5 h-5" />
                     </div>
                     <div className="flex flex-col">
-                        <span className={cn("text-lg font-bold tracking-tight", stat.value === 0 ? "text-night-500 font-medium italic text-base" : "text-night-800")}>
+                        <span className={cn("text-lg font-bold tracking-tight", stat.value === 0 ? "text-night-400 dark:text-muted-foreground font-medium italic text-base" : "text-night-800 dark:text-foreground")}>
                             {stat.value === 0 ? (
                                 i === 0 ? "First mark waiting" :
                                     i === 1 ? "Just beginning" :
@@ -46,7 +46,7 @@ export function QuickStats() {
                                 </span>
                             )}
                         </span>
-                        <span className="text-sm text-night-600 font-medium italic opacity-80 mt-1">
+                        <span className="text-sm text-night-500 dark:text-muted-foreground font-medium italic opacity-80 mt-1">
                             {i === 0 ? "first bricks laid" :
                                 i === 1 ? "steps taken together" :
                                     i === 2 ? "fruits of your labor" : "momentum building"}

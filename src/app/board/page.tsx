@@ -99,7 +99,7 @@ export default function BoardPage() {
                 person: uploader,
                 type: 'note',
                 title: 'New Note',
-                message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} left a note for you!`
+                message: `Chal chal chal! ${uploader === 'shubham' ? 'Shubham' : 'Khushi'} just left a motivating note for you: "${formData.content.substring(0, 30)}${formData.content.length > 30 ? '...' : ''}" 💖 Go read it!`
             })
 
             setIsDialogOpen(false)
@@ -167,7 +167,9 @@ export default function BoardPage() {
                                                     onClick={() => setFormData(prev => ({ ...prev, type: type.id }))}
                                                     className={cn(
                                                         "p-3 rounded-xl transition-all border-2",
-                                                        formData.type === type.id ? "bg-night-950 border-night-950 text-white shadow-md scale-105" : "bg-white border-night-50 text-night-500 hover:border-night-200"
+                                                        formData.type === type.id
+                                                        ? "bg-night-950 border-night-950 text-white shadow-md scale-105"
+                                                        : "bg-muted border-border text-muted-foreground hover:border-muted-foreground"
                                                     )}
                                                     title={type.label}
                                                 >
@@ -208,7 +210,7 @@ export default function BoardPage() {
             {/* Filters Section */}
             <div className="flex flex-wrap items-center gap-4 py-4">
                 {/* Person Toggle */}
-                <div className="flex bg-white border border-night-100 rounded-full p-1">
+                <div className="flex bg-muted border border-border rounded-full p-1">
                     {[
                         { id: 'all', label: 'All', icon: <span className="text-xs">✨</span> },
                         { id: 'shubham', label: 'Shubham', image: '/shubham.jpg' },
@@ -241,7 +243,8 @@ export default function BoardPage() {
                         onClick={() => setFilterType('all')}
                         className={cn(
                             "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
-                            filterType === 'all' ? "bg-pink-500 text-white" : "bg-white text-night-600 border border-night-100 hover:border-night-200"
+                            filterType === 'all' ? "bg-pink-500 text-white"
+                            : "bg-muted text-muted-foreground border border-border hover:border-border"
                         )}
                     >
                         All Types

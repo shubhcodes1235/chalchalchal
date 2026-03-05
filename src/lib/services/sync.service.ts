@@ -84,11 +84,14 @@ export function startCloudSync(currentPerson: string) {
     });
     unsubscribes.push(unsubNotes);
 
-    // 3. LIVE NOTIFICATIONS (Toasts)
+    // 3. LIVE NOTIFICATIONS (Toasts & Native Push)
     const unsubActivity = subscribeToOtherActivities(currentPerson, (activity) => {
         const emoji = activity.person === 'shubham' ? '👦' : '👧';
         const icon = activity.type === 'note' ? '📝' : activity.type === 'upload' ? '🎨' : '✨';
+        const titleText = `Dream & Design • ${activity.person === 'shubham' ? 'Shubham' : 'Khushi'}`;
+        const bodyText = `${icon} ${activity.message}`;
 
+        // In-app toast notification
         toast(`${emoji} ${activity.message}`, {
             duration: 5000,
             icon: icon,
@@ -101,6 +104,30 @@ export function startCloudSync(currentPerson: string) {
                 boxShadow: '0 10px 30px -5px rgba(0,0,0,0.1)'
             }
         });
+
+        // Trigger native OS push notification
+        if ("Notification" in window && Notification.permission === "granted") {
+            const options = {
+                body: bodyText,
+                icon: `/${activity.person}.jpg`, // e.g., /shubham.jpg or /khushi.jpg
+                badge: '/icons/icon-192x192.png',
+                vibrate: [200, 100, 200, 100, 200, 100, 200],
+                tag: activity.id,
+                renotify: true,
+            };
+            
+            try {
+                if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.ready.then(registration => {
+                        registration.showNotification(titleText, options);
+                    });
+                } else {
+                    new Notification(titleText, options);
+                }
+            } catch (e) {
+                new Notification(titleText, options);
+            }
+        }
     });
     unsubscribes.push(unsubActivity);
     
