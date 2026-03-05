@@ -23,6 +23,7 @@ export default function SettingsPage() {
     const [isResetDialogOpen, setIsResetDialogOpen] = React.useState(false)
     const [isRestoreDialogOpen, setIsRestoreDialogOpen] = React.useState(false)
     const [resetConfirmation, setResetConfirmation] = React.useState("")
+    const [isPurgingCloud, setIsPurgingCloud] = React.useState(false)
     const fileInputRef = React.useRef<HTMLInputElement>(null)
 
     // Check if Firebase is actually configured
@@ -101,8 +102,6 @@ export default function SettingsPage() {
         }
         reader.readAsText(file)
     }
-
-    const [isPurgingCloud, setIsPurgingCloud] = React.useState(false)
 
     const handleStartFresh = async () => {
         const confirmation = resetConfirmation.trim().toUpperCase();
