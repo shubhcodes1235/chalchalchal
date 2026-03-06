@@ -7,6 +7,7 @@ import {
   persistentMultipleTabManager
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getMessaging, Messaging } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -21,7 +22,7 @@ const firebaseConfig = {
 // Initialize Firebase (Singleton Pattern)
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-// Initialize Firestore with persistent cache and auto-detect long polling
+// Initialize Firestore
 export const db = initializeFirestore(app, {
   localCache: persistentLocalCache({
     tabManager: persistentMultipleTabManager()
@@ -30,6 +31,17 @@ export const db = initializeFirestore(app, {
 });
 
 export const storage = getStorage(app);
+
+// Messaging instance (safe for SSR)
+export const getMessagingSafe = async (): Promise<Messaging | null> => {
+  if (typeof window !== "undefined") {
+    const { isSupported } = await import("firebase/messaging");
+    if (await isSupported()) {
+      return getMessaging(app);
+    }
+  }
+  return null;
+};
 
 // Initialize Analytics (optional, only client-side)
 export const getAnalyticsSafe = async () => {

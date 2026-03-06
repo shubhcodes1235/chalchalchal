@@ -131,24 +131,29 @@ export function startCloudSync(currentPerson: string) {
 
         // Trigger native OS push notification
         if ("Notification" in window && Notification.permission === "granted") {
-            const options = {
+            const options: NotificationOptions = {
                 body: bodyText,
-                icon: `/${activity.person}.jpg`, // e.g., /shubham.jpg or /khushi.jpg
+                icon: `/${activity.person}.jpg`,
                 badge: '/icons/icon-192x192.png',
-                vibrate: [200, 100, 200, 100, 200, 100, 200],
+                vibrate: [200, 100, 200, 100, 200],
                 tag: activity.id,
                 renotify: true,
+                data: { url: window.location.origin + '/home' }
             };
             
             try {
-                if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                // Production check: Use service worker registration for better background support
+                if (navigator.serviceWorker) {
                     navigator.serviceWorker.ready.then(registration => {
                         registration.showNotification(titleText, options);
+                    }).catch(() => {
+                        new Notification(titleText, options);
                     });
                 } else {
                     new Notification(titleText, options);
                 }
             } catch (e) {
+                console.warn("Falling back to standard notification", e);
                 new Notification(titleText, options);
             }
         }
