@@ -69,7 +69,7 @@ export function Header() {
                     <h1 className="text-sm font-display font-bold text-night-900 dark:text-foreground tracking-widest uppercase opacity-80">
                         {title}
                     </h1>
-                    <p className="text-xs text-pink-500 dark:text-pink-400 font-body font-semibold uppercase tracking-widest mt-1 flex items-center gap-1.5">
+                    <p className="text-xs text-pink-500 dark:text-pink-400 font-body font-semibold uppercase tracking-widest mt-1 hidden sm:flex items-center gap-1.5">
                         <span>Chal chal chal</span>
                         <span className="w-1 h-1 rounded-full bg-pink-300 dark:bg-pink-600" />
                         <span className="opacity-70 lowercase font-medium">start where you are</span>

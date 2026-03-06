@@ -100,7 +100,7 @@ export default function GratitudePage() {
                         placeholder="e.g. &apos;That extra cup of chai&apos; or &apos;Khushi&apos;s feedback&apos;"
                         value={content}
                         onChange={e => setContent(e.target.value)}
-                        className="h-16 text-lg rounded-3xl"
+                        className="h-12 md:h-16 text-base md:text-lg rounded-3xl"
                     />
                 </div>
                 <Button type="submit" className="w-full h-14 rounded-3xl text-lg shadow-sm">

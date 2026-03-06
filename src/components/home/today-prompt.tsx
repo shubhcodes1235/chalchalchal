@@ -16,7 +16,7 @@ export function TodayPrompt() {
             <CardContent className="p-8">
                 <div className="flex items-center space-x-3 mb-4">
                     <Sparkles className="w-4 h-4 text-pink-500 dark:text-pink-400" />
-                    <span className="text-xs uppercase tracking-widest text-night-500 dark:text-muted-foreground font-body font-semibold">Stuck? Try this nudge</span>
+                    <span className="text-sm italic text-night-500 dark:text-muted-foreground font-body font-medium">Stuck? Try this nudge...</span>
                 </div>
 
                 <h3 className="text-xl font-handwritten text-night-800 dark:text-foreground mb-6 leading-relaxed italic">

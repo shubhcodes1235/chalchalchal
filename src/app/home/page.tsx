@@ -48,7 +48,7 @@ export default function HomePage() {
 
     return (
         <PageWrapper className={cn(
-            "flex flex-col items-center max-w-5xl mx-auto space-y-16 pt-8 pb-32 px-4 transition-colors duration-1000",
+            "flex flex-col items-center max-w-5xl mx-auto space-y-8 md:space-y-16 pt-4 md:pt-8 pb-24 md:pb-32 px-4 transition-colors duration-1000",
             isSharedFocus && "dark:shadow-[inset_0_0_100px_rgba(233,30,99,0.15)] rounded-3xl"
         )}>
 

@@ -93,6 +93,7 @@ const config: Config = {
                 'bounce-gentle': 'bounce-gentle 2s infinite',
                 'shimmer': 'shimmer 2s linear infinite',
                 'grow': 'grow 0.5s ease-out',
+                'scale-pulse': 'scale-pulse 3s ease-in-out infinite',
             },
             keyframes: {
                 float: {
@@ -122,6 +123,10 @@ const config: Config = {
                 grow: {
                     from: { transform: 'scale(0.8)', opacity: '0' },
                     to: { transform: 'scale(1)', opacity: '1' },
+                },
+                'scale-pulse': {
+                    '0%, 100%': { transform: 'scale(1)' },
+                    '50%': { transform: 'scale(1.08)' },
                 },
             },
         },

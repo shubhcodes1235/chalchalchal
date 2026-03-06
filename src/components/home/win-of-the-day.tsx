@@ -142,7 +142,7 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                             className="space-y-5"
                         >
                             <h3 className="text-xl font-display font-semibold text-night-800 dark:text-white leading-snug tracking-tight">What was a small win today?</h3>
-                            <div className="flex space-x-2">
+                            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                                 <Input
                                     id="win-full"
                                     name="win-full"
@@ -151,8 +151,8 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                                     placeholder="Even opening this site counts..."
                                     className="rounded-2xl h-14 bg-muted/30 dark:bg-muted/20 border-border focus-visible:ring-primary/30 dark:focus-visible:ring-primary/40 placeholder:text-muted-foreground"
                                 />
-                                <Button type="submit" className="rounded-2xl h-14 px-8 shadow-glow bg-pink-500 hover:bg-pink-600 border-none transition-all">
-                                    Log
+                                <Button type="submit" className="rounded-2xl h-14 px-8 shadow-glow bg-pink-500 hover:bg-pink-600 border-none transition-all whitespace-nowrap">
+                                    Save Win ✨
                                 </Button>
                             </div>
                         </motion.form>

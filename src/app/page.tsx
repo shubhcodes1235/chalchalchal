@@ -88,7 +88,7 @@ export default function EntryPage() {
                 <h3 className="text-sm md:text-base font-bold text-deep-plum opacity-80 uppercase tracking-[0.15em]">Who&apos;s here today?</h3>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+              <div className="grid grid-cols-2 gap-4 sm:gap-8 max-w-2xl mx-auto">
                 {[
                   { id: 'shubham', name: 'Shubham', image: '/shubham.jpg', bg: 'bg-blue-50' },
                   { id: 'khushi', name: 'Khushi', image: '/khushi.jpg', bg: 'bg-pink-50' }
@@ -104,7 +104,7 @@ export default function EntryPage() {
                       className="cursor-pointer group relative overflow-hidden bg-white rounded-3xl"
                       onClick={() => handlePersonSelect(p.id as 'shubham' | 'khushi')}
                     >
-                      <CardContent className="p-10 flex flex-col items-center space-y-6">
+                      <CardContent className="p-6 sm:p-10 flex flex-col items-center space-y-6">
                         <div className={cn("w-28 h-28 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-rose-glow border-4 border-white", p.bg)}>
                           <Image src={p.image} alt={p.name} width={112} height={112} className="w-full h-full object-cover" />
                         </div>
@@ -137,7 +137,7 @@ export default function EntryPage() {
                 <p className="text-xl text-deep-plum opacity-90 font-bold">Aaj kya karna hai?</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-3 gap-3 md:gap-6">
                 {[
                   { id: 'design', icon: '🎨', title: "Let's create!", desc: 'Jump into workspace' },
                   { id: 'vibe', icon: '😌', title: "Just exploring", desc: 'Browse and chill' },
@@ -155,7 +155,7 @@ export default function EntryPage() {
                       onClick={() => handleMoodSelect(m.id as any)}
                       className="cursor-pointer bg-white group h-full"
                     >
-                      <CardContent className="p-8 flex flex-col items-center text-center space-y-4">
+                      <CardContent className="p-4 md:p-8 flex flex-col items-center text-center space-y-4">
                         <div className="w-16 h-16 rounded-full bg-blush-50 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500">{m.icon}</div>
                         <h4 className="font-poppins font-bold text-lg text-deep-plum leading-tight">{m.title}</h4>
                         <p className="text-sm text-deep-plum opacity-80 leading-relaxed font-bold">{m.desc}</p>

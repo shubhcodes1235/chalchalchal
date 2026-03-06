@@ -55,7 +55,7 @@ export function Sidebar() {
                                         : "text-night-600 dark:text-muted-foreground hover:text-night-900 dark:hover:text-foreground hover:bg-white/60 dark:hover:bg-muted/50"
                                 )}
                             >
-                                <Icon className={cn("w-5 h-5 opacity-90 group-hover:opacity-100", isActive && "opacity-100 text-pink-500")} />
+                                <Icon className={cn("w-5 h-5 opacity-90 transition-all duration-300", isActive ? "text-pink-500 drop-shadow-[0_0_4px_rgba(236,72,153,0.5)] opacity-100" : "text-night-500 dark:text-muted-foreground group-hover:text-night-900 dark:group-hover:text-foreground")} />
                                 <span className="text-sm font-body tracking-tight">{item.label}</span>
                             </motion.div>
                         </Link>
@@ -69,26 +69,26 @@ export function Sidebar() {
                     <div className="flex items-center space-x-3">
                         <div className="flex -space-x-1.5">
                             <div className={cn(
-                                "w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-blue-100 flex items-center justify-center text-xs shadow-sm",
-                                currentPerson === 'shubham' ? "z-10 ring-2 ring-blue-200" : "opacity-40 grayscale"
+                                "w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-blue-100 flex items-center justify-center text-xs shadow-sm transition-all",
+                                currentPerson === 'shubham' ? "z-10 ring-2 ring-blue-200 scale-110" : "opacity-40 grayscale"
                             )}>
-                                <Image src="/shubham.jpg" alt="S" width={28} height={28} className="w-full h-full object-cover" />
+                                <Image src="/shubham.jpg" alt="S" width={32} height={32} className="w-full h-full object-cover" />
                             </div>
                             <div className={cn(
-                                "w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-pink-100 flex items-center justify-center text-xs shadow-sm",
-                                currentPerson === 'khushi' ? "z-10 ring-2 ring-pink-200" : "opacity-40 grayscale"
+                                "w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-pink-100 flex items-center justify-center text-xs shadow-sm transition-all",
+                                currentPerson === 'khushi' ? "z-10 ring-2 ring-pink-200 scale-110" : "opacity-40 grayscale"
                             )}>
-                                <Image src="/khushi.jpg" alt="K" width={28} height={28} className="w-full h-full object-cover" />
+                                <Image src="/khushi.jpg" alt="K" width={32} height={32} className="w-full h-full object-cover" />
                             </div>
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-xs font-display font-semibold text-night-950 dark:text-foreground leading-none mb-1">Us</span>
-                            <span className="text-xs text-night-500 dark:text-muted-foreground font-body font-medium uppercase tracking-widest">{currentPerson} active</span>
+                        <div className="flex flex-col ml-1">
+                            <span className="text-sm font-display font-bold text-night-950 dark:text-foreground leading-none mb-1">Us</span>
+                            <span className="text-[10px] text-night-500 dark:text-muted-foreground font-body font-bold uppercase tracking-widest">{currentPerson} active</span>
                         </div>
                     </div>
-                    <div className="bg-white dark:bg-card px-2 py-1 rounded-full border border-night-100 dark:border-border flex items-center space-x-1 shadow-sm">
-                        <span className="text-sm font-black text-orange-500">{streak?.currentStreak || 0}</span>
-                        <span className="text-xs">🔥</span>
+                    <div className="bg-white dark:bg-card px-3 py-1.5 rounded-2xl border border-night-100 dark:border-border flex items-center space-x-1.5 shadow-soft">
+                        <span className="text-lg font-black text-orange-500 leading-none">{streak?.currentStreak || 0}</span>
+                        <span className="text-base">🔥</span>
                     </div>
                 </div>
 

@@ -54,21 +54,30 @@ export function VisualizationGarden() {
         <Card className="border-none bg-white dark:bg-card shadow-soft rounded-[2.5rem] overflow-hidden group hover:shadow-glow transition-all duration-500">
             <CardContent className="p-8 flex flex-col items-center justify-center text-center space-y-4">
                 <div className="relative inline-block mb-2">
-                    <p className="text-xs uppercase tracking-widest text-night-600 dark:text-night-400 font-bold opacity-90">The Visualization Garden</p>
+                    <p className="text-sm font-handwritten text-pink-600 dark:text-pink-400 font-bold opacity-80">The Visualization Garden</p>
                 </div>
                 
                 <motion.div 
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5, type: "spring" }}
-                    className={`w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br ${stageClass} flex items-center justify-center text-6xl md:text-7xl shadow-xl shadow-pink-500/20 border-4 border-white dark:border-night-800 group-hover:scale-105 transition-transform duration-500`}
+                    className={`w-36 h-36 md:w-44 md:h-44 rounded-full bg-gradient-to-br ${stageClass} flex items-center justify-center text-6xl md:text-7xl shadow-xl shadow-pink-500/20 border-8 border-white dark:border-night-800 group-hover:scale-105 transition-transform duration-500 relative`}
                 >
+                    {/* Inner Glow Ring */}
+                    <div className="absolute inset-4 rounded-full bg-white/20 backdrop-blur-[2px] border border-white/30" />
+                    
                     <motion.div
                         animate={{ y: [0, -10, 0] }}
                         transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                        className="relative z-10 drop-shadow-2xl filter brightness-110"
                     >
                         {visualAsset}
                     </motion.div>
+                    
+                    {/* Streak Badge Overlay */}
+                    <div className="absolute -bottom-2 -right-2 w-12 h-12 rounded-full bg-night-950 dark:bg-white text-white dark:text-night-950 flex items-center justify-center text-xl font-black shadow-lg border-4 border-white dark:border-night-800 transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
+                        {count}
+                    </div>
                 </motion.div>
 
                 <div className="space-y-2 max-w-[250px] mx-auto pt-4">

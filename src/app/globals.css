@@ -50,7 +50,7 @@
     --foreground: 0 0% 95%;
 
     /* Cards clearly lifted from the background */
-    --card: 285 30% 12%;
+    --card: 285 28% 16%;
     --card-foreground: 0 0% 93%;
 
     --popover: 285 30% 13%;
@@ -142,6 +142,20 @@
       100px 100px,
       20px 20px,
       20px 20px;
+  }
+  @media (max-width: 640px) {
+    body {
+      background-image:
+        linear-gradient(rgba(233, 30, 99, 0.025) 1.5px, transparent 1.5px),
+        linear-gradient(
+          90deg,
+          rgba(233, 30, 99, 0.025) 1.5px,
+          transparent 1.5px
+        );
+      background-size:
+        60px 60px,
+        60px 60px;
+    }
   }
 }
 

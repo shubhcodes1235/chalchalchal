@@ -14,28 +14,32 @@ export function ManifestationStrip() {
         "Someone believes in you today. (Keep going) ❤️"
     ]
 
-    const [index, setIndex] = React.useState(0)
-
-    React.useEffect(() => {
-        const timer = setInterval(() => {
-            setIndex((prev) => (prev + 1) % messages.length)
-        }, 25000)
-        return () => clearInterval(timer)
-    }, [])
-
     return (
-        <div className="w-full bg-primary/10 border-b border-primary/20 overflow-hidden py-4 whitespace-nowrap shadow-inner">
-            <motion.div
-                key={index}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1.5 }}
-                className="w-full text-center"
-            >
-                <span className="font-handwritten text-xl text-foreground tracking-widest px-6 font-bold italic">
-                    {messages[index]}
-                </span>
-            </motion.div>
+        <div className="w-full bg-primary/5 dark:bg-primary/10 border-b border-primary/10 overflow-hidden py-3 whitespace-nowrap shadow-sm">
+            <div className="flex relative">
+                <motion.div
+                    animate={{ x: [0, "-100%"] }}
+                    transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                    className="flex shrink-0 items-center"
+                >
+                    {messages.map((m, i) => (
+                        <span key={i} className="font-handwritten text-lg text-foreground/80 tracking-widest px-12 font-bold italic">
+                            {m}
+                        </span>
+                    ))}
+                </motion.div>
+                <motion.div
+                    animate={{ x: [0, "-100%"] }}
+                    transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                    className="flex shrink-0 items-center"
+                >
+                    {messages.map((m, i) => (
+                        <span key={i} className="font-handwritten text-lg text-foreground/80 tracking-widest px-12 font-bold italic">
+                            {m}
+                        </span>
+                    ))}
+                </motion.div>
+            </div>
         </div>
     )
 }
