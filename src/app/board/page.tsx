@@ -178,37 +178,40 @@ export default function BoardPage() {
                     <h1 className="text-3xl md:text-4xl font-black text-night-950 tracking-tight leading-none">Our Shared Space</h1>
                 </div>
 
-                <div className="flex items-center space-x-3">
-                    <div className="bg-muted p-1 rounded-2xl flex items-center mr-2">
+                <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full md:w-auto">
+                    <div className="bg-muted p-1 rounded-2xl flex items-center flex-1 md:flex-initial">
                         <button
                             onClick={() => setViewMode('notes')}
-                            className={cn("px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all", viewMode === 'notes' ? "bg-white text-night-950 shadow-sm" : "text-night-500")}
+                            className={cn("px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all flex-1 md:flex-initial", viewMode === 'notes' ? "bg-white text-night-950 shadow-sm" : "text-night-500")}
                         >
                             Notes
                         </button>
                         <button
                             onClick={() => setViewMode('tasks')}
-                            className={cn("px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all", viewMode === 'tasks' ? "bg-white text-night-950 shadow-sm" : "text-night-500")}
+                            className={cn("px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all flex-1 md:flex-initial", viewMode === 'tasks' ? "bg-white text-night-950 shadow-sm" : "text-night-500")}
                         >
                             Tasks
                         </button>
                     </div>
-                    <Link href="/archive">
-                        <Button variant="ghost" className="text-xs font-bold text-night-600 hover:text-pink-500">
-                            View Gallery
-                        </Button>
-                    </Link>
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button size="lg" className="rounded-xl shadow-sm bg-night-950 hover:bg-night-800 text-white font-black h-11 px-6 text-xs uppercase tracking-widest">
-                                <Plus className="mr-2 w-4 h-4" />
-                                Write Note
+                    
+                    <div className="flex items-center gap-2 w-full md:w-auto">
+                        <Link href="/archive" className="flex-1 md:flex-initial">
+                            <Button variant="ghost" className="w-full text-[10px] md:text-xs font-black text-night-600 hover:text-pink-500 h-11 px-2 md:px-4">
+                                Gallery
                             </Button>
-                        </DialogTrigger>
-                        <DialogContent className="rounded-[2.5rem]">
-                            <DialogHeader>
-                                <DialogTitle className="text-2xl font-black text-night-950">Add a sticky note 📝</DialogTitle>
-                            </DialogHeader>
+                        </Link>
+                        
+                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            <DialogTrigger asChild>
+                                <Button size="lg" className="flex-[2] md:flex-initial rounded-xl shadow-sm bg-night-950 hover:bg-night-800 text-white font-black h-11 px-4 md:px-6 text-[10px] md:text-xs uppercase tracking-widest">
+                                    <Plus className="mr-1 md:mr-2 w-3.5 h-3.5 md:w-4 md:h-4" />
+                                    Write
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="rounded-[2.5rem]">
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl font-black text-night-950">Add a sticky note 📝</DialogTitle>
+                                </DialogHeader>
                             <form onSubmit={handleSubmit} className="space-y-6 pt-4">
                                 <div className="space-y-2">
                                     <label className="text-xs font-black uppercase tracking-widest text-night-600">What's on your mind?</label>
@@ -320,44 +323,45 @@ export default function BoardPage() {
                     </Dialog>
                 </div>
             </div>
+        </div>
 
             {/* Filters Section */}
-            <div className="flex flex-wrap items-center gap-2 md:gap-4 py-2 md:py-4">
-                {/* Person Toggle */}
-                <div className="flex bg-muted border border-border rounded-full p-1">
-                    {[
-                        { id: 'all', label: 'All', icon: <span className="text-xs">✨</span> },
-                        { id: 'shubham', label: 'Shubham', image: '/shubham.jpg' },
-                        { id: 'khushi', label: 'Khushi', image: '/khushi.jpg' }
-                    ].map(p => (
-                        <button
-                            key={p.id}
-                            onClick={() => setActivePerson(p.id)}
-                            className={cn(
-                                "px-3 py-1 rounded-full text-sm font-black uppercase tracking-tighter transition-all flex items-center gap-1.5",
-                                activePerson === p.id ? "bg-night-950 text-white" : "text-night-600 hover:text-night-600"
-                            )}
-                        >
-                            <div className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center bg-night-100">
-                                {p.image ? (
-                                    <Image src={p.image} alt={p.label} width={20} height={20} className="w-full h-full object-cover" />
-                                ) : (
-                                    p.icon
+            <div className="flex flex-col space-y-3 py-2 md:py-4">
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                    {/* Person Toggle */}
+                    <div className="flex bg-muted border border-border rounded-full p-1 shrink-0">
+                        {[
+                            { id: 'all', label: 'All', icon: <span className="text-xs">✨</span> },
+                            { id: 'shubham', label: 'Shubham', image: '/shubham.jpg' },
+                            { id: 'khushi', label: 'Khushi', image: '/khushi.jpg' }
+                        ].map(p => (
+                            <button
+                                key={p.id}
+                                onClick={() => setActivePerson(p.id)}
+                                className={cn(
+                                    "px-3 py-1 rounded-full text-[10px] md:text-sm font-black uppercase tracking-tighter transition-all flex items-center gap-1.5 whitespace-nowrap",
+                                    activePerson === p.id ? "bg-night-950 text-white" : "text-night-600 hover:text-night-600"
                                 )}
-                            </div>
-                            <span>{p.label}</span>
-                        </button>
-                    ))}
+                            >
+                                <div className="w-4 h-4 md:w-5 md:h-5 rounded-full overflow-hidden flex items-center justify-center bg-night-100">
+                                    {p.image ? (
+                                        <Image src={p.image} alt={p.label} width={20} height={20} className="w-full h-full object-cover" />
+                                    ) : (
+                                        p.icon
+                                    )}
+                                </div>
+                                <span>{p.label}</span>
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
-                <div className="w-px h-6 bg-night-100" />
-
                 {viewMode === 'notes' && (
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
                         <button
                             onClick={() => setFilterType('all')}
                             className={cn(
-                                "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                                "px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap",
                                 filterType === 'all' ? "bg-pink-500 text-white"
                                 : "bg-muted text-muted-foreground border border-border hover:border-border"
                             )}
@@ -369,11 +373,11 @@ export default function BoardPage() {
                                 key={type.id}
                                 onClick={() => setFilterType(type.id)}
                                 className={cn(
-                                    "flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                                    "flex items-center space-x-2 px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap",
                                     filterType === type.id ? "bg-pink-500 text-white" : "bg-white text-night-600 border border-night-100 hover:border-night-200"
                                 )}
                             >
-                                <type.icon className="w-3.5 h-3.5" />
+                                <type.icon className="w-3 md:w-3.5 h-3 md:h-3.5" />
                                 <span>{type.label}</span>
                             </button>
                         ))}
