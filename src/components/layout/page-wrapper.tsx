@@ -21,7 +21,7 @@ export function PageWrapper({ children, className }: PageWrapperProps) {
                 ease: "easeOut"
             }}
             className={cn(
-                "container mx-auto px-4 pb-24 pt-20 max-w-7xl",
+                "container mx-auto px-4 pb-40 md:pb-24 pt-4 md:pt-8 max-w-7xl",
                 className
             )}
         >

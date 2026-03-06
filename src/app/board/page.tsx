@@ -167,15 +167,15 @@ export default function BoardPage() {
     }) : []
 
     return (
-        <PageWrapper className="space-y-6 pt-4 pb-24">
+        <PageWrapper className="space-y-4 md:space-y-6 pt-1 md:pt-4 pb-24">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="space-y-1">
-                    <div className="flex items-center space-x-2 text-xs font-black uppercase tracking-widest text-pink-500 mb-2">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-6">
+                <div className="space-y-0.5">
+                    <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-pink-500 mb-1">
                         <Sparkles className="w-3 h-3" />
                         <span>We showed up today</span>
                     </div>
-                    <h1 className="text-4xl font-black text-night-950 tracking-tight leading-none">Our Shared Space</h1>
+                    <h1 className="text-3xl md:text-4xl font-black text-night-950 tracking-tight leading-none">Our Shared Space</h1>
                 </div>
 
                 <div className="flex items-center space-x-3">
@@ -322,7 +322,7 @@ export default function BoardPage() {
             </div>
 
             {/* Filters Section */}
-            <div className="flex flex-wrap items-center gap-4 py-4">
+            <div className="flex flex-wrap items-center gap-2 md:gap-4 py-2 md:py-4">
                 {/* Person Toggle */}
                 <div className="flex bg-muted border border-border rounded-full p-1">
                     {[
@@ -383,7 +383,7 @@ export default function BoardPage() {
 
             {/* Grid Section */}
             {viewMode === 'notes' ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                 <AnimatePresence mode="popLayout">
                     {sortedNotes.map((note) => (
                         <motion.div
@@ -399,7 +399,7 @@ export default function BoardPage() {
                                 note.color,
                                 note.isPinned ? "border-night-950/20 shadow-md rotate-1" : "border-black/5 -rotate-1 hover:rotate-0"
                             )}>
-                                <CardContent className="p-6 h-full flex flex-col justify-between">
+                                <CardContent className="p-4 md:p-6 h-full flex flex-col justify-between">
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-start">
                                             <div className="flex items-center space-x-2">
@@ -436,7 +436,7 @@ export default function BoardPage() {
                                             </button>
                                         </div>
 
-                                        <p className="font-handwritten text-2xl leading-snug text-night-950">
+                                        <p className="font-handwritten text-xl md:text-2xl leading-snug text-night-950">
                                             {note.content}
                                         </p>
                                     </div>

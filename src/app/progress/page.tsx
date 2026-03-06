@@ -54,10 +54,10 @@ export default function ProgressPage() {
         : "The board is resting. When you're ready, we'll start a new rhythm."
 
     return (
-        <PageWrapper className="space-y-8 pb-32">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pt-4">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-black text-night-950 tracking-tight leading-none">Our Progress</h1>
+        <PageWrapper className="space-y-4 md:space-y-8 pb-32">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-6 pt-1">
+                <div className="space-y-0.5">
+                    <h1 className="text-2xl md:text-3xl font-black text-night-950 tracking-tight leading-none">Our Progress</h1>
                 </div>
 
                 <div className="flex items-center space-x-3">
@@ -106,8 +106,8 @@ export default function ProgressPage() {
                         sub: totalIncome === 0 ? "Revenue will come later" : "The harvest begins"
                     },
                 ].map((stat, i) => (
-                    <Card key={i} className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden">
-                        <CardContent className="p-6 flex flex-col items-center text-center">
+                    <Card key={i} className="border-night-100 shadow-sm rounded-3xl md:rounded-[2rem] overflow-hidden">
+                        <CardContent className="p-4 md:p-6 flex flex-col items-center text-center">
                             <span className="text-3xl mb-3">{stat.emoji}</span>
                             <span className="text-2xl font-black text-night-950 tracking-tighter">
                                 {stat.customValue || <AnimatedCounter end={stat.value as number} />}
@@ -121,7 +121,7 @@ export default function ProgressPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Effort > Outcome Indicator */}
-                <Card className="lg:col-span-1 border-night-100 shadow-sm rounded-[2rem] bg-night-50 p-6 flex flex-col justify-between">
+                <Card className="lg:col-span-1 border-night-100 shadow-sm rounded-3xl md:rounded-[2rem] bg-night-50 p-4 md:p-6 flex flex-col justify-between">
                     <div className="space-y-4">
                         <h3 className="text-xl font-black text-night-950 tracking-tight">Persistence</h3>
                         <p className="text-xs text-night-600 font-medium leading-relaxed italic">
@@ -142,7 +142,7 @@ export default function ProgressPage() {
                 </Card>
 
                 {/* Activity Chart */}
-                <Card className="lg:col-span-2 border-night-100 shadow-sm rounded-[2rem] p-6">
+                <Card className="lg:col-span-2 border-night-100 shadow-sm rounded-3xl md:rounded-[2rem] p-4 md:p-6">
                     <div className="flex justify-between items-start mb-6">
                         <div className="space-y-1">
                             <h3 className="text-xl font-black text-night-950 tracking-tight">Creation Rhythm</h3>

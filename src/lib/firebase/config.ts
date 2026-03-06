@@ -27,7 +27,8 @@ export const db = initializeFirestore(app, {
   localCache: persistentLocalCache({
     tabManager: persistentMultipleTabManager()
   }),
-  experimentalAutoDetectLongPolling: true
+  experimentalAutoDetectLongPolling: true,
+  experimentalForceLongPolling: true
 });
 
 export const storage = getStorage(app);
