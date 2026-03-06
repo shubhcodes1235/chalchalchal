@@ -1,7 +1,7 @@
 // src/app/page.tsx
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { useAppStore } from "@/lib/store/app-store"
@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useTimeOfDay } from "@/lib/hooks/use-time-of-day"
 import { db } from "@/lib/db/database"
-import { updatePresenceMood } from "@/lib/firebase/services/presence"
+import { updatePresenceMood, subscribeToPartnerPresence } from "@/lib/firebase/services/presence"
 import { cn } from "@/lib/utils/cn"
 
 export default function EntryPage() {
@@ -22,6 +22,23 @@ export default function EntryPage() {
   const { greeting } = useTimeOfDay()
 
   const [step, setStep] = useState<'person' | 'mood'>('person')
+  const [partnerStatus, setPartnerStatus] = useState({
+    shubham: false,
+    khushi: false
+  })
+
+  useEffect(() => {
+    const unsubShubham = subscribeToPartnerPresence('shubham', (data) => {
+      setPartnerStatus(prev => ({ ...prev, shubham: data.isOnline }))
+    })
+    const unsubKhushi = subscribeToPartnerPresence('khushi', (data) => {
+      setPartnerStatus(prev => ({ ...prev, khushi: data.isOnline }))
+    })
+    return () => {
+      unsubShubham()
+      unsubKhushi()
+    }
+  }, [])
 
   const handlePersonSelect = async (person: 'shubham' | 'khushi') => {
     setCurrentPerson(person)
@@ -32,9 +49,8 @@ export default function EntryPage() {
   const handleMoodSelect = (mood: 'design' | 'vibe' | 'lost') => {
     setMood(mood)
     // Synchronize mood to Firebase so the partner's screen can react
-    const person = useAppStore.getState().currentPerson;
-    if (person && person !== 'both') {
-      updatePresenceMood(person, mood);
+    if (currentPerson && currentPerson !== 'both') {
+      updatePresenceMood(currentPerson, mood);
     }
 
     if (mood === 'lost') {
@@ -92,36 +108,46 @@ export default function EntryPage() {
                 {[
                   { id: 'shubham', name: 'Shubham', image: '/shubham.jpg', bg: 'bg-blue-50' },
                   { id: 'khushi', name: 'Khushi', image: '/khushi.jpg', bg: 'bg-pink-50' }
-                ].map((p, i) => (
-                  <motion.div
-                    key={p.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 * (i + 1), duration: 0.6 }}
-                  >
-                    <Card
-                      hover
-                      className="cursor-pointer group relative overflow-hidden bg-white rounded-3xl"
-                      onClick={() => handlePersonSelect(p.id as 'shubham' | 'khushi')}
-                    >
-                      <CardContent className="p-6 sm:p-10 flex flex-col items-center space-y-6">
-                        <div className={cn("w-28 h-28 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-rose-glow border-4 border-white", p.bg)}>
-                          <Image src={p.image} alt={p.name} width={112} height={112} className="w-full h-full object-cover" />
-                        </div>
-                        <div className="flex flex-col space-y-1">
-                          <span className="text-2xl font-poppins font-bold tracking-tight text-deep-plum">{p.name}</span>
-                          <span className="text-xs uppercase tracking-widest font-bold text-raspberry/60">Let&apos;s do this!</span>
-                        </div>
+                ].map((p, i) => {
+                  const partnerId = p.id === 'shubham' ? 'khushi' : 'shubham';
+                  const partnerName = p.id === 'shubham' ? 'Khushi' : 'Shubham';
+                  // @ts-ignore
+                  const isPartnerWaiting = partnerStatus[partnerId];
 
-                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                          <span className="text-xs uppercase tracking-wider bg-blush-50 px-2 py-1 rounded-full text-raspberry font-bold">
-                            Partner waiting
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
+                  return (
+                    <motion.div
+                      key={p.id}
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 * (i + 1), duration: 0.6 }}
+                      className="h-full"
+                    >
+                      <Card
+                        hover
+                        className="cursor-pointer group relative overflow-hidden bg-white rounded-3xl h-full border-2 border-transparent hover:border-pink-300 transition-colors shadow-sm hover:shadow-xl"
+                        onClick={() => handlePersonSelect(p.id as 'shubham' | 'khushi')}
+                      >
+                        <CardContent className="p-4 sm:p-8 flex flex-col items-center space-y-4 sm:space-y-6">
+                          <div className={cn("w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-rose-glow border-[3px] sm:border-4 border-white", p.bg)}>
+                            <Image src={p.image} alt={p.name} width={112} height={112} className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex flex-col space-y-1">
+                            <span className="text-2xl font-poppins font-bold tracking-tight text-deep-plum">{p.name}</span>
+                            <span className="text-xs uppercase tracking-widest font-bold text-raspberry/60">Let&apos;s do this!</span>
+                          </div>
+
+                          {isPartnerWaiting && (
+                             <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                               <span className="text-xs uppercase tracking-wider bg-raspberry/10 px-2 py-1 rounded-full text-raspberry font-black animate-pulse">
+                                 {partnerName} waiting 🌸
+                               </span>
+                             </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  )
+                })}
               </div>
             </motion.div>
           ) : (
@@ -133,11 +159,11 @@ export default function EntryPage() {
               className="space-y-12"
             >
               <div className="space-y-2">
-                <h3 className="text-3xl md:text-4xl font-poppins font-bold text-deep-plum transition-colors duration-300 tracking-tight">Welcome back, {useAppStore.getState().currentPerson === 'shubham' ? 'Shubham ✨' : 'Khushi ✨'}</h3>
+                <h3 className="text-3xl md:text-4xl font-poppins font-bold text-deep-plum transition-colors duration-300 tracking-tight">Welcome back, {currentPerson === 'shubham' ? 'Shubham ✨' : 'Khushi ✨'}</h3>
                 <p className="text-xl text-deep-plum opacity-90 font-bold">Aaj kya karna hai?</p>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6">
                 {[
                   { id: 'design', icon: '🎨', title: "Let's create!", desc: 'Jump into workspace' },
                   { id: 'vibe', icon: '😌', title: "Just exploring", desc: 'Browse and chill' },

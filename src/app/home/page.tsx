@@ -72,11 +72,11 @@ export default function HomePage() {
                 </div>
 
                 {/* Main Headline */}
-                <div className="relative max-w-4xl mx-auto">
+                <div className="relative max-w-4xl mx-auto w-full px-2">
                     <div className="absolute -inset-10 bg-gradient-to-r from-pink-500/10 via-purple-500/5 to-blue-500/10 blur-2xl rounded-[100%] opacity-70 pointer-events-none" />
-                    <h1 className="relative text-5xl md:text-7xl lg:text-8xl font-poppins font-black tracking-tighter leading-[1.1] text-night-950 dark:text-white">
+                    <h1 className="relative text-5xl leading-[1.1] md:text-6xl md:leading-[1.1] lg:text-8xl font-display font-black tracking-tighter text-night-950 dark:text-white">
                         Earn together.<br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-rose-500 to-orange-500">
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-rose-500 to-orange-500 block mt-1">
                             Explore everything.
                         </span>
                     </h1>
@@ -89,15 +89,15 @@ export default function HomePage() {
                 </div>
 
                 {/* Primary Action */}
-                <div className="pt-2 flex flex-col sm:flex-row items-center gap-4">
-                    <Link href="/upload">
-                        <Button className="h-16 px-10 rounded-full bg-night-950 dark:bg-white text-white dark:text-night-950 hover:bg-night-800 dark:hover:bg-night-100 text-lg font-black tracking-tight shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div className="pt-2 w-full flex flex-col sm:flex-row items-center justify-center gap-4 px-2">
+                    <Link href="/upload" className="w-full sm:w-auto">
+                        <Button className="w-full sm:w-auto h-16 px-10 rounded-full bg-night-950 dark:bg-white text-white dark:text-night-950 hover:bg-night-800 dark:hover:bg-night-100 text-lg font-black tracking-tight shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
                             Push Today&apos;s Work
                             <ArrowRight className="ml-3 w-5 h-5" />
                         </Button>
                     </Link>
-                    <Link href="/board">
-                        <Button variant="outline" className="h-16 px-10 rounded-full bg-white/50 dark:bg-card/50 border-2 border-night-100 dark:border-night-800 hover:border-pink-300 dark:hover:border-pink-500 hover:bg-white dark:hover:bg-card text-night-900 dark:text-white text-lg font-black tracking-tight transition-all duration-300">
+                    <Link href="/board" className="w-full sm:w-auto">
+                        <Button variant="outline" className="w-full sm:w-auto h-16 px-10 rounded-full bg-white/50 dark:bg-card/50 border-2 border-night-100 dark:border-night-800 hover:border-pink-300 dark:hover:border-pink-500 hover:bg-white dark:hover:bg-card text-night-900 dark:text-white text-lg font-black tracking-tight transition-all duration-300">
                             Leave a Note 📝
                         </Button>
                     </Link>
@@ -168,21 +168,22 @@ export default function HomePage() {
 
             {/* 5. LIVE CONNECTIVITY FEED */}
             {showContent && (
-                <section className="w-full max-w-4xl mx-auto pt-16 border-t border-night-100/50 dark:border-night-800 animate-in fade-in duration-700 delay-500">
-                    <div className="text-center mb-10">
+                <section className="w-full max-w-4xl mx-auto pt-8 md:pt-16 relative animate-in fade-in duration-700 delay-500">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-[2px] bg-gradient-to-r from-transparent via-pink-400 to-transparent opacity-50"></div>
+                    <div className="text-center mb-8 md:mb-10 mt-4 md:mt-0">
                         <h3 className="text-xl font-black text-night-900 dark:text-white tracking-tight">Our Live Thread</h3>
                         <p className="text-xs font-bold uppercase tracking-widest text-night-500 dark:text-night-400 mt-2">See what's happening right now</p>
                     </div>
-                    <div className="bg-white/50 dark:bg-card/50 backdrop-blur-sm rounded-[3rem] p-6 border border-night-100/30 dark:border-night-800">
+                    <div className="bg-white/50 dark:bg-card/50 backdrop-blur-sm rounded-[3rem] p-4 md:p-6 border border-night-100/30 dark:border-night-800">
                         <PartnerFeed />
                     </div>
                 </section>
             )}
 
             {/* 6. FOOTER REMINDER */}
-            <section className="w-full pt-20 pb-10 animate-in fade-in duration-1000 delay-700">
+            <section className="w-full pt-16 pb-10 animate-in fade-in duration-1000 delay-700">
                 <div className="text-center space-y-6">
-                    <p className="font-poppins text-2xl md:text-3xl font-black text-night-400 dark:text-night-500 tracking-tight">
+                    <p className="font-display text-2xl md:text-3xl font-black text-night-400 dark:text-night-500 tracking-tight">
                         "Chal chal chal — the world is ours to explore."
                     </p>
                     <div className="flex items-center justify-center space-x-4 opacity-40">

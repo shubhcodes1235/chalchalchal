@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400..700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,30 +6,30 @@
 
 @layer base {
   :root {
-    --background: 345 100% 99%;
-    /* Nearly white pink */
+    --background: 340 60% 98%;
+    /* Warmer blush tint */
     --foreground: 335 40% 15%;
     /* Dark Plum Text */
 
-    --card: 0 0% 100%;
+    --card: 340 30% 99%;
     --card-foreground: 335 40% 15%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 335 40% 15%;
 
-    --primary: 335 85% 55%;
-    /* Vibrant Raspberry */
+    --primary: 338 88% 58%;
+    /* Richer raspberry red */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 260 100% 98%;
-    /* Soft Lilac */
+    --secondary: 260 80% 95%;
+    /* More visible lavender */
     --secondary-foreground: 260 50% 30%;
 
     --muted: 335 20% 96%;
     --muted-foreground: 335 15% 40%;
 
-    --accent: 35 100% 96%;
-    /* Warm Cream */
+    --accent: 35 100% 93%;
+    /* More golden cream */
     --accent-foreground: 35 80% 30%;
 
     --destructive: 0 84% 60%;
@@ -38,7 +38,7 @@
     --border: 335 30% 90%;
     /* Visible Pink Border */
     --input: 335 30% 90%;
-    --ring: 335 85% 55%;
+    --ring: 338 88% 58%;
 
     --radius: 2rem;
     /* Softer, rounder feel */
@@ -46,17 +46,17 @@
 
   .dark {
     /* Deep rich plum — not pitch black */
-    --background: 285 35% 8%;
+    --background: 270 28% 9%;
     --foreground: 0 0% 95%;
 
     /* Cards clearly lifted from the background */
-    --card: 285 28% 16%;
+    --card: 268 25% 17%;
     --card-foreground: 0 0% 93%;
 
     --popover: 285 30% 13%;
     --popover-foreground: 0 0% 93%;
 
-    --primary: 330 90% 65%;
+    --primary: 338 95% 68%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 285 25% 18%;
@@ -74,13 +74,18 @@
     /* Visible but subtle borders */
     --border: 285 20% 22%;
     --input: 285 25% 18%;
-    --ring: 330 90% 65%;
+    --ring: 338 95% 68%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
   }
 
   body {
@@ -91,10 +96,10 @@
     letter-spacing: -0.01em;
     /* Blueprint design grid */
     background-image:
-      linear-gradient(rgba(233, 30, 99, 0.05) 1.5px, transparent 1.5px),
-      linear-gradient(90deg, rgba(233, 30, 99, 0.05) 1.5px, transparent 1.5px),
-      linear-gradient(rgba(233, 30, 99, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(233, 30, 99, 0.02) 1px, transparent 1px);
+      linear-gradient(rgba(233, 30, 99, 0.07) 1.5px, transparent 1.5px),
+      linear-gradient(90deg, rgba(233, 30, 99, 0.07) 1.5px, transparent 1.5px),
+      linear-gradient(rgba(233, 30, 99, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(233, 30, 99, 0.03) 1px, transparent 1px);
     background-size:
       100px 100px,
       100px 100px,
@@ -129,14 +134,14 @@
   .dark body {
     @apply selection:bg-pink-900 selection:text-pink-100;
     background-image:
-      linear-gradient(rgba(255, 105, 180, 0.04) 1.5px, transparent 1.5px),
+      linear-gradient(rgba(255, 105, 180, 0.07) 1.5px, transparent 1.5px),
       linear-gradient(
         90deg,
-        rgba(255, 105, 180, 0.04) 1.5px,
+        rgba(255, 105, 180, 0.07) 1.5px,
         transparent 1.5px
       ),
-      linear-gradient(rgba(255, 105, 180, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 105, 180, 0.02) 1px, transparent 1px);
+      linear-gradient(rgba(255, 105, 180, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 105, 180, 0.03) 1px, transparent 1px);
     background-size:
       100px 100px,
       100px 100px,
@@ -146,12 +151,8 @@
   @media (max-width: 640px) {
     body {
       background-image:
-        linear-gradient(rgba(233, 30, 99, 0.025) 1.5px, transparent 1.5px),
-        linear-gradient(
-          90deg,
-          rgba(233, 30, 99, 0.025) 1.5px,
-          transparent 1.5px
-        );
+        linear-gradient(rgba(233, 30, 99, 0.04) 1.5px, transparent 1.5px),
+        linear-gradient(90deg, rgba(233, 30, 99, 0.04) 1.5px, transparent 1.5px);
       background-size:
         60px 60px,
         60px 60px;
@@ -275,6 +276,12 @@
   cursor:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23E91E63' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 19 9 2-9-18-9 18 9-2zm0 0v-8'%3E%3C/path%3E%3C/svg%3E"),
     auto;
+}
+
+@media (pointer: coarse) {
+  .custom-cursor {
+    cursor: auto;
+  }
 }
 
 /* Texture Styles */

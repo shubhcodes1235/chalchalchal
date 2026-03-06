@@ -7,7 +7,7 @@ import { Settings, Heart, ArrowLeftRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useLiveQuery } from "dexie-react-hooks"
 import { db } from "@/lib/db/database"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { cn } from "@/lib/utils/cn"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -28,12 +28,22 @@ const pageTitles: Record<string, string> = {
     "/settings": "Settings",
 }
 
+const SUBTITLES = [
+    "start where you are",
+    "dream it, design it",
+    "making magic together",
+    "one pixel at a time",
+    "love in every detail",
+    "chasing dreams day by day",
+]
+
 export function Header() {
     const pathname = usePathname()
     const { currentPerson, setCurrentPerson } = useAppStore()
     const [shubhamOnline, setShubhamOnline] = React.useState(false)
     const [khushiOnline, setKhushiOnline] = React.useState(false)
     const [partnerMood, setPartnerMood] = React.useState<string | null>(null)
+    const [subtitleIndex, setSubtitleIndex] = React.useState(0)
     const { sessionMood } = useMoodStore()
 
     React.useEffect(() => {
@@ -54,6 +64,13 @@ export function Header() {
             unsubPresence()
         }
     }, [currentPerson])
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            setSubtitleIndex((prev) => (prev + 1) % SUBTITLES.length)
+        }, 5000)
+        return () => clearInterval(interval)
+    }, [])
 
     const isSharedFocus = sessionMood === 'design' && partnerMood === 'design';
 
@@ -82,24 +99,35 @@ export function Header() {
         <header className="sticky top-0 z-40 w-full bg-white/85 dark:bg-background/90 backdrop-blur-md border-b border-night-100 dark:border-border px-6 py-4">
             <div className="flex items-center justify-between mx-auto max-w-7xl">
                 <div className="flex flex-col">
-                    <h1 className="text-sm font-display font-bold text-night-900 dark:text-foreground tracking-widest uppercase opacity-80">
+                    <h1 className="text-lg sm:text-sm font-display font-black sm:font-bold text-night-900 dark:text-foreground sm:tracking-widest sm:uppercase sm:opacity-80">
                         {title}
+                        <div className="h-0.5 w-1/2 bg-gradient-to-r from-pink-500 to-transparent sm:hidden mt-0.5" />
                     </h1>
-                    <p className="text-xs text-pink-500 dark:text-pink-400 font-body font-semibold uppercase tracking-widest mt-1 hidden sm:flex items-center gap-1.5">
+                    <div className="text-xs text-pink-500 dark:text-pink-400 font-body font-semibold uppercase tracking-widest mt-1 min-h-[1.5em] hidden sm:flex items-center gap-1.5">
                         <span>Chal chal chal</span>
                         <span className="w-1 h-1 rounded-full bg-pink-300 dark:bg-pink-600" />
-                        <span className="opacity-70 lowercase font-medium">start where you are</span>
-                    </p>
+                        <AnimatePresence mode="wait">
+                            <motion.span
+                                key={subtitleIndex}
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 0.7, y: 0 }}
+                                exit={{ opacity: 0, y: -5 }}
+                                className="lowercase font-medium"
+                            >
+                                {SUBTITLES[subtitleIndex]}
+                            </motion.span>
+                        </AnimatePresence>
+                    </div>
                 </div>
 
                 {isSharedFocus && (
                     <motion.div 
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="hidden md:flex items-center gap-2 bg-pink-500 text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-full shadow-glow animate-pulse"
+                        className="hidden sm:flex items-center gap-1.5 md:gap-2 bg-pink-500 text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] px-2 md:px-4 py-1.5 md:py-2 rounded-full shadow-glow animate-pulse"
                     >
-                        <Sparkles className="w-3 h-3" />
-                        Shared Focus: Design
+                        <Sparkles className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                        <span className="hidden xs:inline">Shared Focus:</span> Design
                     </motion.div>
                 )}
 
@@ -123,7 +151,7 @@ export function Header() {
                                         {khushiOnline && <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-green-500 border border-white" />}
                                     </div>
                                 </div>
-                                <span className="text-xs font-display font-semibold uppercase tracking-widest text-night-600 dark:text-muted-foreground group-hover:text-night-900 dark:group-hover:text-foreground hidden sm:inline">
+                                <span className="text-xs font-display font-bold uppercase tracking-widest text-night-600 dark:text-muted-foreground group-hover:text-night-900 dark:group-hover:text-foreground">
                                     {currentPerson === 'both' ? 'Together' : currentPerson}
                                 </span>
                             </button>

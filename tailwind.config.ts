@@ -68,6 +68,7 @@ const config: Config = {
                 body: ['Inter', 'sans-serif'],
                 display: ['Outfit', 'sans-serif'],
                 handwritten: ['Caveat', 'cursive'],
+                poppins: ['Poppins', 'sans-serif'],
             },
             borderRadius: {
                 'xl': '1rem',

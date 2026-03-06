@@ -25,11 +25,11 @@ import { goalsRepo } from "@/lib/db/repositories/goals.repo"
 import { nanoid } from "nanoid"
 
 const NOTE_COLORS = [
-    "bg-pink-100 border-pink-200 text-pink-900",
-    "bg-blue-100 border-blue-200 text-blue-900",
-    "bg-yellow-100 border-yellow-200 text-yellow-900",
-    "bg-green-100 border-green-200 text-green-900",
-    "bg-purple-100 border-purple-200 text-purple-900",
+    "bg-pink-100 dark:bg-pink-950/40 border-pink-200 dark:border-pink-900/50 text-pink-900 dark:text-pink-100",
+    "bg-blue-100 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900/50 text-blue-900 dark:text-blue-100",
+    "bg-yellow-100 dark:bg-yellow-950/40 border-yellow-200 dark:border-yellow-900/50 text-yellow-900 dark:text-yellow-100",
+    "bg-green-100 dark:bg-green-950/40 border-green-200 dark:border-green-900/50 text-green-900 dark:text-green-100",
+    "bg-purple-100 dark:bg-purple-950/40 border-purple-200 dark:border-purple-900/50 text-purple-900 dark:text-purple-100",
 ]
 
 const NOTE_TYPES = [
@@ -65,9 +65,11 @@ export default function BoardPage() {
     const tasks = useLiveQuery(async () => {
         const results = await db.goals.toArray();
         return results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-    }, []) || [];
+    }, [])
 
-    const filteredNotes = notes.filter(n => {
+    const isLoading = notes === undefined || tasks === undefined
+
+    const filteredNotes = (notes || []).filter(n => {
         // Filter by Type
         if (filterType !== 'all' && n.type !== filterType) return false
 
@@ -77,14 +79,19 @@ export default function BoardPage() {
         return true
     })
 
-    const filteredTasks = tasks.filter(t => {
+    const filteredTasks = (tasks || []).filter(t => {
         if (activePerson !== 'all' && t.person !== activePerson) return false
         return true
     })
 
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false)
-    const [taskFormData, setTaskFormData] = useState({ title: "", priority: "medium" as 'low'|'medium'|'high' })
+    const [taskFormData, setTaskFormData] = useState({ 
+        title: "", 
+        description: "", 
+        priority: "medium" as 'low'|'medium'|'high',
+        deadline: ""
+    })
     const [formData, setFormData] = useState({
         content: "",
         type: "thought" as any,
@@ -104,14 +111,18 @@ export default function BoardPage() {
             await goalsRepo.addGoal({
                 person: uploader,
                 title: taskFormData.title,
+                description: taskFormData.description,
                 priority: taskFormData.priority,
+                deadline: taskFormData.deadline ? new Date(taskFormData.deadline) : undefined,
                 isCompleted: false
             }, taskId)
 
             await addGoalToFirebase({
                 person: uploader,
                 title: taskFormData.title,
+                description: taskFormData.description,
                 priority: taskFormData.priority,
+                deadline: taskFormData.deadline ? new Date(taskFormData.deadline) : undefined,
                 isCompleted: false
             }, taskId)
 
@@ -124,7 +135,7 @@ export default function BoardPage() {
             })
 
             setIsTaskDialogOpen(false)
-            setTaskFormData({ title: "", priority: "medium" })
+            setTaskFormData({ title: "", description: "", priority: "medium", deadline: "" })
         } catch (error) {
             console.error("Failed to add task:", error)
         }
@@ -189,17 +200,17 @@ export default function BoardPage() {
                     <h1 className="text-3xl md:text-4xl font-black text-night-950 tracking-tight leading-none">Our Shared Space</h1>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full md:w-auto">
-                    <div className="bg-muted p-1 rounded-2xl flex items-center flex-1 md:flex-initial">
+                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3 w-full md:w-auto">
+                    <div className="bg-muted p-1 rounded-2xl flex items-center w-full md:w-auto">
                         <button
                             onClick={() => setViewMode('notes')}
-                            className={cn("px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all flex-1 md:flex-initial", viewMode === 'notes' ? "bg-white text-night-950 shadow-sm" : "text-night-500")}
+                            className={cn("px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all text-center flex-1 md:flex-initial", viewMode === 'notes' ? "bg-white text-night-950 shadow-sm" : "text-night-500")}
                         >
                             Notes
                         </button>
                         <button
                             onClick={() => setViewMode('tasks')}
-                            className={cn("px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all flex-1 md:flex-initial", viewMode === 'tasks' ? "bg-white text-night-950 shadow-sm" : "text-night-500")}
+                            className={cn("px-3 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all text-center flex-1 md:flex-initial", viewMode === 'tasks' ? "bg-white text-night-950 shadow-sm" : "text-night-500")}
                         >
                             Tasks
                         </button>
@@ -214,7 +225,7 @@ export default function BoardPage() {
                         
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
-                                <Button size="lg" className="flex-[2] md:flex-initial rounded-xl shadow-sm bg-night-950 hover:bg-night-800 text-white font-black h-11 px-4 md:px-6 text-[10px] md:text-xs uppercase tracking-widest">
+                                <Button size="lg" className={cn("flex-[2] md:flex-initial rounded-xl shadow-sm bg-pink-500 hover:bg-pink-600 text-white font-black h-11 px-4 md:px-6 text-[10px] md:text-xs uppercase tracking-widest", viewMode !== 'notes' && "hidden")}>
                                     <Plus className="mr-1 md:mr-2 w-3.5 h-3.5 md:w-4 md:h-4" />
                                     Write
                                 </Button>
@@ -287,8 +298,8 @@ export default function BoardPage() {
 
                     <Dialog open={isTaskDialogOpen} onOpenChange={setIsTaskDialogOpen}>
                         <DialogTrigger asChild>
-                            <Button size="lg" className={cn("rounded-xl shadow-sm bg-night-950 hover:bg-night-800 text-white font-black h-11 px-6 text-xs uppercase tracking-widest", viewMode !== 'tasks' && "hidden")}>
-                                <Plus className="mr-2 w-4 h-4" />
+                            <Button size="lg" className={cn("flex-[2] md:flex-initial rounded-xl shadow-sm bg-pink-500 hover:bg-pink-600 text-white font-black h-11 px-4 md:px-6 text-[10px] md:text-xs uppercase tracking-widest", viewMode !== 'tasks' && "hidden")}>
+                                <Plus className="mr-1 md:mr-2 w-3.5 h-3.5 md:w-4 md:h-4" />
                                 Add Task
                             </Button>
                         </DialogTrigger>
@@ -326,19 +337,38 @@ export default function BoardPage() {
                                         ))}
                                     </div>
                                 </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-night-600">Goal Description (Optional)</label>
+                                    <Textarea
+                                        value={taskFormData.description}
+                                        onChange={e => setTaskFormData(prev => ({ ...prev, description: e.target.value }))}
+                                        placeholder="Add more details about what needs to be done..."
+                                        className="min-h-[80px] rounded-2xl border-night-100 focus-visible:ring-night-200 text-night-950 font-bold"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-night-600">Deadline (Optional)</label>
+                                    <input
+                                        type="date"
+                                        value={taskFormData.deadline}
+                                        onChange={e => setTaskFormData(prev => ({ ...prev, deadline: e.target.value }))}
+                                        className="w-full rounded-2xl border border-night-100 h-12 px-4 focus-visible:ring-night-200 text-night-950 font-bold bg-white"
+                                    />
+                                </div>
                                 <Button type="submit" className="w-full h-14 rounded-2xl text-lg font-black bg-night-950 hover:bg-night-800 tracking-tight">
                                     Add Task
                                 </Button>
                             </form>
                         </DialogContent>
                     </Dialog>
+                    </div>
                 </div>
             </div>
-        </div>
 
             {/* Filters Section */}
-            <div className="flex flex-col space-y-3 py-2 md:py-4">
-                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+            <div className="flex flex-col space-y-3 py-2 md:py-4 relative">
+                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none z-10" />
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 pr-8">
                     {/* Person Toggle */}
                     <div className="flex bg-muted border border-border rounded-full p-1 shrink-0">
                         {[
@@ -397,7 +427,13 @@ export default function BoardPage() {
             </div>
 
             {/* Grid Section */}
-            {viewMode === 'notes' ? (
+            {isLoading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                        <div key={i} className="h-[240px] rounded-[2.5rem] bg-muted animate-pulse border border-border" />
+                    ))}
+                </div>
+            ) : viewMode === 'notes' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                 <AnimatePresence mode="popLayout">
                     {sortedNotes.map((note) => (
@@ -412,7 +448,7 @@ export default function BoardPage() {
                             <Card className={cn(
                                 "h-full min-h-[240px] transition-all transform border shadow-sm rounded-3xl overflow-hidden",
                                 note.color,
-                                note.isPinned ? "border-night-950/20 shadow-md rotate-1" : "border-black/5 -rotate-1 hover:rotate-0"
+                                note.isPinned ? "border-night-950/20 shadow-md rotate-[0.5deg] sm:rotate-1" : "border-black/5 -rotate-[0.5deg] sm:-rotate-1 hover:rotate-0"
                             )}>
                                 <CardContent className="p-4 md:p-6 h-full flex flex-col justify-between">
                                     <div className="space-y-4">
@@ -463,8 +499,10 @@ export default function BoardPage() {
                                         <div className="flex space-x-1">
                                             <button
                                                 onClick={async () => {
-                                                    await notesRepo.deleteNote(note.id);
-                                                    await deleteNoteFromFirebase(note.id);
+                                                    if (window.confirm("Are you sure you want to delete this note? This cannot be undone.")) {
+                                                        await notesRepo.deleteNote(note.id);
+                                                        await deleteNoteFromFirebase(note.id);
+                                                    }
                                                 }}
                                                 className="p-1.5 hover:bg-red-500 hover:text-white rounded-lg transition-all opacity-0 group-hover:opacity-100"
                                             >
@@ -502,7 +540,7 @@ export default function BoardPage() {
                     ))}
                 </AnimatePresence>
             </div>
-            ) : (
+            ) : viewMode === 'tasks' ? (
                 <div className="space-y-4 max-w-4xl mx-auto">
                     <AnimatePresence mode="popLayout">
                         {filteredTasks.map(task => (
@@ -539,8 +577,8 @@ export default function BoardPage() {
                                     <p className={cn("text-lg font-bold truncate", task.isCompleted ? "line-through text-night-400" : "text-night-950")}>
                                         {task.title}
                                     </p>
-                                    <div className="flex items-center gap-2 mt-1">
-                                        <div className="flex -space-x-1.5">
+                                    <div className="flex flex-wrap items-center gap-2 mt-1">
+                                        <div className="flex -space-x-1.5 shrink-0">
                                             <div className={cn("w-5 h-5 rounded-full border border-white overflow-hidden flex items-center justify-center text-[10px] bg-muted", task.person === 'shubham' || task.person === 'shared' ? "z-10" : "opacity-30 grayscale")}>
                                                 <Image src="/shubham.jpg" alt="Shubham" width={20} height={20} className="w-full h-full object-cover" />
                                             </div>
@@ -548,25 +586,39 @@ export default function BoardPage() {
                                                 <Image src="/khushi.jpg" alt="Khushi" width={20} height={20} className="w-full h-full object-cover" />
                                             </div>
                                         </div>
-                                        <span className={cn("text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full",
-                                            task.priority === 'high' ? "bg-red-100 text-red-600" : task.priority === 'medium' ? "bg-yellow-100 text-yellow-600" : "bg-green-100 text-green-600"
+                                        <span className={cn("text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border-l-2",
+                                            task.priority === 'high' ? "bg-red-50 text-red-600 border-red-500" : task.priority === 'medium' ? "bg-yellow-50 text-yellow-600 border-yellow-500" : "bg-green-50 text-green-600 border-green-500"
                                         )}>
                                             {task.priority} priority
                                         </span>
+                                        {task.deadline && (
+                                            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">
+                                                By {new Date(task.deadline).toLocaleDateString()}
+                                            </span>
+                                        )}
                                     </div>
+                                    {task.description && (
+                                        <div className="min-h-[60px] sm:min-h-0">
+                                            <p className="text-xs text-night-500 mt-2 font-bold line-clamp-2">
+                                                {task.description}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                                 <button
                                     onClick={async () => {
-                                        await goalsRepo.deleteGoal(task.id);
-                                        await deleteGoalFromFirebase(task.id);
-                                        
-                                        const uploader = currentPerson === 'both' ? 'shubham' : currentPerson;
-                                        await logActivityToFirebase({
-                                            person: uploader,
-                                            type: 'task',
-                                            title: 'Task Deleted',
-                                            message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} deleted the task: "${task.title.substring(0, 30)}${task.title.length > 30 ? '...' : ''}" 🗑️`
-                                        });
+                                        if (window.confirm("Delete this task?")) {
+                                            await goalsRepo.deleteGoal(task.id);
+                                            await deleteGoalFromFirebase(task.id);
+                                            
+                                            const uploader = currentPerson === 'both' ? 'shubham' : currentPerson;
+                                            await logActivityToFirebase({
+                                                person: uploader,
+                                                type: 'task',
+                                                title: 'Task Deleted',
+                                                message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} deleted the task: "${task.title.substring(0, 30)}${task.title.length > 30 ? '...' : ''}" 🗑️`
+                                            });
+                                        }
                                     }}
                                     className="p-2 hover:bg-red-50 hover:text-red-500 text-night-400 rounded-xl transition-all"
                                 >
@@ -576,7 +628,7 @@ export default function BoardPage() {
                         ))}
                     </AnimatePresence>
                 </div>
-            )}
+            ) : null}
 
             {/* Empty State Section */}
             {viewMode === 'notes' && sortedNotes.length === 0 && (

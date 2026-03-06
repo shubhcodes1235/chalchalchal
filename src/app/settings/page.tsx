@@ -202,9 +202,9 @@ export default function SettingsPage() {
                 <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
                     <User className="w-3.5 h-3.5" /> Profile Selection
                 </h3>
-                <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden">
-                    <CardContent className="p-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Card className="border-night-100 shadow-sm rounded-3xl overflow-hidden border-t-4 border-t-purple-400">
+                    <CardContent className="p-4 sm:p-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                             {[
                                 { id: 'shubham', label: 'Shubham', image: '/shubham.jpg', color: 'blue' },
                                 { id: 'khushi', label: 'Khushi', image: '/khushi.jpg', color: 'pink' },
@@ -214,7 +214,7 @@ export default function SettingsPage() {
                                     key={p.id}
                                     onClick={() => updateSetting('currentPerson', p.id as any)}
                                     className={cn(
-                                        "flex flex-col items-center justify-center p-6 rounded-2xl border-2 transition-all space-y-3",
+                                        "flex flex-row sm:flex-col items-center sm:justify-center p-4 sm:p-6 rounded-2xl border-2 transition-all gap-4 sm:gap-0 sm:space-y-3",
                                         currentPerson === p.id
                                             ? (p.id === 'shubham' ? "border-blue-200 bg-blue-50 shadow-inner" :
                                                 p.id === 'khushi' ? "border-pink-200 bg-pink-50 shadow-inner" :
@@ -223,7 +223,7 @@ export default function SettingsPage() {
                                     )}
                                 >
                                     <div className={cn(
-                                        "w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-white shadow-sm transition-all",
+                                        "w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden flex items-center justify-center bg-white shadow-sm transition-all shrink-0",
                                         currentPerson !== p.id && "grayscale opacity-40 scale-90"
                                     )}>
                                         {p.image ? (
@@ -233,7 +233,7 @@ export default function SettingsPage() {
                                         )}
                                     </div>
                                     <span className={cn(
-                                        "text-xs font-black uppercase tracking-widest",
+                                        "text-xs font-black uppercase tracking-widest text-left sm:text-center shrink-0",
                                         currentPerson === p.id
                                             ? (p.id === 'shubham' ? "text-blue-600" :
                                                 p.id === 'khushi' ? "text-pink-600" :
@@ -254,7 +254,7 @@ export default function SettingsPage() {
                 <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
                     <Wifi className="w-3.5 h-3.5" /> Cloud Connection
                 </h3>
-                <Card className="border-border shadow-sm rounded-[2rem] overflow-hidden">
+                <Card className="border-border shadow-sm rounded-3xl overflow-hidden border-t-4 border-t-blue-400">
                     <CardContent className="p-6">
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="space-y-1 text-center sm:text-left">
@@ -280,7 +280,7 @@ export default function SettingsPage() {
                     <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
                         <Palette className="w-3.5 h-3.5" /> Appearance
                     </h3>
-                    <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden">
+                    <Card className="border-night-100 shadow-sm rounded-3xl overflow-hidden border-t-4 border-t-orange-400">
                         <CardContent className="p-6 space-y-6">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
@@ -331,14 +331,14 @@ export default function SettingsPage() {
                     <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
                         <Bell className="w-3.5 h-3.5" /> Notifications
                     </h3>
-                    <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden border-b-4 border-b-blue-100">
+                    <Card className="border-night-100 shadow-sm rounded-3xl overflow-hidden border-t-4 border-t-blue-100">
                         <CardContent className="p-6 space-y-6">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
                                 <div className="space-y-1">
                                     <p className="font-bold text-night-900">Push Notifications</p>
                                     <p className="text-xs text-night-600">Motivate each other! Get notified when your partner writes a note or uploads a design.</p>
                                 </div>
-                                <div className="flex items-center space-x-2">
+                                <div className="flex items-center space-x-2 self-start sm:self-auto">
                                     <Button
                                         variant="outline"
                                         size="sm"
@@ -400,16 +400,16 @@ export default function SettingsPage() {
                         </h3>
                         <p className="text-xs text-night-600 font-bold px-1">Your progress is precious. Keep it safe.</p>
                     </div>
-                    <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden border-b-4 border-b-green-100">
+                    <Card className="border-night-100 shadow-sm rounded-3xl overflow-hidden border-t-4 border-t-green-100">
                         <CardContent className="p-6 space-y-6">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="font-bold text-night-900">Create Backup File</p>
                                     <p className="text-xs text-night-600">Saves all your designs, notes, progress, and memories.</p>
                                 </div>
-                                <Button variant="outline" size="sm" onClick={exportData} className="rounded-xl font-bold">
+                                <Button variant="outline" size="sm" onClick={exportData} className="rounded-xl font-bold shrink-0 ml-2">
                                     <Download className="w-3.5 h-3.5 mr-2" />
-                                    Create Backup
+                                    Backup
                                 </Button>
                             </div>
 
@@ -418,7 +418,7 @@ export default function SettingsPage() {
                                     <p className="font-bold text-night-900">Restore from Backup</p>
                                     <p className="text-xs text-night-600">Recover your progress from a previously saved backup.</p>
                                 </div>
-                                <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className="rounded-xl font-bold">
+                                <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className="rounded-xl font-bold shrink-0 ml-2">
                                     <Upload className="w-3.5 h-3.5 mr-2" />
                                     Restore
                                 </Button>
@@ -442,7 +442,7 @@ export default function SettingsPage() {
                                     variant="primary"
                                     size="sm"
                                     disabled
-                                    className="rounded-full w-14 h-8 px-0 font-black text-xs opacity-100 bg-green-100 text-green-700 border-none"
+                                    className="rounded-full w-14 h-8 px-0 font-black text-xs opacity-100 bg-green-100 text-green-700 border-none shrink-0 ml-2"
                                 >
                                     ON
                                 </Button>
@@ -456,17 +456,17 @@ export default function SettingsPage() {
                     <h3 className="text-xs font-black uppercase tracking-widest text-night-600 flex items-center gap-2 px-1">
                         <RefreshCw className="w-3.5 h-3.5" /> Data & Privacy
                     </h3>
-                    <Card className="border-night-100 shadow-sm rounded-[2rem] overflow-hidden">
+                    <Card className="border-night-100 shadow-sm rounded-3xl overflow-hidden border-t-4 border-t-red-200">
                         <CardContent className="p-6 space-y-6">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
                                 <div className="space-y-1">
                                     <p className="font-bold text-night-900">Start Fresh</p>
                                     <p className="text-xs text-night-600 max-w-[200px]">Clears all data permanently. We strongly recommend creating a backup first.</p>
                                 </div>
                                 <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
                                     <DialogTrigger asChild>
-                                        <Button variant="danger" size="sm" className="rounded-xl font-bold bg-red-50 text-red-500 hover:bg-red-100">
-                                            <Trash2 className="w-3.5 h-3.5 mr-2" />
+                                        <Button variant="danger" size="sm" className="rounded-xl font-bold bg-white text-red-500 border-2 border-red-200 hover:bg-red-50 self-start sm:self-auto">
+                                            <Trash2 className="w-3.5 h-3.5 mr-2 text-red-400" />
                                             Start Fresh
                                         </Button>
                                     </DialogTrigger>
@@ -526,12 +526,13 @@ export default function SettingsPage() {
 
                 {/* Credits Section */}
                 <div className="pt-12 text-center space-y-6">
-                    <div className="flex justify-center -space-x-3">
-                        <div className="w-12 h-12 rounded-full border-4 border-white overflow-hidden bg-blue-100 flex items-center justify-center shadow-lg">
-                            <Image src="/shubham.jpg" alt="S" width={48} height={48} className="w-full h-full object-cover" />
+                    <div className="flex justify-center items-center gap-4">
+                        <div className="w-16 h-16 rounded-full border-[3px] border-white overflow-hidden bg-blue-100 flex items-center justify-center shadow-lg -rotate-6">
+                            <Image src="/shubham.jpg" alt="S" width={64} height={64} className="w-full h-full object-cover" />
                         </div>
-                        <div className="w-12 h-12 rounded-full border-4 border-white overflow-hidden bg-pink-100 flex items-center justify-center shadow-lg">
-                            <Image src="/khushi.jpg" alt="K" width={48} height={48} className="w-full h-full object-cover" />
+                        <div className="text-2xl animate-pulse">✨</div>
+                        <div className="w-16 h-16 rounded-full border-[3px] border-white overflow-hidden bg-pink-100 flex items-center justify-center shadow-lg rotate-6">
+                            <Image src="/khushi.jpg" alt="K" width={64} height={64} className="w-full h-full object-cover" />
                         </div>
                     </div>
                     <div className="space-y-1">
