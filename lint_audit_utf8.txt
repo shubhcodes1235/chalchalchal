@@ -1,0 +1,345 @@
+﻿
+> dream-and-design-companion@1.0.0 lint
+> next lint
+
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+./src/app/board/page.tsx
+4:27  Error: 'useEffect' is defined but never used.  
+@typescript-eslint/no-unused-vars
+21:74  Error: 'subscribeToNotes' is defined but never used.  
+@typescript-eslint/no-unused-vars
+61:13  Error: 'results' is never reassigned. Use 'const' instead.  
+prefer-const
+90:28  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+228:120  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, 
+`&rsquo;`.  react/no-unescaped-entities
+
+./src/app/dream-board/page.tsx
+13:31  Error: 'ExternalLink' is defined but never used.  
+@typescript-eslint/no-unused-vars
+133:40  Error: 'i' is defined but never used.  
+@typescript-eslint/no-unused-vars
+157:41  Warning: Using `<img>` could result in slower LCP and higher 
+bandwidth. Consider using `<Image />` from `next/image` to automatically 
+optimize images. This may incur additional usage or cost from your 
+provider. See: https://nextjs.org/docs/messages/no-img-element  
+@next/next/no-img-element
+
+./src/app/home/page.tsx
+12:10  Error: 'motion' is defined but never used.  
+@typescript-eslint/no-unused-vars
+12:18  Error: 'AnimatePresence' is defined but never used.  
+@typescript-eslint/no-unused-vars
+174:132  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, 
+`&rsquo;`.  react/no-unescaped-entities
+186:25  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, 
+`&rdquo;`.  react/no-unescaped-entities
+186:72  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, 
+`&rdquo;`.  react/no-unescaped-entities
+
+./src/app/page.tsx
+20:11  Error: 'currentPerson' is assigned a value but never used.  
+@typescript-eslint/no-unused-vars
+155:63  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+
+./src/app/progress/page.tsx
+8:29  Error: 'CardHeader' is defined but never used.  
+@typescript-eslint/no-unused-vars
+8:41  Error: 'CardTitle' is defined but never used.  
+@typescript-eslint/no-unused-vars
+11:41  Error: 'CartesianGrid' is defined but never used.  
+@typescript-eslint/no-unused-vars
+13:27  Error: 'startOfMonth' is defined but never used.  
+@typescript-eslint/no-unused-vars
+13:41  Error: 'endOfMonth' is defined but never used.  
+@typescript-eslint/no-unused-vars
+13:53  Error: 'eachDayOfInterval' is defined but never used.  
+@typescript-eslint/no-unused-vars
+72:132  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, 
+`&rsquo;`.  react/no-unescaped-entities
+128:29  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, 
+`&rdquo;`.  react/no-unescaped-entities
+128:95  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, 
+`&rdquo;`.  react/no-unescaped-entities
+
+./src/app/reassurance/page.tsx
+19:11  Error: 'firstDesign' is assigned a value but never used.  
+@typescript-eslint/no-unused-vars
+20:11  Error: 'lastDesign' is assigned a value but never used.  
+@typescript-eslint/no-unused-vars
+35:28  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, 
+`&rsquo;`.  react/no-unescaped-entities
+63:26  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, 
+`&rsquo;`.  react/no-unescaped-entities
+
+./src/app/settings/page.tsx
+6:29  Error: 'CardHeader' is defined but never used.  
+@typescript-eslint/no-unused-vars
+6:41  Error: 'CardTitle' is defined but never used.  
+@typescript-eslint/no-unused-vars
+6:52  Error: 'CardDescription' is defined but never used.  
+@typescript-eslint/no-unused-vars
+11:45  Error: 'MousePointer2' is defined but never used.  
+@typescript-eslint/no-unused-vars
+16:42  Error: 'FileJson' is defined but never used.  
+@typescript-eslint/no-unused-vars
+16:52  Error: 'LogOut' is defined but never used.  
+@typescript-eslint/no-unused-vars
+16:60  Error: 'Users' is defined but never used.  
+@typescript-eslint/no-unused-vars
+25:12  Error: 'isRestoreDialogOpen' is assigned a value but never used.  
+@typescript-eslint/no-unused-vars
+25:33  Error: 'setIsRestoreDialogOpen' is assigned a value but never 
+used.  @typescript-eslint/no-unused-vars
+42:54  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+67:18  Error: 'error' is defined but never used.  
+@typescript-eslint/no-unused-vars
+100:22  Error: 'error' is defined but never used.  
+@typescript-eslint/no-unused-vars
+113:50  Error: 'deleteDoc' is assigned a value but never used.  
+@typescript-eslint/no-unused-vars
+113:61  Error: 'doc' is assigned a value but never used.  
+@typescript-eslint/no-unused-vars
+215:91  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+353:62  Error: 'e' is defined but never used.  
+@typescript-eslint/no-unused-vars
+497:133  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, 
+`&rdquo;`.  react/no-unescaped-entities
+497:145  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, 
+`&rdquo;`.  react/no-unescaped-entities
+
+./src/app/upload/page.tsx
+32:43  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+85:37  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+
+./src/app/vault/emergency/page.tsx
+4:27  Error: 'useEffect' is defined but never used.  
+@typescript-eslint/no-unused-vars
+5:10  Error: 'PageWrapper' is defined but never used.  
+@typescript-eslint/no-unused-vars
+8:10  Error: 'AlertTriangle' is defined but never used.  
+@typescript-eslint/no-unused-vars
+8:25  Error: 'ShieldCheck' is defined but never used.  
+@typescript-eslint/no-unused-vars
+8:50  Error: 'Heart' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/app/vault/gratitude/page.tsx
+12:10  Error: 'Sparkles' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/app/vault/page.tsx
+7:10  Error: 'Heart' is defined but never used.  
+@typescript-eslint/no-unused-vars
+7:30  Error: 'Sparkles' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/archive/design-card.tsx
+7:10  Error: 'Badge' is defined but never used.  
+@typescript-eslint/no-unused-vars
+9:18  Error: 'AnimatePresence' is defined but never used.  
+@typescript-eslint/no-unused-vars
+10:10  Error: 'cn' is defined but never used.  
+@typescript-eslint/no-unused-vars
+13:10  Error: 'Flame' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/home/dream-progress-bar.tsx
+17:34  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+42:41  Error: 'i' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/home/focus-card.tsx
+5:18  Error: 'AnimatePresence' is defined but never used.  
+@typescript-eslint/no-unused-vars
+8:10  Error: 'Button' is defined but never used.  
+@typescript-eslint/no-unused-vars
+9:10  Error: 'CheckCircle2' is defined but never used.  
+@typescript-eslint/no-unused-vars
+9:32  Error: 'Focus' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/home/partner-feed.tsx
+5:18  Error: 'AnimatePresence' is defined but never used.  
+@typescript-eslint/no-unused-vars
+68:33  Warning: Using `<img>` could result in slower LCP and higher 
+bandwidth. Consider using `<Image />` from `next/image` to automatically 
+optimize images. This may incur additional usage or cost from your 
+provider. See: https://nextjs.org/docs/messages/no-img-element  
+@next/next/no-img-element
+
+./src/components/home/quick-stats.tsx
+6:10  Error: 'AnimatedCounter' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/home/team-streak-counter.tsx
+5:10  Error: 'motion' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/home/today-prompt.tsx
+9:10  Error: 'motion' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/home/vision-snippet.tsx
+37:13  Warning: Using `<img>` could result in slower LCP and higher 
+bandwidth. Consider using `<Image />` from `next/image` to automatically 
+optimize images. This may incur additional usage or cost from your 
+provider. See: https://nextjs.org/docs/messages/no-img-element  
+@next/next/no-img-element
+
+./src/components/home/win-of-the-day.tsx
+72:72  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, 
+`&rdquo;`.  react/no-unescaped-entities
+72:91  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, 
+`&rdquo;`.  react/no-unescaped-entities
+129:153  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, 
+`&rdquo;`.  react/no-unescaped-entities
+129:173  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, 
+`&rdquo;`.  react/no-unescaped-entities
+
+./src/components/layout/bottom-navbar.tsx
+7:16  Error: 'FolderHeart' is defined but never used.  
+@typescript-eslint/no-unused-vars
+7:35  Error: 'LayoutDashboard' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/layout/header.tsx
+6:20  Error: 'Heart' is defined but never used.  
+@typescript-eslint/no-unused-vars
+6:27  Error: 'ArrowLeftRight' is defined but never used.  
+@typescript-eslint/no-unused-vars
+8:10  Error: 'useLiveQuery' is defined but never used.  
+@typescript-eslint/no-unused-vars
+16:10  Error: 'EmergencyButton' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/layout/sidebar.tsx
+7:66  Error: 'Quote' is defined but never used.  
+@typescript-eslint/no-unused-vars
+7:73  Error: 'User2' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/ui/button.tsx
+6:18  Error: 'HTMLMotionProps' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/ui/input.tsx
+5:18  Error: An interface declaring no members is equivalent to its 
+supertype.  @typescript-eslint/no-empty-object-type
+
+./src/components/ui/textarea.tsx
+5:18  Error: An interface declaring no members is equivalent to its 
+supertype.  @typescript-eslint/no-empty-object-type
+
+./src/components/ui/typing-animation.tsx
+5:10  Error: 'cn' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/components/upload/upload-form.tsx
+15:22  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+115:104  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+
+./src/components/upload/upload-zone.tsx
+6:27  Error: 'ImageIcon' is defined but never used.  
+@typescript-eslint/no-unused-vars
+58:48  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+
+./src/lib/constants/prompts.ts
+25:26  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+25:43  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+
+./src/lib/db/migrations.ts
+2:10  Error: 'db' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/lib/db/repositories/skills.repo.ts
+3:10  Error: 'Skill' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/lib/db/repositories/streaks.repo.ts
+3:10  Error: 'StreakData' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/lib/db/seed-data.ts
+2:41  Error: 'LearningNote' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/lib/firebase/config.ts
+4:3  Error: 'getFirestore' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/lib/firebase/services/activity.ts
+11:5  Error: 'where' is defined but never used.  
+@typescript-eslint/no-unused-vars
+22:16  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+46:11  Error: 'now' is assigned a value but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/lib/firebase/services/designs.ts
+133:17  Error: 'updatedReactions' is never reassigned. Use 'const' 
+instead.  prefer-const
+170:42  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+
+./src/lib/firebase/services/notes.ts
+66:17  Error: 'updatedReactions' is never reassigned. Use 'const' 
+instead.  prefer-const
+99:42  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+
+./src/lib/firebase/services/presence.ts
+17:22  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+82:13  Error: Expected an assignment or function call and instead saw an 
+expression.  @typescript-eslint/no-unused-expressions
+
+./src/lib/hooks/use-designs.ts
+6:10  Error: 'Design' is defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/lib/services/sync.service.ts
+39:63  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+76:57  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+83:39  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+83:63  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+83:96  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+99:57  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+100:65  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+101:59  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+145:28  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+
+./src/providers/celebration-provider.tsx
+20:38  Error: Unexpected any. Specify a different type.  
+@typescript-eslint/no-explicit-any
+
+info  - Need to disable some ESLint rules? Learn more here: 
+https://nextjs.org/docs/basic-features/eslint#disabling-rules

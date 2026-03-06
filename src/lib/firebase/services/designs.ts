@@ -81,9 +81,10 @@ export async function createDesignInFirebase(
         uploadedByPersona: 'shubham' | 'khushi' | 'both';
         workType?: 'practice' | 'client';
         isFirstDesign?: boolean;
+        id?: string;
     }
 ): Promise<Design> {
-    const designId = uuidv4();
+    const designId = data.id || uuidv4();
 
     // 1. Upload Image to ImgBB
     const imageUrl = await uploadToImgBB(file);

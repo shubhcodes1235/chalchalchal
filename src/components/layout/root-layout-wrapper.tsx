@@ -8,6 +8,7 @@ import { Sidebar } from "./sidebar"
 import { BottomNavbar } from "./bottom-navbar"
 import { EmergencyButton } from "./emergency-button"
 import { ManifestationStrip } from "./manifestation-strip"
+import { PWAInstallPrompt } from "./pwa-install-prompt"
 import { AnimatePresence } from "framer-motion"
 
 export function RootLayoutWrapper({ children }: { children: React.ReactNode }) {
@@ -40,6 +41,9 @@ export function RootLayoutWrapper({ children }: { children: React.ReactNode }) {
 
                 {/* Floating Emergency Button */}
                 <EmergencyButton />
+
+                {/* PWA Install Prompt */}
+                <PWAInstallPrompt />
             </div>
         </div>
     )

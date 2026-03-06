@@ -23,7 +23,8 @@ export function CelebrationProvider({ children }: { children: React.ReactNode })
     useEffect(() => {
         if (!currentPerson || currentPerson === 'both') return;
 
-        const unsubscribe = subscribeToPartnerPresence(currentPerson, (data) => {
+        const targetPartner = currentPerson === 'shubham' ? 'khushi' : 'shubham';
+        const unsubscribe = subscribeToPartnerPresence(targetPartner, (data) => {
             if (!hasInitializedRef.current) {
                 initialTriggerRef.current = data.confettiTrigger?.toMillis ? data.confettiTrigger.toMillis() : data.confettiTrigger;
                 hasInitializedRef.current = true;

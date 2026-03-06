@@ -26,7 +26,7 @@ export function VisualizationGarden() {
     
     if (count === 0) {
         visualAsset = "🌱"; // Seed/Sprout
-        message = "A new beginning. Time to plant the seeds of our dream.";
+        message = "A new beginning. Log your first 'Win of the Day' below to plant the seeds of our shared dream!";
         stageClass = "from-emerald-300 to-green-500";
     } else if (count >= 1 && count <= 3) {
         visualAsset = "🪴"; // Growing plant

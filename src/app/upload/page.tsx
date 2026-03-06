@@ -15,6 +15,7 @@ import { useCelebration } from "@/providers/celebration-provider"
 import { useSound } from "@/providers/sound-provider"
 import { createDesignInFirebase } from "@/lib/firebase/services/designs"
 import { logActivityToFirebase } from "@/lib/firebase/services/activity"
+import { v4 as uuidv4 } from "uuid";
 
 function UploadPageContent() {
     const router = useRouter()
@@ -48,8 +49,10 @@ function UploadPageContent() {
             // 2. Database Save
             const designsCount = await designsRepo.getDesignCount()
             const isFirst = designsCount === 0
+            const sharedId = uuidv4(); // Force same ID for both local and cloud
 
-            await designsRepo.addDesign({
+            await designsRepo.upsertDesign({
+                id: sharedId,
                 person: uploader,
                 title: formData.title,
                 description: formData.description,
@@ -61,11 +64,16 @@ function UploadPageContent() {
                 moodRating: formData.moodRating,
                 workType: formData.workType,
                 isFirstDesign: isFirst,
+                hypeCount: 0,
+                isHallOfFame: false,
+                createdAt: new Date(),
+                updatedAt: new Date(),
             })
 
             // 2.5 Firebase Save (Cloud Sync)
             // Fire and forget - don't block the UI if this fails, but log it.
             createDesignInFirebase(file, {
+                id: sharedId, // Pass the same ID
                 title: formData.title,
                 description: formData.description,
                 tool: formData.tool,

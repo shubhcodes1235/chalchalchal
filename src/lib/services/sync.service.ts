@@ -15,23 +15,19 @@ import { Design as LocalDesign, StickyNote as LocalNote, Goal as LocalGoal } fro
 import { toast } from "react-hot-toast";
 
 export function startCloudSync(currentPerson: string) {
-    console.log("☁️ Cloud Sync Initialized for", currentPerson);
-    // Visual feedback for debugging
-    toast("Sync engine online 🚀", { icon: '☁️', duration: 2000 });
     // Diagnostic: Check if env variables are loaded
     const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
     if (!projectId) {
         console.error("❌ Firebase Project ID missing! Did you restart the server?");
         toast.error("Firebase not configured. Check .env.local and restart system.", { duration: 5000 });
     } else {
-        console.log("🔥 Connected to Firebase project:", projectId);
+        // Connected successfully
     }
 
     const unsubscribes: (() => void)[] = [];
 
     // 1. SYNC DESIGNS
     const unsubDesigns = subscribeToDesigns(async (firebaseDesigns) => {
-        console.log(`📥 Received ${firebaseDesigns.length} designs from Cloud`);
         for (const fbDesign of firebaseDesigns) {
             try {
                 let designDate = new Date();
@@ -70,7 +66,6 @@ export function startCloudSync(currentPerson: string) {
 
     // 2. SYNC NOTES (Board)
     const unsubNotes = subscribeToNotes(async (firebaseNotes) => {
-        console.log(`📥 Received ${firebaseNotes.length} notes from Cloud`);
         for (const fbNote of firebaseNotes) {
             try {
                 const fbCreatedAt = fbNote.createdAt as any;
@@ -93,7 +88,6 @@ export function startCloudSync(currentPerson: string) {
 
     // 2.5 SYNC GOALS (Tasks)
     const unsubGoals = subscribeToGoals(async (firebaseGoals) => {
-        console.log(`📥 Received ${firebaseGoals.length} goals from Cloud`);
         for (const fbGoal of firebaseGoals) {
             try {
                 const fbCreatedAt = fbGoal.createdAt as any;
@@ -173,7 +167,6 @@ export function startCloudSync(currentPerson: string) {
     
     // 4. SYNC WINS
     const unsubWins = subscribeToAllWins(async (firebaseWins) => {
-        console.log(`📥 Received ${firebaseWins.length} wins from Cloud`);
         for (const fbWin of firebaseWins) {
             try {
                 const localWin = await winsRepo.getWinByDate(fbWin.date, fbWin.person);
@@ -194,7 +187,6 @@ export function startCloudSync(currentPerson: string) {
     // 5. SYNC STREAK
     const unsubStreak = subscribeToStreak(async (cloudStreak) => {
         if (!cloudStreak) return;
-        console.log(`📥 Received Streak update from Cloud: ${cloudStreak.currentStreak} days`);
         try {
             const localStreak = await streaksRepo.getStreakData();
             if (localStreak) {

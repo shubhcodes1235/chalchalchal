@@ -24,6 +24,7 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
     )
     const [todayWin, setTodayWin] = useState<DailyWin | null>(null)
     const [loading, setLoading] = useState(true)
+    const [isEditing, setIsEditing] = useState(false)
 
     useEffect(() => {
         if (currentPerson !== 'both') {
@@ -35,6 +36,7 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
         const unsubscribe = subscribeToTodayWin(today, author, (win) => {
             setTodayWin(win)
             setLoading(false)
+            if (win) setIsEditing(false)
         })
         return () => unsubscribe()
     }, [today, author])
@@ -50,23 +52,28 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
             person: author,
             type: 'win',
             title: 'Daily Win',
-            message: `${author === 'shubham' ? 'Shubham' : 'Khushi'} just logged a win: "${content.trim()}" 🏆`
+            message: `${author === 'shubham' ? 'Shubham' : 'Khushi'} ${isEditing ? 'updated' : 'just logged'} a win: "${content.trim()}" 🏆`
         })
 
         playSound('pop')
         setContent("")
+        setIsEditing(false)
     }
 
     if (minimal) {
         return (
             <div className="w-full max-w-sm mx-auto space-y-3">
                 <AnimatePresence mode="wait">
-                    {todayWin ? (
+                    {todayWin && !isEditing ? (
                         <motion.div
                             key="win-saved-min"
                             initial={{ opacity: 0, y: 5 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-white/40 dark:bg-card/40 p-4 rounded-2xl flex items-center justify-center space-x-2 text-pink-600 dark:text-pink-400 border border-pink-100/50 dark:border-night-800"
+                            onClick={() => {
+                                setContent(todayWin.content)
+                                setIsEditing(true)
+                            }}
+                            className="bg-white/40 dark:bg-card/40 p-4 rounded-2xl flex items-center justify-center space-x-2 text-pink-600 dark:text-pink-400 border border-pink-100/50 dark:border-night-800 cursor-pointer hover:bg-white/60 transition-colors"
                         >
                             <CheckCircle2 className="w-4 h-4" />
                             <span className="text-sm font-bold italic">"{todayWin.content}"</span>
@@ -86,12 +93,20 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                                 onChange={(e) => setContent(e.target.value)}
                                 placeholder="What was a small win today?"
                                 className="text-center rounded-xl h-10 bg-white/30 dark:bg-black/30 text-night-900 dark:text-white border-none focus-visible:ring-pink-200 dark:focus-visible:ring-pink-800 placeholder:text-night-500/60 dark:placeholder:text-night-400/60 text-sm"
+                                autoFocus={isEditing}
                             />
-                            {content.trim() && (
-                                <Button type="submit" size="sm" variant="ghost" className="text-pink-400 hover:text-pink-600 hover:bg-transparent h-auto py-1 px-4 text-xs font-black uppercase tracking-widest">
-                                    Save
-                                </Button>
-                            )}
+                            <div className="flex justify-center gap-2">
+                                {content.trim() && (
+                                    <Button type="submit" size="sm" variant="ghost" className="text-pink-400 hover:text-pink-600 hover:bg-transparent h-auto py-1 px-4 text-xs font-black uppercase tracking-widest">
+                                        {isEditing ? 'Update' : 'Save'}
+                                    </Button>
+                                )}
+                                {isEditing && (
+                                    <Button type="button" size="sm" variant="ghost" onClick={() => setIsEditing(false)} className="text-night-400 hover:text-night-600 hover:bg-transparent h-auto py-1 px-4 text-xs font-black uppercase tracking-widest">
+                                        Cancel
+                                    </Button>
+                                )}
+                            </div>
                         </motion.form>
                     )}
                 </AnimatePresence>
@@ -115,16 +130,17 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                 <AnimatePresence mode="wait">
                     {loading ? (
                         <div className="h-12 w-full animate-pulse bg-muted rounded-xl" />
-                    ) : todayWin ? (
+                    ) : (todayWin && !isEditing) ? (
                         <motion.div
                             key="win-saved"
                             initial={{ opacity: 0, x: 10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="flex items-start space-x-4"
+                            className="flex items-start justify-between"
                         >
-                            <div className="w-12 h-12 rounded-full bg-pink-50 dark:bg-pink-900/30 flex items-center justify-center shrink-0 border border-pink-100 dark:border-pink-800/50 shadow-sm transition-transform group-hover:rotate-12">
-                                <PartyPopper className="w-6 h-6 text-pink-500" />
-                            </div>
+                            <div className="flex items-start space-x-4">
+                                <div className="w-12 h-12 rounded-full bg-pink-50 dark:bg-pink-900/30 flex items-center justify-center shrink-0 border border-pink-100 dark:border-pink-800/50 shadow-sm transition-transform group-hover:rotate-12">
+                                    <PartyPopper className="w-6 h-6 text-pink-500" />
+                                </div>
                                 <div className="space-y-1 pt-1">
                                     <p className="text-night-800 dark:text-white font-display font-semibold text-lg leading-snug tracking-tight italic">"{todayWin?.content}"</p>
                                     <div className="flex items-center text-xs text-pink-500 font-body font-semibold uppercase tracking-widest">
@@ -132,6 +148,18 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                                         Moment Logged
                                     </div>
                                 </div>
+                            </div>
+                            <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                onClick={() => {
+                                    setContent(todayWin.content)
+                                    setIsEditing(true)
+                                }}
+                                className="text-night-400 hover:text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 rounded-xl"
+                            >
+                                Edit
+                            </Button>
                         </motion.div>
                     ) : (
                         <motion.form
@@ -141,7 +169,9 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                             animate={{ opacity: 1 }}
                             className="space-y-5"
                         >
-                            <h3 className="text-xl font-display font-semibold text-night-800 dark:text-white leading-snug tracking-tight">What was a small win today?</h3>
+                            <h3 className="text-xl font-display font-semibold text-night-800 dark:text-white leading-snug tracking-tight">
+                                {isEditing ? 'Update your win' : 'What was a small win today?'}
+                            </h3>
                             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                                 <Input
                                     id="win-full"
@@ -150,10 +180,23 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                                     onChange={(e) => setContent(e.target.value)}
                                     placeholder="Even opening this site counts..."
                                     className="rounded-2xl h-14 bg-muted/30 dark:bg-muted/20 border-border focus-visible:ring-primary/30 dark:focus-visible:ring-primary/40 placeholder:text-muted-foreground"
+                                    autoFocus={isEditing}
                                 />
-                                <Button type="submit" className="rounded-2xl h-14 px-8 shadow-glow bg-pink-500 hover:bg-pink-600 border-none transition-all whitespace-nowrap">
-                                    Save Win ✨
-                                </Button>
+                                <div className="flex gap-2">
+                                    <Button type="submit" className="rounded-2xl h-14 px-8 shadow-glow bg-pink-500 hover:bg-pink-600 border-none transition-all whitespace-nowrap">
+                                        {isEditing ? 'Update Win ✨' : 'Save Win ✨'}
+                                    </Button>
+                                    {isEditing && (
+                                        <Button 
+                                            type="button" 
+                                            variant="outline"
+                                            onClick={() => setIsEditing(false)}
+                                            className="rounded-2xl h-14 px-6 border-pink-200 text-pink-500 hover:bg-pink-50"
+                                        >
+                                            Cancel
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                         </motion.form>
                     )}
