@@ -41,8 +41,8 @@ export function Header() {
         const unsubK = subscribeToPartnerStatus('khushi', (online) => setKhushiOnline(online))
         
         let unsubPresence = () => {}
-        if (currentPerson && currentPerson !== 'both') {
-            const targetPartner = currentPerson === 'shubham' ? 'khushi' : 'shubham';
+        if (currentPerson) {
+            const targetPartner = (currentPerson === 'shubham' || currentPerson === 'both') ? 'khushi' : 'shubham';
             unsubPresence = subscribeToPartnerPresence(targetPartner, (data) => {
                 setPartnerMood(data.sessionMood);
             });

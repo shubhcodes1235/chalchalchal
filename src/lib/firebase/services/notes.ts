@@ -60,18 +60,41 @@ export async function addNoteReactionToFirebase(noteId: string, emoji: string, b
 
         if (noteSnap.exists()) {
             const note = noteSnap.data() as StickyNote;
-            const newReaction = {
-                emoji,
-                byPersona,
-                at: new Date(),
-            };
+            const currentReactions = note.reactions || [];
+            
+            const existingReactionIndex = currentReactions.findIndex(r => r.byPersona === byPersona);
+            let updatedReactions = [...currentReactions];
+            
+            let shouldLogActivity = false;
+
+            if (existingReactionIndex > -1) {
+                const existingReaction = currentReactions[existingReactionIndex];
+                
+                if (existingReaction.emoji === emoji) {
+                    updatedReactions.splice(existingReactionIndex, 1);
+                } else {
+                    updatedReactions[existingReactionIndex] = {
+                        emoji,
+                        byPersona,
+                        at: new Date()
+                    };
+                    shouldLogActivity = true;
+                }
+            } else {
+                updatedReactions.push({
+                    emoji,
+                    byPersona,
+                    at: new Date()
+                });
+                shouldLogActivity = true;
+            }
 
             await updateDoc(noteRef, {
-                reactions: [...(note.reactions || []), newReaction],
+                reactions: updatedReactions,
             });
 
             // Activity Log for Notification
-            if (note.person !== byPersona) {
+            if (shouldLogActivity && note.person !== byPersona) {
                 await logActivityToFirebase({
                     person: byPersona as any,
                     type: 'reaction',

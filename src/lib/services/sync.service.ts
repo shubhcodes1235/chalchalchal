@@ -77,6 +77,11 @@ export function startCloudSync(currentPerson: string) {
                 const noteToSync: LocalNote = {
                     ...fbNote,
                     createdAt: fbCreatedAt?.toDate ? fbCreatedAt.toDate() : new Date(fbCreatedAt),
+                    reactions: fbNote.reactions?.map(r => ({
+                        emoji: r.emoji,
+                        byPersona: r.byPersona,
+                        at: ((r.at as any)?.toDate ? (r.at as any).toDate() : new Date(r.at as any || Date.now())) as Date
+                    })) as { emoji: string; byPersona: string; at: Date; }[]
                 };
                 await notesRepo.upsertNote(noteToSync);
             } catch (err) {
@@ -111,7 +116,13 @@ export function startCloudSync(currentPerson: string) {
     // 3. LIVE NOTIFICATIONS (Toasts & Native Push)
     const unsubActivity = subscribeToOtherActivities(currentPerson, (activity) => {
         const emoji = activity.person === 'shubham' ? '👦' : '👧';
-        const icon = activity.type === 'note' ? '📝' : activity.type === 'upload' ? '🎨' : activity.type === 'task' ? '🎯' : '✨';
+        const icon = 
+            activity.type === 'note' ? '📝' : 
+            activity.type === 'upload' ? '🎨' : 
+            activity.type === 'task' ? '🎯' : 
+            activity.type === 'reaction' ? '💖' : 
+            activity.type === 'hype' ? '🔥' : 
+            activity.type === 'win' ? '🏆' : '✨';
         const titleText = `Dream & Design • ${activity.person === 'shubham' ? 'Shubham' : 'Khushi'}`;
         const bodyText = `${icon} ${activity.message}`;
 
@@ -131,7 +142,7 @@ export function startCloudSync(currentPerson: string) {
 
         // Trigger native OS push notification
         if ("Notification" in window && Notification.permission === "granted") {
-            const options: NotificationOptions = {
+            const options: any = {
                 body: bodyText,
                 icon: `/${activity.person}.jpg`,
                 badge: '/icons/icon-192x192.png',

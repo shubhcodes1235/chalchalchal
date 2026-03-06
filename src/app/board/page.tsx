@@ -51,31 +51,6 @@ export default function BoardPage() {
     const [filterType, setFilterType] = useState<StickyNote['type'] | 'all'>('all')
     const [activePerson, setActivePerson] = useState<string>("all")
 
-    // Real-time Sync for Notes
-    useEffect(() => {
-        const unsubscribe = subscribeToNotes(async (firebaseNotes) => {
-            for (const note of firebaseNotes) {
-                // Convert Firebase Timestamp to Date
-                const createdAt = (note.createdAt as any)?.toDate 
-                    ? (note.createdAt as any).toDate() 
-                    : new Date(note.createdAt as any || Date.now());
-                
-                // Convert reactions at if needed
-                const reactions = note.reactions?.map(r => ({
-                    ...r,
-                    at: (r.at as any)?.toDate ? (r.at as any).toDate() : new Date(r.at as any || Date.now())
-                }));
-
-                await notesRepo.upsertNote({
-                    ...note,
-                    createdAt,
-                    reactions: reactions as any
-                });
-            }
-        });
-        return () => unsubscribe();
-    }, []);
-
     const handleNoteReaction = async (noteId: string, emoji: string) => {
         const persona = currentPerson === 'both' ? 'shubham' : currentPerson;
         await addNoteReactionToFirebase(noteId, emoji, persona);

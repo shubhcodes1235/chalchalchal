@@ -126,19 +126,46 @@ export async function addReactionToFirebase(
 
         if (designSnap.exists()) {
             const design = designSnap.data() as Design;
-            const newReaction: Reaction = {
-                emoji,
-                byPersona,
-                at: new Date(), // Using client date for optmistic UI, or serverTimestamp if strict
-            };
+            const currentReactions = design.reactions || [];
+            
+            // Check if user already reacted
+            const existingReactionIndex = currentReactions.findIndex(r => r.byPersona === byPersona);
+            let updatedReactions = [...currentReactions];
+            
+            let shouldLogActivity = false;
+
+            if (existingReactionIndex > -1) {
+                const existingReaction = currentReactions[existingReactionIndex];
+                
+                if (existingReaction.emoji === emoji) {
+                    // SAME EMOJI: Remove reaction (toggle off)
+                    updatedReactions.splice(existingReactionIndex, 1);
+                } else {
+                    // DIFFERENT EMOJI: Replace old reaction
+                    updatedReactions[existingReactionIndex] = {
+                        emoji,
+                        byPersona,
+                        at: new Date()
+                    };
+                    shouldLogActivity = true;
+                }
+            } else {
+                // NO PREVIOUS REACTION: Add new one
+                updatedReactions.push({
+                    emoji,
+                    byPersona,
+                    at: new Date()
+                });
+                shouldLogActivity = true;
+            }
 
             await updateDoc(designRef, {
-                reactions: [...(design.reactions || []), newReaction],
+                reactions: updatedReactions,
             });
 
             // Activity Log for Notification
             const otherPersona = design.uploadedByPersona;
-            if (otherPersona && otherPersona !== byPersona) {
+            if (shouldLogActivity && otherPersona && otherPersona !== byPersona) {
                 await logActivityToFirebase({
                     person: byPersona as any,
                     type: 'reaction',
