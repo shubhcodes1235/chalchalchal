@@ -35,6 +35,11 @@ export interface StickyNote {
   color: string;                  // Note color
   isPinned: boolean;
   linkedUrl?: string;             // For resource links
+  reactions?: {
+    emoji: string;
+    byPersona: string;
+    at: Date;
+  }[];
   createdAt: Date;
 }
 

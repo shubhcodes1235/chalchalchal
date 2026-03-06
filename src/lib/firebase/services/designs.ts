@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../config";
 import { v4 as uuidv4 } from "uuid";
+import { logActivityToFirebase } from "./activity";
 
 // ============================================
 // TYPES
@@ -134,6 +135,17 @@ export async function addReactionToFirebase(
             await updateDoc(designRef, {
                 reactions: [...(design.reactions || []), newReaction],
             });
+
+            // Activity Log for Notification
+            const otherPersona = design.uploadedByPersona;
+            if (otherPersona && otherPersona !== byPersona) {
+                await logActivityToFirebase({
+                    person: byPersona as any,
+                    type: 'reaction',
+                    title: 'New Reaction!',
+                    message: `${byPersona === 'shubham' ? 'Shubham' : 'Khushi'} reacted with ${emoji} to your design: "${design.title}" ✨`
+                });
+            }
         }
     } catch (error) {
         console.error("Failed to add reaction:", error);

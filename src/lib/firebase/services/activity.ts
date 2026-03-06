@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 export interface Activity {
     id: string;
     person: 'shubham' | 'khushi';
-    type: 'upload' | 'win' | 'note' | 'hype' | 'milestone' | 'task';
+    type: 'upload' | 'win' | 'note' | 'hype' | 'milestone' | 'task' | 'reaction';
     title: string;
     message: string;
     timestamp: any;

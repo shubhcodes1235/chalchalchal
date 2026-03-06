@@ -52,14 +52,6 @@ export default function HomePage() {
             isSharedFocus && "dark:shadow-[inset_0_0_100px_rgba(233,30,99,0.15)] rounded-3xl"
         )}>
 
-            {isSharedFocus && (
-                <div className="w-full text-center py-2 animate-in fade-in slide-in-from-top-4 duration-500">
-                    <span className="inline-flex items-center gap-2 bg-pink-500 text-white text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-glow">
-                        <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                        Shared Focus Mode Active
-                    </span>
-                </div>
-            )}
 
             {/* 1. HERO SECTION: EARNING & EXPLORING */}
             <section className="w-full flex flex-col items-center text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 mt-4">

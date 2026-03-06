@@ -1,7 +1,7 @@
 // src/app/board/page.tsx
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { PageWrapper } from "@/components/layout/page-wrapper"
 import { useLiveQuery } from "dexie-react-hooks"
 import { db } from "@/lib/db/database"
@@ -18,7 +18,7 @@ import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils/cn"
 import { formatDistanceToNow } from "date-fns"
-import { addNoteToFirebase, deleteNoteFromFirebase, togglePinInFirebase } from "@/lib/firebase/services/notes"
+import { addNoteToFirebase, deleteNoteFromFirebase, togglePinInFirebase, subscribeToNotes, addNoteReactionToFirebase } from "@/lib/firebase/services/notes"
 import { logActivityToFirebase } from "@/lib/firebase/services/activity"
 import { addGoalToFirebase, deleteGoalFromFirebase, toggleGoalCompletionInFirebase } from "@/lib/firebase/services/goals"
 import { goalsRepo } from "@/lib/db/repositories/goals.repo"
@@ -39,11 +39,47 @@ const NOTE_TYPES = [
     { id: 'reminder', icon: BookOpen, label: 'Reminder' },
 ] as const
 
+const NOTE_REACTIONS = [
+    { emoji: "❤️", label: "Love" },
+    { emoji: "🔥", label: "Fire" },
+    { emoji: "💯", label: "Perfect" },
+]
+
 export default function BoardPage() {
     const { currentPerson } = useAppStore()
     const [viewMode, setViewMode] = useState<'notes' | 'tasks'>('notes')
     const [filterType, setFilterType] = useState<StickyNote['type'] | 'all'>('all')
     const [activePerson, setActivePerson] = useState<string>("all")
+
+    // Real-time Sync for Notes
+    useEffect(() => {
+        const unsubscribe = subscribeToNotes(async (firebaseNotes) => {
+            for (const note of firebaseNotes) {
+                // Convert Firebase Timestamp to Date
+                const createdAt = (note.createdAt as any)?.toDate 
+                    ? (note.createdAt as any).toDate() 
+                    : new Date(note.createdAt as any || Date.now());
+                
+                // Convert reactions at if needed
+                const reactions = note.reactions?.map(r => ({
+                    ...r,
+                    at: (r.at as any)?.toDate ? (r.at as any).toDate() : new Date(r.at as any || Date.now())
+                }));
+
+                await notesRepo.upsertNote({
+                    ...note,
+                    createdAt,
+                    reactions: reactions as any
+                });
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const handleNoteReaction = async (noteId: string, emoji: string) => {
+        const persona = currentPerson === 'both' ? 'shubham' : currentPerson;
+        await addNoteReactionToFirebase(noteId, emoji, persona);
+    };
 
     const notes = useLiveQuery(async () => {
         const collection = db.stickyNotes.orderBy('createdAt').reverse()
@@ -460,6 +496,30 @@ export default function BoardPage() {
                                                 <Trash2 className="w-3.5 h-3.5" />
                                             </button>
                                         </div>
+                                    </div>
+
+                                    {/* Note Reactions */}
+                                    <div className="flex flex-wrap gap-1.5 mt-4 pt-4 border-t border-black/5">
+                                        {NOTE_REACTIONS.map((r) => {
+                                            const count = note.reactions?.filter(x => x.emoji === r.emoji).length || 0;
+                                            const userReacted = note.reactions?.some(x => x.emoji === r.emoji && x.byPersona === (currentPerson === 'both' ? 'shubham' : currentPerson));
+
+                                            return (
+                                                <button
+                                                    key={r.emoji}
+                                                    onClick={() => handleNoteReaction(note.id, r.emoji)}
+                                                    className={cn(
+                                                        "flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold transition-all",
+                                                        userReacted 
+                                                            ? "bg-white/40 ring-1 ring-black/10" 
+                                                            : "bg-black/5 hover:bg-black/10"
+                                                    )}
+                                                >
+                                                    <span>{r.emoji}</span>
+                                                    {count > 0 && <span>{count}</span>}
+                                                </button>
+                                            )
+                                        })}
                                     </div>
                                 </CardContent>
                             </Card>

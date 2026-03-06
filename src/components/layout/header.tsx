@@ -14,7 +14,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useAppStore } from "@/lib/store/app-store"
 import Image from "next/image"
 import { EmergencyButton } from "@/components/layout/emergency-button"
-import { subscribeToPartnerStatus } from "@/lib/firebase/services/presence"
+import { subscribeToPartnerStatus, subscribeToPartnerPresence } from "@/lib/firebase/services/presence"
+import { useMoodStore } from "@/lib/store/mood-store"
+import { Sparkles } from "lucide-react"
 
 const pageTitles: Record<string, string> = {
     "/home": "Workspace",
@@ -31,15 +33,29 @@ export function Header() {
     const { currentPerson, setCurrentPerson } = useAppStore()
     const [shubhamOnline, setShubhamOnline] = React.useState(false)
     const [khushiOnline, setKhushiOnline] = React.useState(false)
+    const [partnerMood, setPartnerMood] = React.useState<string | null>(null)
+    const { sessionMood } = useMoodStore()
 
     React.useEffect(() => {
         const unsubS = subscribeToPartnerStatus('shubham', (online) => setShubhamOnline(online))
         const unsubK = subscribeToPartnerStatus('khushi', (online) => setKhushiOnline(online))
+        
+        let unsubPresence = () => {}
+        if (currentPerson && currentPerson !== 'both') {
+            const targetPartner = currentPerson === 'shubham' ? 'khushi' : 'shubham';
+            unsubPresence = subscribeToPartnerPresence(targetPartner, (data) => {
+                setPartnerMood(data.sessionMood);
+            });
+        }
+
         return () => {
             unsubS()
             unsubK()
+            unsubPresence()
         }
-    }, [])
+    }, [currentPerson])
+
+    const isSharedFocus = sessionMood === 'design' && partnerMood === 'design';
 
     const title = pageTitles[pathname] || "Dream & Design"
 
@@ -75,6 +91,17 @@ export function Header() {
                         <span className="opacity-70 lowercase font-medium">start where you are</span>
                     </p>
                 </div>
+
+                {isSharedFocus && (
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="hidden md:flex items-center gap-2 bg-pink-500 text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-full shadow-glow animate-pulse"
+                    >
+                        <Sparkles className="w-3 h-3" />
+                        Shared Focus: Design
+                    </motion.div>
+                )}
 
                 <div className="flex items-center space-x-4">
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

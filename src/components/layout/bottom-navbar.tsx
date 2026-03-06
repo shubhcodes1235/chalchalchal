@@ -10,10 +10,10 @@ import { motion } from "framer-motion"
 
 const navItems = [
     { icon: Home, label: "Home", href: "/home" },
-    { icon: FolderHeart, label: "Archive", href: "/archive" },
-    { icon: Plus, label: "Create", href: "/upload", isFab: true },
     { icon: MessageSquareHeart, label: "Board", href: "/board" },
+    { icon: Plus, label: "Upload", href: "/upload", isFab: true },
     { icon: LineChart, label: "Progress", href: "/progress" },
+    { icon: Settings, label: "Settings", href: "/settings" },
 ]
 
 export function BottomNavbar() {
