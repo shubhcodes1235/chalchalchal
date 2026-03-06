@@ -338,26 +338,56 @@ export default function SettingsPage() {
                                     <p className="font-bold text-night-900">Push Notifications</p>
                                     <p className="text-xs text-night-600">Motivate each other! Get notified when your partner writes a note or uploads a design.</p>
                                 </div>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={async () => {
-                                        if ('Notification' in window) {
-                                            const permission = await Notification.requestPermission();
-                                            if (permission === 'granted') {
-                                                toast.success("Notifications enabled! 🔔");
-                                            } else {
-                                                toast.error("Notification permission denied.");
+                                <div className="flex items-center space-x-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={async () => {
+                                            if ('Notification' in window) {
+                                                if (Notification.permission === 'granted') {
+                                                    try {
+                                                        new Notification("Dream & Design", {
+                                                            body: "Yay! Notifications are working perfectly! 🎉",
+                                                            icon: `/${currentPerson === 'both' ? 'shubham' : currentPerson}.jpg`
+                                                        });
+                                                    } catch (e) {
+                                                        navigator.serviceWorker.ready.then(registration => {
+                                                            registration.showNotification("Dream & Design", {
+                                                                body: "Yay! Notifications are working perfectly! 🎉",
+                                                                icon: `/${currentPerson === 'both' ? 'shubham' : currentPerson}.jpg`
+                                                            });
+                                                        });
+                                                    }
+                                                } else {
+                                                    toast.error("Please enable permissions first!");
+                                                }
                                             }
-                                        } else {
-                                            toast.error("Browser does not support notifications.");
-                                        }
-                                    }}
-                                    className="rounded-xl font-bold bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100"
-                                >
-                                    <Bell className="w-3.5 h-3.5 mr-2" />
-                                    Enable
-                                </Button>
+                                        }}
+                                        className="rounded-xl font-bold bg-white text-night-600 border-night-200 hover:bg-night-50"
+                                    >
+                                        Test
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={async () => {
+                                            if ('Notification' in window) {
+                                                const permission = await Notification.requestPermission();
+                                                if (permission === 'granted') {
+                                                    toast.success("Notifications enabled! 🔔");
+                                                } else {
+                                                    toast.error("Notification permission denied.");
+                                                }
+                                            } else {
+                                                toast.error("Browser does not support notifications.");
+                                            }
+                                        }}
+                                        className="rounded-xl font-bold bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100"
+                                    >
+                                        <Bell className="w-3.5 h-3.5 mr-2" />
+                                        Enable
+                                    </Button>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>

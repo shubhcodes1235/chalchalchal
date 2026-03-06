@@ -4,12 +4,14 @@ import { subscribeToNotes } from "@/lib/firebase/services/notes";
 import { subscribeToOtherActivities } from "@/lib/firebase/services/activity";
 import { subscribeToAllWins } from "@/lib/firebase/services/wins";
 import { subscribeToStreak } from "@/lib/firebase/services/streak";
+import { subscribeToGoals } from "@/lib/firebase/services/goals";
 import { designsRepo } from "@/lib/db/repositories/designs.repo";
 import { notesRepo } from "@/lib/db/repositories/notes.repo";
 import { winsRepo } from "@/lib/db/repositories/wins.repo";
 import { streaksRepo } from "@/lib/db/repositories/streaks.repo";
+import { goalsRepo } from "@/lib/db/repositories/goals.repo";
 import { db } from "@/lib/db/database";
-import { Design as LocalDesign, StickyNote as LocalNote } from "@/lib/db/schemas";
+import { Design as LocalDesign, StickyNote as LocalNote, Goal as LocalGoal } from "@/lib/db/schemas";
 import { toast } from "react-hot-toast";
 
 export function startCloudSync(currentPerson: string) {
@@ -84,10 +86,32 @@ export function startCloudSync(currentPerson: string) {
     });
     unsubscribes.push(unsubNotes);
 
+    // 2.5 SYNC GOALS (Tasks)
+    const unsubGoals = subscribeToGoals(async (firebaseGoals) => {
+        console.log(`📥 Received ${firebaseGoals.length} goals from Cloud`);
+        for (const fbGoal of firebaseGoals) {
+            try {
+                const fbCreatedAt = fbGoal.createdAt as any;
+                const fbCompletedDate = fbGoal.completedDate as any;
+                const fbDeadlineDate = fbGoal.deadline as any;
+                const goalToSync: LocalGoal = {
+                    ...fbGoal,
+                    createdAt: fbCreatedAt ? (fbCreatedAt.toDate ? fbCreatedAt.toDate() : new Date(fbCreatedAt)) : new Date(),
+                    completedDate: fbCompletedDate ? (fbCompletedDate.toDate ? fbCompletedDate.toDate() : new Date(fbCompletedDate)) : undefined,
+                    deadline: fbDeadlineDate ? (fbDeadlineDate.toDate ? fbDeadlineDate.toDate() : new Date(fbDeadlineDate)) : undefined,
+                };
+                await goalsRepo.upsertGoal(goalToSync);
+            } catch (err) {
+                console.error("❌ Sync goal failed:", fbGoal.id, err);
+            }
+        }
+    });
+    unsubscribes.push(unsubGoals);
+
     // 3. LIVE NOTIFICATIONS (Toasts & Native Push)
     const unsubActivity = subscribeToOtherActivities(currentPerson, (activity) => {
         const emoji = activity.person === 'shubham' ? '👦' : '👧';
-        const icon = activity.type === 'note' ? '📝' : activity.type === 'upload' ? '🎨' : '✨';
+        const icon = activity.type === 'note' ? '📝' : activity.type === 'upload' ? '🎨' : activity.type === 'task' ? '🎯' : '✨';
         const titleText = `Dream & Design • ${activity.person === 'shubham' ? 'Shubham' : 'Khushi'}`;
         const bodyText = `${icon} ${activity.message}`;
 

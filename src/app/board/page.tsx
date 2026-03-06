@@ -20,6 +20,8 @@ import { cn } from "@/lib/utils/cn"
 import { formatDistanceToNow } from "date-fns"
 import { addNoteToFirebase, deleteNoteFromFirebase, togglePinInFirebase } from "@/lib/firebase/services/notes"
 import { logActivityToFirebase } from "@/lib/firebase/services/activity"
+import { addGoalToFirebase, deleteGoalFromFirebase, toggleGoalCompletionInFirebase } from "@/lib/firebase/services/goals"
+import { goalsRepo } from "@/lib/db/repositories/goals.repo"
 import { nanoid } from "nanoid"
 
 const NOTE_COLORS = [
@@ -39,6 +41,7 @@ const NOTE_TYPES = [
 
 export default function BoardPage() {
     const { currentPerson } = useAppStore()
+    const [viewMode, setViewMode] = useState<'notes' | 'tasks'>('notes')
     const [filterType, setFilterType] = useState<StickyNote['type'] | 'all'>('all')
     const [activePerson, setActivePerson] = useState<string>("all")
 
@@ -47,6 +50,11 @@ export default function BoardPage() {
         let results = await collection.toArray()
         return results
     }, []) || []
+
+    const tasks = useLiveQuery(async () => {
+        const results = await db.goals.toArray();
+        return results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    }, []) || [];
 
     const filteredNotes = notes.filter(n => {
         // Filter by Type
@@ -58,7 +66,14 @@ export default function BoardPage() {
         return true
     })
 
+    const filteredTasks = tasks.filter(t => {
+        if (activePerson !== 'all' && t.person !== activePerson) return false
+        return true
+    })
+
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false)
+    const [taskFormData, setTaskFormData] = useState({ title: "", priority: "medium" as 'low'|'medium'|'high' })
     const [formData, setFormData] = useState({
         content: "",
         type: "thought" as any,
@@ -66,6 +81,43 @@ export default function BoardPage() {
         isPinned: false,
         linkedUrl: ""
     })
+
+    const handleTaskSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!taskFormData.title.trim()) return
+
+        const uploader = currentPerson === 'both' ? 'shubham' : currentPerson
+        const taskId = nanoid()
+
+        try {
+            await goalsRepo.addGoal({
+                person: uploader,
+                title: taskFormData.title,
+                priority: taskFormData.priority,
+                isCompleted: false
+            }, taskId)
+
+            await addGoalToFirebase({
+                person: uploader,
+                title: taskFormData.title,
+                priority: taskFormData.priority,
+                isCompleted: false
+            }, taskId)
+
+            // Activity Log
+            await logActivityToFirebase({
+                person: uploader,
+                type: 'task',
+                title: 'New Task',
+                message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} assigned a new task: "${taskFormData.title.substring(0, 30)}${taskFormData.title.length > 30 ? '...' : ''}" 🎯`
+            })
+
+            setIsTaskDialogOpen(false)
+            setTaskFormData({ title: "", priority: "medium" })
+        } catch (error) {
+            console.error("Failed to add task:", error)
+        }
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -127,6 +179,20 @@ export default function BoardPage() {
                 </div>
 
                 <div className="flex items-center space-x-3">
+                    <div className="bg-muted p-1 rounded-2xl flex items-center mr-2">
+                        <button
+                            onClick={() => setViewMode('notes')}
+                            className={cn("px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all", viewMode === 'notes' ? "bg-white text-night-950 shadow-sm" : "text-night-500")}
+                        >
+                            Notes
+                        </button>
+                        <button
+                            onClick={() => setViewMode('tasks')}
+                            className={cn("px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all", viewMode === 'tasks' ? "bg-white text-night-950 shadow-sm" : "text-night-500")}
+                        >
+                            Tasks
+                        </button>
+                    </div>
                     <Link href="/archive">
                         <Button variant="ghost" className="text-xs font-bold text-night-600 hover:text-pink-500">
                             View Gallery
@@ -204,6 +270,54 @@ export default function BoardPage() {
                             </form>
                         </DialogContent>
                     </Dialog>
+
+                    <Dialog open={isTaskDialogOpen} onOpenChange={setIsTaskDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button size="lg" className={cn("rounded-xl shadow-sm bg-night-950 hover:bg-night-800 text-white font-black h-11 px-6 text-xs uppercase tracking-widest", viewMode !== 'tasks' && "hidden")}>
+                                <Plus className="mr-2 w-4 h-4" />
+                                Add Task
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="rounded-[2.5rem]">
+                            <DialogHeader>
+                                <DialogTitle className="text-2xl font-black text-night-950">Add a new task 🎯</DialogTitle>
+                            </DialogHeader>
+                            <form onSubmit={handleTaskSubmit} className="space-y-6 pt-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-night-600">What needs to be done?</label>
+                                    <Textarea
+                                        value={taskFormData.title}
+                                        onChange={e => setTaskFormData(prev => ({ ...prev, title: e.target.value }))}
+                                        placeholder="E.g., Finish the new logo design"
+                                        className="min-h-[140px] rounded-2xl border-night-100 focus-visible:ring-night-200 text-night-950 font-bold"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-night-600">Priority</label>
+                                    <div className="flex gap-2">
+                                        {(['low', 'medium', 'high'] as const).map(p => (
+                                            <button
+                                                key={p}
+                                                type="button"
+                                                onClick={() => setTaskFormData(prev => ({ ...prev, priority: p }))}
+                                                className={cn(
+                                                    "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                                                    taskFormData.priority === p 
+                                                    ? (p === 'high' ? "bg-red-500 text-white" : p === 'medium' ? "bg-yellow-500 text-white" : "bg-green-500 text-white") 
+                                                    : "bg-muted text-muted-foreground"
+                                                )}
+                                            >
+                                                {p}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <Button type="submit" className="w-full h-14 rounded-2xl text-lg font-black bg-night-950 hover:bg-night-800 tracking-tight">
+                                    Add Task
+                                </Button>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
 
@@ -238,35 +352,38 @@ export default function BoardPage() {
 
                 <div className="w-px h-6 bg-night-100" />
 
-                <div className="flex flex-wrap gap-2">
-                    <button
-                        onClick={() => setFilterType('all')}
-                        className={cn(
-                            "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
-                            filterType === 'all' ? "bg-pink-500 text-white"
-                            : "bg-muted text-muted-foreground border border-border hover:border-border"
-                        )}
-                    >
-                        All Types
-                    </button>
-                    {NOTE_TYPES.map(type => (
+                {viewMode === 'notes' && (
+                    <div className="flex flex-wrap gap-2">
                         <button
-                            key={type.id}
-                            onClick={() => setFilterType(type.id)}
+                            onClick={() => setFilterType('all')}
                             className={cn(
-                                "flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
-                                filterType === type.id ? "bg-pink-500 text-white" : "bg-white text-night-600 border border-night-100 hover:border-night-200"
+                                "px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                                filterType === 'all' ? "bg-pink-500 text-white"
+                                : "bg-muted text-muted-foreground border border-border hover:border-border"
                             )}
                         >
-                            <type.icon className="w-3.5 h-3.5" />
-                            <span>{type.label}</span>
+                            All Types
                         </button>
-                    ))}
-                </div>
+                        {NOTE_TYPES.map(type => (
+                            <button
+                                key={type.id}
+                                onClick={() => setFilterType(type.id)}
+                                className={cn(
+                                    "flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+                                    filterType === type.id ? "bg-pink-500 text-white" : "bg-white text-night-600 border border-night-100 hover:border-night-200"
+                                )}
+                            >
+                                <type.icon className="w-3.5 h-3.5" />
+                                <span>{type.label}</span>
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Grid Section */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {viewMode === 'notes' ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 <AnimatePresence mode="popLayout">
                     {sortedNotes.map((note) => (
                         <motion.div
@@ -346,9 +463,84 @@ export default function BoardPage() {
                     ))}
                 </AnimatePresence>
             </div>
+            ) : (
+                <div className="space-y-4 max-w-4xl mx-auto">
+                    <AnimatePresence mode="popLayout">
+                        {filteredTasks.map(task => (
+                            <motion.div
+                                key={task.id}
+                                layout
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className={cn(
+                                    "flex items-center gap-4 bg-white dark:bg-card p-4 rounded-2xl border shadow-sm transition-all hover:shadow-md",
+                                    task.isCompleted ? "opacity-60 grayscale" : "border-night-100"
+                                )}
+                            >
+                                <button
+                                    onClick={async () => {
+                                        const newState = !task.isCompleted;
+                                        await goalsRepo.toggleGoalCompletion(task.id);
+                                        await toggleGoalCompletionInFirebase(task.id, newState);
+                                        
+                                        const uploader = currentPerson === 'both' ? 'shubham' : currentPerson;
+                                        await logActivityToFirebase({
+                                            person: uploader,
+                                            type: 'task',
+                                            title: 'Task Updated',
+                                            message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} just ${newState ? 'completed' : 'uncompleted'} the task: "${task.title.substring(0, 30)}${task.title.length > 30 ? '...' : ''}" ${newState ? '✅' : '🔄'}`
+                                        });
+                                    }}
+                                    className="flex-shrink-0 text-pink-500 hover:scale-110 transition-transform"
+                                >
+                                    {task.isCompleted ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-circle-2 text-pink-500"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4" stroke="white" strokeWidth="3"/></svg> : <div className="w-6 h-6 rounded-full border-2 border-night-200"></div>}
+                                </button>
+                                <div className="flex-1 min-w-0">
+                                    <p className={cn("text-lg font-bold truncate", task.isCompleted ? "line-through text-night-400" : "text-night-950")}>
+                                        {task.title}
+                                    </p>
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <div className="flex -space-x-1.5">
+                                            <div className={cn("w-5 h-5 rounded-full border border-white overflow-hidden flex items-center justify-center text-[10px] bg-muted", task.person === 'shubham' || task.person === 'shared' ? "z-10" : "opacity-30 grayscale")}>
+                                                <Image src="/shubham.jpg" alt="Shubham" width={20} height={20} className="w-full h-full object-cover" />
+                                            </div>
+                                            <div className={cn("w-5 h-5 rounded-full border border-white overflow-hidden flex items-center justify-center text-[10px] bg-muted", task.person === 'khushi' || task.person === 'shared' ? "z-10" : "opacity-30 grayscale")}>
+                                                <Image src="/khushi.jpg" alt="Khushi" width={20} height={20} className="w-full h-full object-cover" />
+                                            </div>
+                                        </div>
+                                        <span className={cn("text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full",
+                                            task.priority === 'high' ? "bg-red-100 text-red-600" : task.priority === 'medium' ? "bg-yellow-100 text-yellow-600" : "bg-green-100 text-green-600"
+                                        )}>
+                                            {task.priority} priority
+                                        </span>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={async () => {
+                                        await goalsRepo.deleteGoal(task.id);
+                                        await deleteGoalFromFirebase(task.id);
+                                        
+                                        const uploader = currentPerson === 'both' ? 'shubham' : currentPerson;
+                                        await logActivityToFirebase({
+                                            person: uploader,
+                                            type: 'task',
+                                            title: 'Task Deleted',
+                                            message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} deleted the task: "${task.title.substring(0, 30)}${task.title.length > 30 ? '...' : ''}" 🗑️`
+                                        });
+                                    }}
+                                    className="p-2 hover:bg-red-50 hover:text-red-500 text-night-400 rounded-xl transition-all"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                </div>
+            )}
 
             {/* Empty State Section */}
-            {sortedNotes.length === 0 && (
+            {viewMode === 'notes' && sortedNotes.length === 0 && (
                 <div className="relative py-20 px-8 rounded-[4rem] border border-dashed border-night-200 bg-night-50/50 backdrop-blur-sm flex flex-col items-center text-center space-y-8 overflow-hidden">
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 10px 10px, #000 2px, transparent 0)', backgroundSize: '24px 24px' }} />
 
@@ -383,6 +575,26 @@ export default function BoardPage() {
                         className="rounded-2xl bg-night-950 hover:bg-night-800 text-white font-black h-16 px-12 relative z-10 shadow-xl text-lg tracking-tight"
                     >
                         Chal chal chal — Write something
+                    </Button>
+                </div>
+            )}
+
+            {viewMode === 'tasks' && filteredTasks.length === 0 && (
+                <div className="relative py-20 px-8 rounded-[4rem] border border-dashed border-night-200 bg-night-50/50 backdrop-blur-sm flex flex-col items-center text-center space-y-8 overflow-hidden">
+                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 10px 10px, #000 2px, transparent 0)', backgroundSize: '24px 24px' }} />
+                    <div className="space-y-3 relative z-10">
+                        <div className="text-5xl mb-6">🎯</div>
+                        <h3 className="text-3xl font-black text-night-950 tracking-tight">No tasks yet.</h3>
+                        <p className="text-night-500 font-bold max-w-sm mx-auto text-sm">
+                            Add a to-do item for yourself or your partner.
+                        </p>
+                    </div>
+                    <Button
+                        size="lg"
+                        onClick={() => setIsTaskDialogOpen(true)}
+                        className="rounded-2xl bg-night-950 hover:bg-night-800 text-white font-black h-16 px-12 relative z-10 shadow-xl text-lg tracking-tight"
+                    >
+                        Add your first task
                     </Button>
                 </div>
             )}
