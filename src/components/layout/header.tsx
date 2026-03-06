@@ -96,14 +96,15 @@ export function Header() {
     }
 
     return (
-        <header className="sticky top-0 z-40 w-full bg-white/85 dark:bg-background/90 backdrop-blur-md border-b border-night-100 dark:border-border px-6 py-4">
+        <header className="sticky top-0 z-40 w-full bg-white/85 dark:bg-background/90 backdrop-blur-md border-b border-pink-200/50 sm:border-night-100 dark:border-border px-4 sm:px-6 py-3 sm:py-4 transition-all">
             <div className="flex items-center justify-between mx-auto max-w-7xl">
                 <div className="flex flex-col">
-                    <h1 className="text-lg sm:text-sm font-display font-black sm:font-bold text-night-900 dark:text-foreground sm:tracking-widest sm:uppercase sm:opacity-80">
+                    <h1 className="text-lg sm:text-sm font-display font-black sm:font-bold text-night-900 dark:text-foreground sm:tracking-widest sm:uppercase sm:opacity-80 relative">
                         {title}
                         <div className="h-0.5 w-1/2 bg-gradient-to-r from-pink-500 to-transparent sm:hidden mt-0.5" />
+                        <span className="hidden sm:block absolute -bottom-1 left-0 w-4 h-1 bg-pink-500 rounded-full" />
                     </h1>
-                    <div className="text-xs text-pink-500 dark:text-pink-400 font-body font-semibold uppercase tracking-widest mt-1 min-h-[1.5em] hidden sm:flex items-center gap-1.5">
+                    <div className="text-[10px] sm:text-xs text-pink-500 dark:text-pink-400 font-body font-semibold uppercase tracking-widest mt-1 min-h-[1.5em] flex items-center gap-1.5 transition-all">
                         <span>Chal chal chal</span>
                         <span className="w-1 h-1 rounded-full bg-pink-300 dark:bg-pink-600" />
                         <AnimatePresence mode="wait">
@@ -112,7 +113,7 @@ export function Header() {
                                 initial={{ opacity: 0, y: 5 }}
                                 animate={{ opacity: 0.7, y: 0 }}
                                 exit={{ opacity: 0, y: -5 }}
-                                className="lowercase font-medium"
+                                className="lowercase font-medium hidden sm:inline-block"
                             >
                                 {SUBTITLES[subtitleIndex]}
                             </motion.span>
@@ -124,7 +125,7 @@ export function Header() {
                     <motion.div 
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="hidden sm:flex items-center gap-1.5 md:gap-2 bg-pink-500 text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] px-2 md:px-4 py-1.5 md:py-2 rounded-full shadow-glow animate-pulse"
+                        className="hidden lg:flex items-center gap-1.5 md:gap-2 bg-pink-500 text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] px-2 md:px-4 py-1.5 md:py-2 rounded-full shadow-glow animate-glow"
                     >
                         <Sparkles className="w-2.5 h-2.5 md:w-3 md:h-3" />
                         <span className="hidden xs:inline">Shared Focus:</span> Design
@@ -134,7 +135,7 @@ export function Header() {
                 <div className="flex items-center space-x-4">
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogTrigger asChild>
-                            <button className="flex items-center space-x-2 bg-night-50 dark:bg-muted hover:bg-white dark:hover:bg-muted/80 pl-1 pr-1 sm:pr-3 py-1 rounded-full border border-night-100 dark:border-border transition-all shadow-sm hover:shadow-md group">
+                            <button className="flex items-center space-x-2 bg-night-50 dark:bg-muted hover:bg-white dark:hover:bg-muted/80 pl-1 pr-1 sm:pr-3 py-1 min-h-[44px] sm:min-h-0 rounded-full border border-night-100 dark:border-border transition-all shadow-sm hover:shadow-md group">
                                 <div className="flex -space-x-1.5">
                                     <div className={cn(
                                         "w-8 h-8 rounded-full border-2 border-white overflow-hidden flex items-center justify-center text-sm shadow-sm transition-all relative bg-blue-100",

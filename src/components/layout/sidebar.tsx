@@ -30,7 +30,7 @@ export function Sidebar() {
     return (
         <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 left-0 bg-transparent py-6 px-6 overflow-y-auto">
             <div className="flex items-center space-x-3 mb-10 px-2 group cursor-default">
-                <div className="w-10 h-10 rounded-2xl bg-night-950 dark:bg-primary/20 flex items-center justify-center text-white dark:text-primary font-display font-bold text-xl shadow-lg group-hover:scale-105 transition-transform">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white font-display font-bold text-xl shadow-lg group-hover:scale-105 transition-all duration-300">
                     D
                 </div>
                 <div className="flex flex-col">
@@ -45,13 +45,13 @@ export function Sidebar() {
                     const Icon = item.icon
 
                     return (
-                        <Link key={item.href} href={item.href}>
+                        <Link key={item.href} href={item.href} title={item.label}>
                             <motion.div
                                 whileHover={{ x: 4 }}
                                 className={cn(
-                                    "flex items-center space-x-4 px-4 py-3 rounded-2xl transition-all duration-300 group",
+                                    "flex items-center space-x-4 px-4 py-3 rounded-2xl transition-all duration-300 group relative overflow-hidden",
                                     isActive
-                                        ? "bg-white dark:bg-card shadow-soft text-night-950 dark:text-foreground font-display font-semibold"
+                                        ? "bg-white dark:bg-card shadow-soft text-night-950 dark:text-foreground font-display font-semibold border-l-4 border-pink-500 rounded-l-none"
                                         : "text-night-600 dark:text-muted-foreground hover:text-night-900 dark:hover:text-foreground hover:bg-white/60 dark:hover:bg-muted/50"
                                 )}
                             >
@@ -86,9 +86,9 @@ export function Sidebar() {
                             <span className="text-[10px] text-night-500 dark:text-muted-foreground font-body font-bold uppercase tracking-widest">{currentPerson} active</span>
                         </div>
                     </div>
-                    <div className="bg-white dark:bg-card px-3 py-1.5 rounded-2xl border border-night-100 dark:border-border flex items-center space-x-1.5 shadow-soft">
-                        <span className="text-lg font-black text-orange-500 leading-none">{streak?.currentStreak || 0}</span>
-                        <span className="text-base">🔥</span>
+                    <div className="bg-white dark:bg-card px-3 py-2 rounded-2xl border border-night-100 dark:border-border flex items-center space-x-1.5 shadow-soft">
+                        <span className="text-2xl font-black text-orange-500 leading-none">{streak?.currentStreak || 0}</span>
+                        <span className={cn("text-xl", (streak?.currentStreak || 0) > 7 && "animate-bounce inline-block")}>🔥</span>
                     </div>
                 </div>
 

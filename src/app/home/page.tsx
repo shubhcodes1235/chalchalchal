@@ -48,7 +48,7 @@ export default function HomePage() {
 
     return (
         <PageWrapper className={cn(
-            "flex flex-col items-center max-w-5xl mx-auto space-y-8 md:space-y-16 pt-4 md:pt-8 pb-24 md:pb-32 px-4 transition-colors duration-1000",
+            "flex flex-col items-center max-w-5xl mx-auto space-y-8 md:space-y-12 pt-4 md:pt-8 pb-24 md:pb-32 px-4 transition-colors duration-1000",
             isSharedFocus && "dark:shadow-[inset_0_0_100px_rgba(233,30,99,0.15)] rounded-3xl"
         )}>
 
@@ -57,7 +57,7 @@ export default function HomePage() {
             <section className="w-full flex flex-col items-center text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 mt-4">
                 
                 {/* Connectivity Badge */}
-                <div className="flex items-center space-x-3 bg-white/60 dark:bg-card/60 backdrop-blur-md border border-pink-100/50 dark:border-night-800 px-4 py-2 rounded-full shadow-sm">
+                <div className="flex lg:hidden items-center space-x-3 bg-white/60 dark:bg-card/60 backdrop-blur-md border border-pink-100/50 dark:border-night-800 px-4 py-2 rounded-full shadow-sm">
                     <div className="flex -space-x-2">
                         <div className={cn("w-8 h-8 rounded-full overflow-hidden border-2 border-white dark:border-card flex items-center justify-center shadow-sm bg-blue-100 dark:bg-blue-900 transition-transform", isShubham || isBoth ? "scale-110 z-10" : "opacity-50 grayscale")}>
                             <Image src="/shubham.jpg" alt="Shubham" width={32} height={32} className="w-full h-full object-cover" />
@@ -82,7 +82,7 @@ export default function HomePage() {
                     </h1>
                 </div>
 
-                <div className="space-y-6 max-w-2xl mx-auto">
+                <div className="space-y-6 max-w-xl mx-auto">
                     <p className="text-lg md:text-xl font-bold text-night-600/80 dark:text-night-400 leading-relaxed px-4">
                         Financial freedom, endless opportunities, and a life designed entirely by us. Every design, every small step is building the dream.
                     </p>
@@ -91,13 +91,13 @@ export default function HomePage() {
                 {/* Primary Action */}
                 <div className="pt-2 w-full flex flex-col sm:flex-row items-center justify-center gap-4 px-2">
                     <Link href="/upload" className="w-full sm:w-auto">
-                        <Button className="w-full sm:w-auto h-16 px-10 rounded-full bg-night-950 dark:bg-white text-white dark:text-night-950 hover:bg-night-800 dark:hover:bg-night-100 text-lg font-black tracking-tight shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                        <Button className="w-full sm:w-auto h-14 sm:h-16 px-10 rounded-full bg-night-950 dark:bg-white text-white dark:text-night-950 hover:bg-night-800 dark:hover:bg-night-100 text-lg font-black tracking-tight shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
                             Push Today&apos;s Work
                             <ArrowRight className="ml-3 w-5 h-5" />
                         </Button>
                     </Link>
                     <Link href="/board" className="w-full sm:w-auto">
-                        <Button variant="outline" className="w-full sm:w-auto h-16 px-10 rounded-full bg-white/50 dark:bg-card/50 border-2 border-night-100 dark:border-night-800 hover:border-pink-300 dark:hover:border-pink-500 hover:bg-white dark:hover:bg-card text-night-900 dark:text-white text-lg font-black tracking-tight transition-all duration-300">
+                        <Button variant="outline" className="w-full sm:w-auto h-14 sm:h-16 px-10 rounded-full bg-white/50 dark:bg-card/50 border-2 border-night-100 dark:border-night-800 hover:border-pink-300 dark:hover:border-pink-500 hover:bg-white dark:hover:bg-card text-night-900 dark:text-white text-lg font-black tracking-tight transition-all duration-300">
                             Leave a Note 📝
                         </Button>
                     </Link>
@@ -168,7 +168,7 @@ export default function HomePage() {
 
             {/* 5. LIVE CONNECTIVITY FEED */}
             {showContent && (
-                <section className="w-full max-w-4xl mx-auto pt-8 md:pt-16 relative animate-in fade-in duration-700 delay-500">
+                <section className="w-full max-w-4xl mx-auto pt-8 md:pt-12 relative animate-in fade-in duration-700 delay-500">
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-[2px] bg-gradient-to-r from-transparent via-pink-400 to-transparent opacity-50"></div>
                     <div className="text-center mb-8 md:mb-10 mt-4 md:mt-0">
                         <h3 className="text-xl font-black text-night-900 dark:text-white tracking-tight">Our Live Thread</h3>
@@ -181,7 +181,7 @@ export default function HomePage() {
             )}
 
             {/* 6. FOOTER REMINDER */}
-            <section className="w-full pt-16 pb-10 animate-in fade-in duration-1000 delay-700">
+            <section className="w-full pt-12 pb-10 animate-in fade-in duration-1000 delay-700">
                 <div className="text-center space-y-6">
                     <p className="font-display text-2xl md:text-3xl font-black text-night-400 dark:text-night-500 tracking-tight">
                         "Chal chal chal — the world is ours to explore."

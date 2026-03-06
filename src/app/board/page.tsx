@@ -136,6 +136,8 @@ export default function BoardPage() {
 
             setIsTaskDialogOpen(false)
             setTaskFormData({ title: "", description: "", priority: "medium", deadline: "" })
+            const { toast } = await import('react-hot-toast');
+            toast.success("Task added! Let's get to work! 🎯");
         } catch (error) {
             console.error("Failed to add task:", error)
         }
@@ -178,6 +180,8 @@ export default function BoardPage() {
 
             setIsDialogOpen(false)
             setFormData({ content: "", type: "thought", color: NOTE_COLORS[0], isPinned: false, linkedUrl: "" })
+            const { toast } = await import('react-hot-toast');
+            toast.success("Note posted to the board! 🌸");
         } catch (error) {
             console.error("Failed to add note:", error)
         }
@@ -257,7 +261,7 @@ export default function BoardPage() {
                                                     type="button"
                                                     onClick={() => setFormData(prev => ({ ...prev, type: type.id }))}
                                                     className={cn(
-                                                        "p-3 rounded-xl transition-all border-2",
+                                                        "p-3 rounded-xl transition-all border-2 focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2 outline-none",
                                                         formData.type === type.id
                                                         ? "bg-night-950 border-night-950 text-white shadow-md scale-105"
                                                         : "bg-muted border-border text-muted-foreground hover:border-muted-foreground"
@@ -279,7 +283,7 @@ export default function BoardPage() {
                                                     type="button"
                                                     onClick={() => setFormData(prev => ({ ...prev, color }))}
                                                     className={cn(
-                                                        "w-8 h-8 rounded-lg border-2 transition-all shadow-sm",
+                                                        "w-8 h-8 rounded-lg border-2 transition-all shadow-sm focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2 outline-none",
                                                         color,
                                                         formData.color === color ? "scale-110 border-night-950 shadow-md" : "border-transparent"
                                                     )}
@@ -366,9 +370,9 @@ export default function BoardPage() {
             </div>
 
             {/* Filters Section */}
-            <div className="flex flex-col space-y-3 py-2 md:py-4 relative">
-                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none z-10" />
-                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 pr-8">
+            <div className="sticky top-[64px] z-30 bg-background/95 backdrop-blur-sm -mx-4 px-4 py-3 md:relative md:top-0 md:bg-transparent md:mx-0 md:px-0 md:py-4 transition-all flex flex-col space-y-3">
+                <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background via-background/50 to-transparent pointer-events-none z-10 md:hidden" />
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 pr-12">
                     {/* Person Toggle */}
                     <div className="flex bg-muted border border-border rounded-full p-1 shrink-0">
                         {[
@@ -380,7 +384,7 @@ export default function BoardPage() {
                                 key={p.id}
                                 onClick={() => setActivePerson(p.id)}
                                 className={cn(
-                                    "px-3 py-1 rounded-full text-[10px] md:text-sm font-black uppercase tracking-tighter transition-all flex items-center gap-1.5 whitespace-nowrap",
+                                    "px-3 py-1 rounded-full text-[10px] md:text-sm font-black uppercase tracking-tighter transition-all flex items-center gap-1.5 whitespace-nowrap focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2 outline-none",
                                     activePerson === p.id ? "bg-night-950 text-white" : "text-night-600 hover:text-night-600"
                                 )}
                             >
@@ -428,13 +432,13 @@ export default function BoardPage() {
 
             {/* Grid Section */}
             {isLoading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                     {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                        <div key={i} className="h-[240px] rounded-[2.5rem] bg-muted animate-pulse border border-border" />
+                        <div key={i} className="h-[240px] rounded-[2.5rem] skeleton-shimmer border border-border/50" />
                     ))}
                 </div>
             ) : viewMode === 'notes' ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
                 <AnimatePresence mode="popLayout">
                     {sortedNotes.map((note) => (
                         <motion.div
@@ -448,7 +452,7 @@ export default function BoardPage() {
                             <Card className={cn(
                                 "h-full min-h-[240px] transition-all transform border shadow-sm rounded-3xl overflow-hidden",
                                 note.color,
-                                note.isPinned ? "border-night-950/20 shadow-md rotate-[0.5deg] sm:rotate-1" : "border-black/5 -rotate-[0.5deg] sm:-rotate-1 hover:rotate-0"
+                                note.isPinned ? "border-night-950/20 shadow-md" : "border-black/5 hover:shadow-md"
                             )}>
                                 <CardContent className="p-4 md:p-6 h-full flex flex-col justify-between">
                                     <div className="space-y-4">
@@ -504,7 +508,7 @@ export default function BoardPage() {
                                                         await deleteNoteFromFirebase(note.id);
                                                     }
                                                 }}
-                                                className="p-1.5 hover:bg-red-500 hover:text-white rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                                className="p-1.5 hover:bg-red-500 hover:text-white rounded-lg transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
                                             </button>
@@ -569,9 +573,29 @@ export default function BoardPage() {
                                             message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} just ${newState ? 'completed' : 'uncompleted'} the task: "${task.title.substring(0, 30)}${task.title.length > 30 ? '...' : ''}" ${newState ? '✅' : '🔄'}`
                                         });
                                     }}
-                                    className="flex-shrink-0 text-pink-500 hover:scale-110 transition-transform"
+                                    className="flex-shrink-0 p-2 -m-2 text-pink-500 hover:scale-110 transition-transform"
                                 >
-                                    {task.isCompleted ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-circle-2 text-pink-500"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4" stroke="white" strokeWidth="3"/></svg> : <div className="w-6 h-6 rounded-full border-2 border-night-200"></div>}
+                                    {task.isCompleted ? (
+                                        <motion.svg 
+                                            initial={{ scale: 0.5, opacity: 0 }}
+                                            animate={{ scale: 1, opacity: 1 }}
+                                            xmlns="http://www.w3.org/2000/svg" 
+                                            width="28" height="28" viewBox="0 0 24 24" 
+                                            fill="currentColor" stroke="currentColor" 
+                                            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" 
+                                            className="lucide lucide-check-circle-2 text-pink-500"
+                                        >
+                                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                                            <motion.path 
+                                                initial={{ pathLength: 0 }}
+                                                animate={{ pathLength: 1 }}
+                                                transition={{ duration: 0.3, delay: 0.1 }}
+                                                d="m9 12 2 2 4-4" stroke="white" strokeWidth="3"
+                                            />
+                                        </motion.svg>
+                                    ) : (
+                                        <div className="w-7 h-7 rounded-full border-2 border-night-200 bg-white hover:border-pink-300 transition-colors shadow-inner"></div>
+                                    )}
                                 </button>
                                 <div className="flex-1 min-w-0">
                                     <p className={cn("text-lg font-bold truncate", task.isCompleted ? "line-through text-night-400" : "text-night-950")}>
@@ -674,12 +698,29 @@ export default function BoardPage() {
                 <div className="relative py-20 px-8 rounded-[4rem] border border-dashed border-night-200 bg-night-50/50 backdrop-blur-sm flex flex-col items-center text-center space-y-8 overflow-hidden">
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 10px 10px, #000 2px, transparent 0)', backgroundSize: '24px 24px' }} />
                     <div className="space-y-3 relative z-10">
-                        <div className="text-5xl mb-6">🎯</div>
+                        <div className="text-6xl mb-6 animate-bounce-gentle">🎯</div>
                         <h3 className="text-3xl font-black text-night-950 tracking-tight">No tasks yet.</h3>
                         <p className="text-night-500 font-bold max-w-sm mx-auto text-sm">
-                            Add a to-do item for yourself or your partner.
+                            Add a to-do item for yourself or your partner. Big dreams start with small steps.
                         </p>
                     </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-xl relative z-10">
+                        {[
+                            { title: "Today's Focus", prompt: "What's the #1 thing to get done today?", icon: "⚡" },
+                            { title: "Partner Goal", prompt: "Assign a fun little task for Khushi/Shubham.", icon: "💎" }
+                        ].map((p, i) => (
+                            <div key={i} className="bg-white p-6 rounded-[2rem] shadow-sm border border-night-100 text-left space-y-2 hover:border-pink-200 transition-all group cursor-pointer" onClick={() => {
+                                setTaskFormData(prev => ({ ...prev, title: p.prompt }));
+                                setIsTaskDialogOpen(true);
+                            }}>
+                                <div className="text-2xl">{p.icon}</div>
+                                <h4 className="text-xs font-black uppercase tracking-widest text-night-900">{p.title}</h4>
+                                <p className="text-xs text-night-600 font-bold leading-relaxed group-hover:text-night-900 transition-colors">{p.prompt}</p>
+                            </div>
+                        ))}
+                    </div>
+
                     <Button
                         size="lg"
                         onClick={() => setIsTaskDialogOpen(true)}

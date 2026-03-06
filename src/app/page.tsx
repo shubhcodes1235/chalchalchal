@@ -124,21 +124,23 @@ export default function EntryPage() {
                     >
                       <Card
                         hover
-                        className="cursor-pointer group relative overflow-hidden bg-white rounded-3xl h-full border-2 border-transparent hover:border-pink-300 transition-colors shadow-sm hover:shadow-xl"
+                        className="cursor-pointer group relative overflow-hidden bg-white/80 dark:bg-night-950/40 backdrop-blur-sm rounded-3xl h-full border-2 border-transparent hover:border-pink-300 ring-0 hover:ring-4 hover:ring-pink-500/10 transition-all duration-500 shadow-sm hover:shadow-2xl"
                         onClick={() => handlePersonSelect(p.id as 'shubham' | 'khushi')}
                       >
                         <CardContent className="p-4 sm:p-8 flex flex-col items-center space-y-4 sm:space-y-6">
-                          <div className={cn("w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-rose-glow border-[3px] sm:border-4 border-white", p.bg)}>
-                            <Image src={p.image} alt={p.name} width={112} height={112} className="w-full h-full object-cover" />
+                          <div className={cn("w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-rose-glow border-[3px] sm:border-4 border-white relative", p.bg)}>
+                            <div className="absolute inset-0 skeleton-shimmer opacity-20 group-hover:opacity-40 transition-opacity" />
+                            <Image src={p.image} alt={p.name} width={112} height={112} className="w-full h-full object-cover relative z-10" />
                           </div>
                           <div className="flex flex-col space-y-1">
-                            <span className="text-2xl font-poppins font-bold tracking-tight text-deep-plum">{p.name}</span>
+                            <span className="text-2xl font-poppins font-bold tracking-tight text-deep-plum transition-colors group-hover:text-pink-600">{p.name}</span>
                             <span className="text-xs uppercase tracking-widest font-bold text-raspberry/60">Let&apos;s do this!</span>
                           </div>
 
                           {isPartnerWaiting && (
-                             <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                               <span className="text-xs uppercase tracking-wider bg-raspberry/10 px-2 py-1 rounded-full text-raspberry font-black animate-pulse">
+                             <div className="absolute top-4 right-4 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500">
+                               <span className="text-[10px] sm:text-xs uppercase tracking-wider bg-raspberry/10 px-2 py-1 rounded-full text-raspberry font-black animate-pulse flex items-center gap-1 shadow-sm">
+                                 <span className="w-1.5 h-1.5 rounded-full bg-raspberry" />
                                  {partnerName} waiting 🌸
                                </span>
                              </div>

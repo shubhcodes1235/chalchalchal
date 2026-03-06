@@ -6,8 +6,8 @@
 
 @layer base {
   :root {
-    --background: 340 60% 98%;
-    /* Warmer blush tint */
+    --background: 330 50% 97%;
+    /* Proposed: creamier blush */
     --foreground: 335 40% 15%;
     /* Dark Plum Text */
 
@@ -17,8 +17,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 335 40% 15%;
 
-    --primary: 338 88% 58%;
-    /* Richer raspberry red */
+    --primary: 335 90% 55%;
+    /* Proposed: slightly deeper, richer */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 260 80% 95%;
@@ -45,18 +45,18 @@
   }
 
   .dark {
-    /* Deep rich plum — not pitch black */
-    --background: 270 28% 9%;
+    /* Proposed: denser & moodier */
+    --background: 265 32% 8%;
     --foreground: 0 0% 95%;
 
-    /* Cards clearly lifted from the background */
-    --card: 268 25% 17%;
+    /* Proposed: more contrast from bg */
+    --card: 265 28% 15%;
     --card-foreground: 0 0% 93%;
 
     --popover: 285 30% 13%;
     --popover-foreground: 0 0% 93%;
 
-    --primary: 338 95% 68%;
+    --primary: 335 95% 68%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 285 25% 18%;
@@ -150,12 +150,7 @@
   }
   @media (max-width: 640px) {
     body {
-      background-image:
-        linear-gradient(rgba(233, 30, 99, 0.04) 1.5px, transparent 1.5px),
-        linear-gradient(90deg, rgba(233, 30, 99, 0.04) 1.5px, transparent 1.5px);
-      background-size:
-        60px 60px,
-        60px 60px;
+      background-image: none !important;
     }
   }
 }
@@ -343,4 +338,46 @@
 /* Transition Presets */
 .page-transition {
   @apply animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out;
+}
+
+/* Vibrant gradient for CTAs */
+.btn-gradient {
+  background: linear-gradient(135deg, hsl(335, 90%, 55%), hsl(20, 100%, 60%));
+  color: white;
+}
+
+/* Glow animation for featured badges */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(233, 30, 99, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(233, 30, 99, 0.7);
+  }
+}
+
+.animate-glow {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Shimmer animation for skeletons */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 25%,
+    hsl(var(--muted-foreground) / 0.1) 50%,
+    hsl(var(--muted)) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }
