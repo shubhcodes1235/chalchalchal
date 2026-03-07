@@ -18,6 +18,7 @@ import Image from "next/image"
 import { useAppStore } from "@/lib/store/app-store"
 import { logActivityToFirebase } from "@/lib/firebase/services/activity"
 import { getPersonName } from "@/lib/utils/person"
+import { PERSONS } from "@/lib/constants/persons"
 
 export default function SettingsPage() {
     const { currentPerson, setCurrentPerson } = useAppStore()
@@ -207,9 +208,8 @@ export default function SettingsPage() {
                     <CardContent className="p-4 sm:p-6">
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                             {[
-                                { id: 'shubham', label: 'Shubham', image: '/shubham.jpg', color: 'blue' },
-                                { id: 'khushi', label: 'Khushi', image: '/khushi.jpg', color: 'pink' },
-                                { id: 'both', label: 'Together', icon: <span className="text-2xl">✨</span>, color: 'purple' }
+                                ...PERSONS.map(p => ({ ...p, color: p.id === 'shubham' ? 'blue' : 'pink' })),
+                                { id: 'both', label: 'Together', icon: <span className="text-2xl">✨</span>, color: 'purple', image: undefined }
                             ].map((p) => (
                                 <button
                                     key={p.id}
@@ -529,11 +529,11 @@ export default function SettingsPage() {
                 <div className="pt-12 text-center space-y-6">
                     <div className="flex justify-center items-center gap-4">
                         <div className="w-16 h-16 rounded-full border-[3px] border-white overflow-hidden bg-blue-100 flex items-center justify-center shadow-lg -rotate-6">
-                            <Image src="/shubham.jpg" alt="S" width={64} height={64} className="w-full h-full object-cover" />
+                            <Image src={PERSONS[0].image} alt="S" width={64} height={64} className="w-full h-full object-cover" />
                         </div>
                         <div className="text-2xl animate-pulse">✨</div>
                         <div className="w-16 h-16 rounded-full border-[3px] border-white overflow-hidden bg-pink-100 flex items-center justify-center shadow-lg rotate-6">
-                            <Image src="/khushi.jpg" alt="K" width={64} height={64} className="w-full h-full object-cover" />
+                            <Image src={PERSONS[1].image} alt="K" width={64} height={64} className="w-full h-full object-cover" />
                         </div>
                     </div>
                     <div className="space-y-1">

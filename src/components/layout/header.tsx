@@ -104,7 +104,7 @@ export function Header() {
                                 initial={{ opacity: 0, y: 5 }}
                                 animate={{ opacity: 0.7, y: 0 }}
                                 exit={{ opacity: 0, y: -5 }}
-                                className="lowercase font-medium hidden sm:inline-block"
+                                className="lowercase font-medium"
                             >
                                 {SUBTITLES[subtitleIndex]}
                             </motion.span>

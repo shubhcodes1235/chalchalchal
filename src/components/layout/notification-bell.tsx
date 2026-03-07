@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Bell, Sparkles, MessageSquare, Heart, Trophy, Target, Zap } from "lucide-react";
 import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
@@ -26,6 +26,7 @@ export function NotificationBell() {
     const [unreadCount, setUnreadCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const [lastSeen, setLastSeen] = useState<number>(0);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const localStorageKey = `last_seen_activity_${currentPerson}`;
 
@@ -70,6 +71,25 @@ export function NotificationBell() {
         }
     };
 
+    // Close on click outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isOpen]);
+
     const partnerPerson = currentPerson === 'shubham' ? 'khushi' : (currentPerson === 'khushi' ? 'shubham' : null);
     
     // Split activities into New and Earlier
@@ -85,7 +105,7 @@ export function NotificationBell() {
     });
 
     return (
-        <div className="relative">
+        <div className="relative" ref={containerRef}>
             <button 
                 onClick={toggleOpen}
                 className="relative p-2 rounded-xl text-night-600 dark:text-muted-foreground hover:bg-night-50 dark:hover:bg-muted transition-all group"
@@ -104,67 +124,64 @@ export function NotificationBell() {
 
             <AnimatePresence>
                 {isOpen && (
-                    <>
-                        <div className="fixed inset-0 z-30" onClick={() => setIsOpen(false)} />
-                        <motion.div
-                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute right-0 mt-2 w-80 z-40 bg-white dark:bg-card rounded-[2rem] overflow-hidden border border-night-100 dark:border-border shadow-2xl"
-                        >
-                            <div className="p-4 border-b border-night-50 dark:border-night-800 bg-night-50/50 dark:bg-night-900/50 backdrop-blur-sm flex justify-between items-center">
-                                <h3 className="text-[10px] font-black uppercase tracking-widest text-night-950 dark:text-foreground flex items-center gap-2">
-                                    <Sparkles className="w-3 h-3 text-pink-500" />
-                                    Recap & Updates
-                                </h3>
-                            </div>
-                            
-                            <div className="max-h-[400px] overflow-y-auto no-scrollbar">
-                                {allActivities.length === 0 ? (
-                                    <div className="p-10 text-center space-y-2">
-                                        <p className="text-2xl opacity-20">🔔</p>
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-night-400">No activity yet</p>
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col">
-                                        {/* New Items Section */}
-                                        {newItems.length > 0 && (
-                                            <div className="bg-pink-500/5 dark:bg-pink-500/10">
-                                                <div className="px-4 py-2 border-b border-pink-100 dark:border-pink-900/30">
-                                                    <span className="text-[9px] font-black uppercase tracking-widest text-pink-600 dark:text-pink-400 flex items-center gap-1.5">
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-pink-500 shadow-[0_0_8px_rgb(236,72,153,0.5)]" />
-                                                        New Updates
-                                                    </span>
-                                                </div>
-                                                {newItems.map((activity) => (
-                                                    <ActivityItem key={activity.id} activity={activity} isNew />
-                                                ))}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className="absolute right-0 mt-2 w-80 z-40 bg-white dark:bg-card rounded-[2rem] overflow-hidden border border-night-100 dark:border-border shadow-2xl"
+                    >
+                        <div className="p-4 border-b border-night-50 dark:border-night-800 bg-night-50/50 dark:bg-night-900/50 backdrop-blur-sm flex justify-between items-center">
+                            <h3 className="text-[10px] font-black uppercase tracking-widest text-night-950 dark:text-foreground flex items-center gap-2">
+                                <Sparkles className="w-3 h-3 text-pink-500" />
+                                Recap & Updates
+                            </h3>
+                        </div>
+                        
+                        <div className="max-h-[400px] overflow-y-auto no-scrollbar">
+                            {allActivities.length === 0 ? (
+                                <div className="p-10 text-center space-y-2">
+                                    <p className="text-2xl opacity-20">🔔</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-night-400">No activity yet</p>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col">
+                                    {/* New Items Section */}
+                                    {newItems.length > 0 && (
+                                        <div className="bg-pink-500/5 dark:bg-pink-500/10">
+                                            <div className="px-4 py-2 border-b border-pink-100 dark:border-pink-900/30">
+                                                <span className="text-[9px] font-black uppercase tracking-widest text-pink-600 dark:text-pink-400 flex items-center gap-1.5">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-pink-500 shadow-[0_0_8px_rgb(236,72,153,0.5)]" />
+                                                    New Updates
+                                                </span>
                                             </div>
-                                        )}
+                                            {newItems.map((activity) => (
+                                                <ActivityItem key={activity.id} activity={activity} isNew />
+                                            ))}
+                                        </div>
+                                    )}
 
-                                        {/* Earlier Items Section */}
-                                        {earlierItems.length > 0 && (
-                                            <div className="divide-y divide-night-50 dark:divide-night-800">
-                                                {newItems.length > 0 && (
-                                                    <div className="px-4 py-2 bg-night-50 dark:bg-night-900/50 border-b border-night-100 dark:border-night-800">
-                                                        <span className="text-[9px] font-black uppercase tracking-widest text-night-400">Earlier</span>
-                                                    </div>
-                                                )}
-                                                {earlierItems.map((activity) => (
-                                                    <ActivityItem key={activity.id} activity={activity} isNew={false} />
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                            <div className="p-3 bg-night-50/50 dark:bg-night-900/50 text-center border-t border-night-50 dark:border-night-800">
-                                <button className="text-[9px] font-black uppercase tracking-widest text-night-400 hover:text-pink-500 transition-colors">
-                                    All caught up ✨
-                                </button>
-                            </div>
-                        </motion.div>
-                    </>
+                                    {/* Earlier Items Section */}
+                                    {earlierItems.length > 0 && (
+                                        <div className="divide-y divide-night-50 dark:divide-night-800">
+                                            {newItems.length > 0 && (
+                                                <div className="px-4 py-2 bg-night-50 dark:bg-night-900/50 border-b border-night-100 dark:border-night-800">
+                                                    <span className="text-[9px] font-black uppercase tracking-widest text-night-400">Earlier</span>
+                                                </div>
+                                            )}
+                                            {earlierItems.map((activity) => (
+                                                <ActivityItem key={activity.id} activity={activity} isNew={false} />
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                        <div className="p-3 bg-night-50/50 dark:bg-night-900/50 text-center border-t border-night-50 dark:border-night-800">
+                            <button className="text-[9px] font-black uppercase tracking-widest text-night-400 hover:text-pink-500 transition-colors">
+                                All caught up ✨
+                            </button>
+                        </div>
+                    </motion.div>
                 )}
             </AnimatePresence>
         </div>

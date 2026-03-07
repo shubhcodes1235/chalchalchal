@@ -17,6 +17,7 @@ import { ArrowRight, Sparkles, Coins, MapPin, TrendingUp, Flame, Radio } from "l
 import { useAppStore } from "@/lib/store/app-store"
 import { subscribeToPartnerPresence } from "@/lib/firebase/services/presence"
 import { cn } from "@/lib/utils/cn"
+import { PERSONS } from "@/lib/constants/persons"
 
 export default function HomePage() {
     const { currentPerson } = useAppStore()
@@ -65,11 +66,11 @@ export default function HomePage() {
                 <motion.div variants={itemVariants} className="flex items-center space-x-3 bg-white/60 dark:bg-card/60 backdrop-blur-md border border-pink-100/50 dark:border-night-800 px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex -space-x-2">
                         <div className={cn("w-8 h-8 rounded-full overflow-hidden border-2 border-white dark:border-card flex items-center justify-center shadow-sm bg-blue-100 dark:bg-blue-900 transition-transform relative", isShubham || isBoth ? "scale-110 z-10" : "opacity-50 grayscale")}>
-                            <Image src="/shubham.jpg" alt="Shubham" width={32} height={32} className="w-full h-full object-cover" />
+                            <Image src={PERSONS[0].image} alt="Shubham" width={32} height={32} className="w-full h-full object-cover" />
                             {(isShubham || isBoth) && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-night-950 animate-pulse" />}
                         </div>
                         <div className={cn("w-8 h-8 rounded-full overflow-hidden border-2 border-white dark:border-card flex items-center justify-center shadow-sm bg-pink-100 dark:bg-pink-900 transition-transform relative", isKhushi || isBoth ? "scale-110 z-10" : "opacity-50 grayscale")}>
-                            <Image src="/khushi.jpg" alt="Khushi" width={32} height={32} className="w-full h-full object-cover" />
+                            <Image src={PERSONS[1].image} alt="Khushi" width={32} height={32} className="w-full h-full object-cover" />
                             {(isKhushi || isBoth) && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-night-950 animate-pulse" />}
                         </div>
                     </div>

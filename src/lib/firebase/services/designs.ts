@@ -216,3 +216,9 @@ export async function updateDesignHype(id: string, newHypeCount: number) {
     const designRef = doc(db, "designs", id);
     await updateDoc(designRef, { hypeCount: newHypeCount });
 }
+
+export async function deleteDesignFromFirebase(id: string) {
+    const { deleteDoc } = await import("firebase/firestore"); // Dynamic import for safety/consistency if needed
+    const designRef = doc(db, "designs", id);
+    await deleteDoc(designRef);
+}

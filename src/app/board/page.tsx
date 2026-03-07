@@ -19,7 +19,7 @@ import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils/cn"
 import { formatDistanceToNow } from "date-fns"
-import { addNoteToFirebase, deleteNoteFromFirebase, togglePinInFirebase, subscribeToNotes, addNoteReactionToFirebase } from "@/lib/firebase/services/notes"
+import { addNoteToFirebase, deleteNoteFromFirebase, togglePinInFirebase, addNoteReactionToFirebase } from "@/lib/firebase/services/notes"
 import { logActivityToFirebase } from "@/lib/firebase/services/activity"
 import { addGoalToFirebase, deleteGoalFromFirebase, toggleGoalCompletionInFirebase } from "@/lib/firebase/services/goals"
 import { goalsRepo } from "@/lib/db/repositories/goals.repo"
@@ -29,6 +29,7 @@ import { useCelebration } from "@/providers/celebration-provider"
 import { doc, updateDoc } from "firebase/firestore"
 import { db as fDb } from "@/lib/firebase/config"
 import { getPersonName } from "@/lib/utils/person"
+import { PERSONS } from "@/lib/constants/persons"
 
 const NOTE_COLORS = [
     "bg-pink-100 dark:bg-pink-950/40 border-pink-200 dark:border-pink-900/50 text-pink-900 dark:text-pink-100",
@@ -367,7 +368,7 @@ export default function BoardPage() {
                                         name="task-deadline"
                                         value={taskFormData.deadline}
                                         onChange={e => setTaskFormData(prev => ({ ...prev, deadline: e.target.value }))}
-                                        className="w-full rounded-2xl border border-night-100 h-12 px-4 focus-visible:ring-night-200 text-night-950 font-bold bg-white"
+                                        className="w-full rounded-2xl border border-night-100 dark:border-night-800 h-12 px-4 focus-visible:ring-night-200 text-night-950 dark:text-foreground font-bold bg-white dark:bg-muted/30"
                                     />
                                 </div>
                                 <Button type="submit" className="w-full h-14 rounded-2xl text-lg font-black bg-night-950 hover:bg-night-800 tracking-tight">
@@ -383,13 +384,12 @@ export default function BoardPage() {
             {/* Filters Section */}
             <div className="sticky top-[64px] z-30 bg-background/95 backdrop-blur-sm -mx-4 px-4 py-3 md:relative md:top-0 md:bg-transparent md:mx-0 md:px-0 md:py-4 transition-all flex flex-col space-y-3">
                 <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background via-background/50 to-transparent pointer-events-none z-10 md:hidden" />
-                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 pr-12">
+                <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1 pr-12">
                     {/* Person Toggle */}
                     <div className="flex bg-muted border border-border rounded-full p-1 shrink-0">
                         {[
-                            { id: 'all', label: 'All', icon: <span className="text-xs">✨</span> },
-                            { id: 'shubham', label: 'Shubham', image: '/shubham.jpg' },
-                            { id: 'khushi', label: 'Khushi', image: '/khushi.jpg' }
+                            { id: 'all', label: 'All', icon: <span className="text-xs">✨</span>, image: undefined },
+                            ...PERSONS
                         ].map(p => (
                             <button
                                 key={p.id}
@@ -413,7 +413,7 @@ export default function BoardPage() {
                 </div>
 
                 {viewMode === 'notes' && (
-                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                    <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
                         <button
                             onClick={() => setFilterType('all')}
                             className={cn(
@@ -471,13 +471,13 @@ export default function BoardPage() {
                                             <div className="flex items-center space-x-2">
                                                 <div className="flex -space-x-2">
                                                     <div className={cn(
-                                                        "w-8 h-8 rounded-full border-2 border-white overflow-hidden flex items-center justify-center text-xs shadow-sm bg-blue-100",
+                                                        "w-8 h-8 rounded-full border-2 border-white dark:border-night-900 overflow-hidden flex items-center justify-center text-xs shadow-sm bg-blue-100",
                                                         note.person === 'shubham' ? "z-10" : "opacity-30 scale-90 grayscale"
                                                     )}>
                                                         <Image src="/shubham.jpg" alt="Shubham" width={32} height={32} className="w-full h-full object-cover" />
                                                     </div>
                                                     <div className={cn(
-                                                        "w-8 h-8 rounded-full border-2 border-white overflow-hidden flex items-center justify-center text-xs shadow-sm bg-pink-100",
+                                                        "w-8 h-8 rounded-full border-2 border-white dark:border-night-900 overflow-hidden flex items-center justify-center text-xs shadow-sm bg-pink-100",
                                                         note.person === 'khushi' ? "z-10" : "opacity-30 scale-90 grayscale"
                                                     )}>
                                                         <Image src="/khushi.jpg" alt="Khushi" width={32} height={32} className="w-full h-full object-cover" />
@@ -670,10 +670,10 @@ export default function BoardPage() {
                                     </p>
                                     <div className="flex flex-wrap items-center gap-2 mt-1">
                                         <div className="flex -space-x-1.5 shrink-0">
-                                            <div className={cn("w-5 h-5 rounded-full border border-white overflow-hidden flex items-center justify-center text-[10px] bg-muted", task.person === 'shubham' || task.person === 'shared' ? "z-10" : "opacity-30 grayscale")}>
+                                            <div className={cn("w-5 h-5 rounded-full border border-white dark:border-night-900 overflow-hidden flex items-center justify-center text-[10px] bg-muted", task.person === 'shubham' || task.person === 'shared' ? "z-10" : "opacity-30 grayscale")}>
                                                 <Image src="/shubham.jpg" alt="Shubham" width={20} height={20} className="w-full h-full object-cover" />
                                             </div>
-                                            <div className={cn("w-5 h-5 rounded-full border border-white overflow-hidden flex items-center justify-center text-[10px] bg-muted", task.person === 'khushi' || task.person === 'shared' ? "z-10" : "opacity-30 grayscale")}>
+                                            <div className={cn("w-5 h-5 rounded-full border border-white dark:border-night-900 overflow-hidden flex items-center justify-center text-[10px] bg-muted", task.person === 'khushi' || task.person === 'shared' ? "z-10" : "opacity-30 grayscale")}>
                                                 <Image src="/khushi.jpg" alt="Khushi" width={20} height={20} className="w-full h-full object-cover" />
                                             </div>
                                         </div>
@@ -746,13 +746,13 @@ export default function BoardPage() {
                             { title: "Personal note", prompt: "Write something you want them to remember.", icon: "💗" },
                             { title: "Daily reminder", prompt: "A reminder for the tough days ahead.", icon: "🎯" }
                         ].map((p, i) => (
-                            <div key={i} className="bg-white p-6 rounded-[2rem] shadow-sm border border-night-100 text-left space-y-2 hover:border-pink-200 transition-all group cursor-pointer" onClick={() => {
+                            <div key={i} className="bg-white dark:bg-card p-6 rounded-[2rem] shadow-sm border border-night-100 dark:border-night-800 text-left space-y-2 hover:border-pink-200 dark:hover:border-pink-500 transition-all group cursor-pointer" onClick={() => {
                                 setFormData(prev => ({ ...prev, content: p.prompt }));
                                 setIsDialogOpen(true);
                             }}>
                                 <div className="text-2xl">{p.icon}</div>
-                                <h4 className="text-xs font-black uppercase tracking-widest text-night-900">{p.title}</h4>
-                                <p className="text-xs text-night-600 font-bold leading-relaxed group-hover:text-night-900 transition-colors">{p.prompt}</p>
+                                <h4 className="text-xs font-black uppercase tracking-widest text-night-900 dark:text-foreground">{p.title}</h4>
+                                <p className="text-xs text-night-600 dark:text-night-400 font-bold leading-relaxed group-hover:text-night-900 dark:group-hover:text-foreground transition-colors">{p.prompt}</p>
                             </div>
                         ))}
                     </div>
@@ -783,13 +783,13 @@ export default function BoardPage() {
                             { title: "Today's Focus", prompt: "What's the #1 thing to get done today?", icon: "⚡" },
                             { title: "Partner Goal", prompt: "Assign a fun little task for Khushi/Shubham.", icon: "💎" }
                         ].map((p, i) => (
-                            <div key={i} className="bg-white p-6 rounded-[2rem] shadow-sm border border-night-100 text-left space-y-2 hover:border-pink-200 transition-all group cursor-pointer" onClick={() => {
+                            <div key={i} className="bg-white dark:bg-card p-6 rounded-[2rem] shadow-sm border border-night-100 dark:border-night-800 text-left space-y-2 hover:border-pink-200 dark:hover:border-pink-500 transition-all group cursor-pointer" onClick={() => {
                                 setTaskFormData(prev => ({ ...prev, title: p.prompt }));
                                 setIsTaskDialogOpen(true);
                             }}>
                                 <div className="text-2xl">{p.icon}</div>
-                                <h4 className="text-xs font-black uppercase tracking-widest text-night-900">{p.title}</h4>
-                                <p className="text-xs text-night-600 font-bold leading-relaxed group-hover:text-night-900 transition-colors">{p.prompt}</p>
+                                <h4 className="text-xs font-black uppercase tracking-widest text-night-900 dark:text-foreground">{p.title}</h4>
+                                <p className="text-xs text-night-600 dark:text-night-400 font-bold leading-relaxed group-hover:text-night-900 dark:group-hover:text-foreground transition-colors">{p.prompt}</p>
                             </div>
                         ))}
                     </div>

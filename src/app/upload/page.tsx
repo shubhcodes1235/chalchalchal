@@ -15,6 +15,7 @@ import { useCelebration } from "@/providers/celebration-provider"
 import { useSound } from "@/providers/sound-provider"
 import { createDesignInFirebase } from "@/lib/firebase/services/designs"
 import { logActivityToFirebase } from "@/lib/firebase/services/activity"
+import { getPersonName } from "@/lib/utils/person";
 import { v4 as uuidv4 } from "uuid";
 
 function UploadPageContent() {
@@ -93,7 +94,7 @@ function UploadPageContent() {
                 person: uploader as any,
                 type: 'upload',
                 title: 'New Design',
-                message: `Chal chal chal! 🎨 ${uploader === 'shubham' ? 'Shubham' : 'Khushi'} just uploaded a new masterpiece! Go be proud!`
+                message: `Chal chal chal! 🎨 ${getPersonName(uploader)} just uploaded a new masterpiece! Go be proud!`
             })
 
             // 3. Update Streak
