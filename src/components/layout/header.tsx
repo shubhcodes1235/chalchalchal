@@ -16,6 +16,7 @@ import Image from "next/image"
 import { EmergencyButton } from "@/components/layout/emergency-button"
 import { subscribeToPartnerStatus, subscribeToPartnerPresence } from "@/lib/firebase/services/presence"
 import { useMoodStore } from "@/lib/store/mood-store"
+import { NotificationBell } from "@/components/layout/notification-bell"
 
 
 const pageTitles: Record<string, string> = {
@@ -215,6 +216,8 @@ export function Header() {
                     </Dialog>
 
                     <div className="flex items-center space-x-1 border-l border-night-100 dark:border-border pl-3 md:pl-4 ml-1 md:ml-2">
+                        <NotificationBell />
+                        
                         {/* Settings icon */}
                         <Link href="/settings">
                             <Button

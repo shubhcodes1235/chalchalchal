@@ -9,6 +9,8 @@ import { useAppStore } from "@/lib/store/app-store";
 import { Heart, Flame, Star, Zap } from "lucide-react";
 import { addReactionToFirebase } from "@/lib/firebase/services/designs";
 
+import { toast } from "react-hot-toast";
+
 const REACTIONS = [
     { emoji: "🔥", label: "Fire", icon: Flame, color: "text-orange-400" },
     { emoji: "❤️", label: "Love", icon: Heart, color: "text-red-400" },
@@ -18,11 +20,10 @@ const REACTIONS = [
 
 export function PartnerFeed() {
     const { currentPerson } = useAppStore();
-    const [designs, setDesigns] = useState<Design[]>([]); // Use the Design type from service
+    const [designs, setDesigns] = useState<Design[]>([]);
     const [loading, setLoading] = useState(true);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    // If I am Shubham, I want to see Khushi's designs.
-    // If I am Khushi, I want to see Shubham's designs.
     const targetPersona = currentPerson === 'shubham' ? 'khushi' : currentPerson === 'khushi' ? 'shubham' : undefined;
 
     useEffect(() => {
@@ -37,9 +38,9 @@ export function PartnerFeed() {
     const handleReaction = async (designId: string, emoji: string) => {
         try {
             await addReactionToFirebase(designId, emoji, currentPerson);
+            toast.success(`Reacted with ${emoji}`);
         } catch (error) {
             console.error("Failed to add reaction:", error);
-            // Optionally show a toast here if you have a toast system
         }
     };
 
@@ -56,71 +57,114 @@ export function PartnerFeed() {
                     <p className="text-muted-foreground font-body font-medium italic">No updates yet! Time to create something? ✨</p>
                 </div>
             ) : (
-                <div className="grid gap-8">
-                    {designs.map((design, i) => (
-                        <motion.div
-                            key={design.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: Math.min(i * 0.1, 0.4) }}
-                            className="bg-white dark:bg-card group rounded-[2.5rem] overflow-hidden shadow-soft hover:shadow-glow transition-all duration-500 border-none"
-                        >
-                            <div className="relative aspect-video overflow-hidden">
-                                <Image
-                                    src={design.imageUrl}
-                                    alt={design.title}
-                                    fill
-                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                />
-                                <div className="absolute top-6 right-6 bg-deep-plum/80 dark:bg-black/80 backdrop-blur text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">
-                                    {design.tool}
-                                </div>
-                            </div>
+                <div className="grid gap-12">
+                    {designs.map((design: Design, i) => {
+                        const isNew = !!design.createdAt && (new Date().getTime() - (design.createdAt as any).toDate().getTime()) < 86400000;
+                        
+                        return (
+                            <motion.div
+                                key={design.id}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, ease: "easeOut" }}
+                                className="bg-white dark:bg-card group rounded-[3rem] overflow-hidden shadow-soft hover:shadow-glow transition-all duration-500 border-none relative"
+                            >
+                                {isNew && (
+                                    <div className="absolute top-6 left-6 z-20 flex items-center gap-1.5 bg-pink-500 text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg animate-pulse">
+                                        <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping" />
+                                        NEW UPDATE
+                                    </div>
+                                )}
 
-                            <div className="p-8 space-y-4">
-                                <div className="space-y-1">
-                                    <h3 className="text-2xl font-display font-bold text-night-950 dark:text-foreground leading-tight">{design.title}</h3>
-                                    {design.description && <p className="text-night-500 dark:text-muted-foreground font-body font-medium text-sm">{design.description}</p>}
+                                <div 
+                                    className="relative aspect-[4/3] md:aspect-video overflow-hidden cursor-zoom-in"
+                                    onClick={() => setSelectedImage(design.imageUrl)}
+                                >
+                                    <Image
+                                        src={design.imageUrl}
+                                        alt={design.title}
+                                        fill
+                                        className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-night-950/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                    <div className="absolute top-6 right-6 bg-white/20 backdrop-blur-md border border-white/30 text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest translate-x-4 group-hover:translate-x-0 transition-transform duration-500">
+                                        {design.tool}
+                                    </div>
                                 </div>
 
-                                <div className="flex flex-wrap gap-2 pt-2">
-                                    {design.tags?.map(tag => (
-                                        <span key={tag} className="text-xs font-black uppercase tracking-widest bg-pink-50 dark:bg-pink-900/30 text-pink-500 dark:text-pink-400 px-3 py-1 rounded-full border border-pink-100 dark:border-pink-800/50">#{tag}</span>
-                                    ))}
-                                </div>
+                                <div className="p-8 md:p-10 space-y-6">
+                                    <div className="space-y-2">
+                                        <h3 className="text-2xl md:text-3xl font-display font-black text-night-950 dark:text-foreground leading-tight tracking-tight">{design.title}</h3>
+                                        {design.description && <p className="text-night-500 dark:text-muted-foreground font-body font-medium text-base leading-relaxed">{design.description}</p>}
+                                    </div>
 
-                                {/* Reactions Bar */}
-                                <div className="flex items-center gap-3 pt-6 border-t border-pink-50 dark:border-night-800">
-                                    {REACTIONS.map((r) => {
-                                        const count = design.reactions?.filter(x => x.emoji === r.emoji).length || 0;
-                                        const userReacted = design.reactions?.some(x => x.emoji === r.emoji && x.byPersona === currentPerson);
+                                    <div className="flex flex-wrap gap-2">
+                                        {design.tags?.map(tag => (
+                                            <span key={tag} className="text-[10px] font-black uppercase tracking-widest bg-pink-50 dark:bg-pink-900/30 text-pink-500 dark:text-pink-400 px-3 py-1.5 rounded-full border border-pink-100 dark:border-pink-800/50">#{tag}</span>
+                                        ))}
+                                    </div>
 
-                                        return (
-                                            <button
-                                                key={r.emoji}
-                                                onClick={() => handleReaction(design.id, r.emoji)}
-                                                className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${userReacted
-                                                ? 'bg-pink-100 dark:bg-pink-900/40 ring-1 ring-pink-300 dark:ring-pink-700'
-                                                : 'bg-muted dark:bg-muted/60 hover:bg-card dark:hover:bg-card hover:shadow-md'
-                                                }`}
-                                            >
-                                                <span className="text-xl">{r.emoji}</span>
-                                                {count > 0 && <span className="text-xs font-bold text-foreground/60">{count}</span>}
-                                            </button>
-                                        );
-                                    })}
+                                    {/* Reactions Bar */}
+                                    <div className="flex items-center gap-3 pt-6 border-t border-pink-50 dark:border-night-800">
+                                        {REACTIONS.map((r) => {
+                                            const count = design.reactions?.filter(x => x.emoji === r.emoji).length || 0;
+                                            const userReacted = design.reactions?.some(x => x.emoji === r.emoji && x.byPersona === currentPerson);
+
+                                            return (
+                                                <button
+                                                    key={r.emoji}
+                                                    onClick={() => handleReaction(design.id, r.emoji)}
+                                                    className={`flex items-center gap-2 px-5 py-2.5 rounded-full transition-all group/btn ${userReacted
+                                                    ? 'bg-pink-500 text-white shadow-lg shadow-pink-500/20'
+                                                    : 'bg-night-50 dark:bg-night-900 hover:bg-white dark:hover:bg-card hover:shadow-md'
+                                                    }`}
+                                                >
+                                                    <span className="text-xl group-hover/btn:scale-125 transition-transform">{r.emoji}</span>
+                                                    {count > 0 && <span className={`text-[10px] font-black ${userReacted ? 'text-white' : 'text-night-400'}`}>{count}</span>}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                    {designs.length > 0 && (
-                        <div className="pt-4 text-center">
-                            <div className="h-px w-24 bg-gradient-to-r from-transparent via-pink-200 dark:via-pink-900/40 to-transparent mx-auto mb-4" />
-                            <p className="text-night-500 dark:text-night-400 font-body font-medium italic text-sm">All caught up ✨</p>
-                        </div>
-                    )}
+                            </motion.div>
+                        );
+                    })}
                 </div>
             )}
+
+            {/* Lightbox Modal */}
+            <AnimatePresence>
+                {selectedImage && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-20 backdrop-blur-xl"
+                        onClick={() => setSelectedImage(null)}
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="relative w-full h-full"
+                        >
+                            <Image
+                                src={selectedImage}
+                                alt="Lightbox"
+                                fill
+                                className="object-contain"
+                            />
+                            <button 
+                                className="absolute top-0 right-0 p-4 text-white text-xs font-black uppercase tracking-widest hover:text-pink-400 transition-colors"
+                                onClick={() => setSelectedImage(null)}
+                            >
+                                CLOSE ✕
+                            </button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

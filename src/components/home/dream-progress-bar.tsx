@@ -1,6 +1,7 @@
 // src/components/home/dream-progress-bar.tsx
 "use client"
 
+import React from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/database";
 import { motion } from "framer-motion";
@@ -11,6 +12,24 @@ import { toast } from "react-hot-toast";
 export function DreamProgressBar() {
     const milestones = useLiveQuery(() => db.milestones.orderBy('stage').toArray());
     const { triggerCelebration } = useCelebration();
+    const [prevCompleted, setPrevCompleted] = React.useState<number | null>(null);
+
+    React.useEffect(() => {
+        if (!milestones) return;
+        const completedCount = milestones.filter(m => m.isCompleted).length;
+        
+        if (prevCompleted !== null && completedCount > prevCompleted) {
+            triggerCelebration('milestone');
+            const newMilestone = milestones.find((m, i) => m.isCompleted && i === completedCount - 1);
+            if (newMilestone) {
+                toast.success(`New Milestone Unlocked: ${newMilestone.title}! 🏆`, {
+                    icon: newMilestone.emoji,
+                    duration: 5000
+                });
+            }
+        }
+        setPrevCompleted(completedCount);
+    }, [milestones, triggerCelebration, prevCompleted]);
 
     if (!milestones) return null;
 

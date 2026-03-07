@@ -15,6 +15,8 @@ export interface PresenceData {
     lastSeen: Date | null;
     sessionMood: string | null;
     confettiTrigger: any;
+    dailyFocus: string | null;
+    focusReaction: { type: string; timestamp: any } | null;
 }
 
 export function subscribeToPartnerPresence(
@@ -38,10 +40,12 @@ export function subscribeToPartnerPresence(
                 isOnline,
                 lastSeen,
                 sessionMood: data.sessionMood || null,
-                confettiTrigger: data.confettiTrigger || null
+                confettiTrigger: data.confettiTrigger || null,
+                dailyFocus: data.dailyFocus || null,
+                focusReaction: data.focusReaction || null
             });
         } else {
-            callback({ isOnline: false, lastSeen: null, sessionMood: null, confettiTrigger: null });
+            callback({ isOnline: false, lastSeen: null, sessionMood: null, confettiTrigger: null, dailyFocus: null, focusReaction: null });
         }
     });
 }
@@ -102,6 +106,31 @@ export function updatePresenceMood(persona: string, mood: string | null) {
         {
             sessionMood: mood,
             lastSeen: serverTimestamp(),
+        },
+        { merge: true }
+    ).catch(console.error);
+}
+
+export function updatePresenceFocus(persona: string, focus: string | null) {
+    return setDoc(
+        doc(db, "partners", persona),
+        {
+            dailyFocus: focus,
+            focusReaction: null, // Clear reaction when focus changes
+            lastSeen: serverTimestamp(),
+        },
+        { merge: true }
+    ).catch(console.error);
+}
+
+export function sendFocusReaction(targetPersona: string, type: string) {
+    return setDoc(
+        doc(db, "partners", targetPersona),
+        {
+            focusReaction: {
+                type,
+                timestamp: serverTimestamp()
+            }
         },
         { merge: true }
     ).catch(console.error);

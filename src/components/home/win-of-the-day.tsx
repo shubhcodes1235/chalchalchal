@@ -1,82 +1,107 @@
-// src/components/home/win-of-the-day.tsx
-"use client"
-
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { useAppStore } from "@/lib/store/app-store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Trophy, CheckCircle2, PartyPopper } from "lucide-react"
+import { Trophy, CheckCircle2, PartyPopper, Sparkles } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { useSound } from "@/providers/sound-provider"
 import { subscribeToTodayWin, addWinToFirebase, DailyWin } from "@/lib/firebase/services/wins"
 import { logActivityToFirebase } from "@/lib/firebase/services/activity"
+import { useCelebration } from "@/providers/celebration-provider"
+import { toast } from "react-hot-toast"
 
 export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
     const { currentPerson } = useAppStore()
-    const { playSound } = useSound()
+    const { triggerCelebration } = useCelebration()
     const today = new Date().toISOString().split('T')[0]
 
     const [content, setContent] = useState("")
-    const [author, setAuthor] = useState<'shubham' | 'khushi'>(
-        currentPerson === 'both' ? 'shubham' : currentPerson
-    )
-    const [todayWin, setTodayWin] = useState<DailyWin | null>(null)
+    const [myWin, setMyWin] = useState<DailyWin | null>(null)
+    const [partnerWin, setPartnerWin] = useState<DailyWin | null>(null)
     const [loading, setLoading] = useState(true)
     const [isEditing, setIsEditing] = useState(false)
+    
+    const prevPartnerWinRef = useRef<DailyWin | null>(null)
 
     useEffect(() => {
-        if (currentPerson !== 'both') {
-            setAuthor(currentPerson)
-        }
-    }, [currentPerson])
+        if (!currentPerson || currentPerson === 'both') return;
 
-    useEffect(() => {
-        const unsubscribe = subscribeToTodayWin(today, author, (win) => {
-            setTodayWin(win)
+        const myPersona = currentPerson as 'shubham' | 'khushi'
+        const partnerPersona = myPersona === 'shubham' ? 'khushi' : 'shubham'
+        const partnerName = myPersona === 'shubham' ? 'Khushi' : 'Shubham'
+
+        // Subscribe to my win
+        const unsubMe = subscribeToTodayWin(today, myPersona, (win) => {
+            setMyWin(win)
+            if (win) {
+                setContent(win.content)
+                setIsEditing(false)
+            }
             setLoading(false)
-            if (win) setIsEditing(false)
         })
-        return () => unsubscribe()
-    }, [today, author])
+
+        // Subscribe to partner's win
+        const unsubPartner = subscribeToTodayWin(today, partnerPersona, (win) => {
+            if (win && !prevPartnerWinRef.current && prevPartnerWinRef.current !== undefined) {
+                toast.success(`${partnerName} just logged a win! 🏆`, {
+                    duration: 5000,
+                    icon: '🌟'
+                });
+                triggerCelebration('milestone');
+            }
+            setPartnerWin(win)
+            prevPartnerWinRef.current = win
+        })
+
+        return () => {
+            unsubMe()
+            unsubPartner()
+        }
+    }, [today, currentPerson, triggerCelebration])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!content.trim()) return
+        if (!content.trim() || !currentPerson || currentPerson === 'both') return
 
-        await addWinToFirebase(author, content.trim(), today)
+        const persona = currentPerson as 'shubham' | 'khushi'
+        await addWinToFirebase(persona, content.trim(), today)
 
-        // Activity Log
         await logActivityToFirebase({
-            person: author,
+            person: persona,
             type: 'win',
             title: 'Daily Win',
-            message: `${author === 'shubham' ? 'Shubham' : 'Khushi'} ${isEditing ? 'updated' : 'just logged'} a win: "${content.trim()}" 🏆`
+            message: `${persona === 'shubham' ? 'Shubham' : 'Khushi'} ${isEditing ? 'updated' : 'just logged'} a win: "${content.trim()}" 🏆`
         })
 
-        playSound('pop')
-        setContent("")
+        triggerCelebration('streak')
+        toast.success("Win logged! Stay Goated 👑")
         setIsEditing(false)
+    }
+
+    if (loading) {
+        return (
+            <Card className="border-none bg-card shadow-soft rounded-[2.5rem] p-8 animate-pulse">
+                <div className="h-20 w-full bg-muted/40 rounded-2xl" />
+            </Card>
+        )
     }
 
     if (minimal) {
         return (
             <div className="w-full max-w-sm mx-auto space-y-3">
                 <AnimatePresence mode="wait">
-                    {todayWin && !isEditing ? (
+                    {myWin && !isEditing ? (
                         <motion.div
                             key="win-saved-min"
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            onClick={() => {
-                                setContent(todayWin.content)
-                                setIsEditing(true)
-                            }}
-                            className="bg-white/40 dark:bg-card/40 p-4 rounded-2xl flex items-center justify-center space-x-2 text-pink-600 dark:text-pink-400 border border-pink-100/50 dark:border-night-800 cursor-pointer hover:bg-white/60 transition-colors"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            onClick={() => setIsEditing(true)}
+                            className="bg-white/40 dark:bg-card/40 p-4 rounded-2xl flex items-center justify-center space-x-2 text-pink-600 dark:text-pink-400 border border-pink-100/50 dark:border-night-800 cursor-pointer hover:bg-white/60 transition-all shadow-sm"
                         >
-                            <CheckCircle2 className="w-4 h-4" />
-                            <span className="text-sm font-bold italic">"{todayWin.content}"</span>
+                            <Trophy className="w-4 h-4" />
+                            <span className="text-sm font-bold italic truncate">"{myWin.content}"</span>
                         </motion.div>
                     ) : (
                         <motion.form
@@ -84,29 +109,20 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                             onSubmit={handleSubmit}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="flex flex-col space-y-3"
+                            className="flex items-center gap-2"
                         >
                             <Input
-                                id="win-minimal"
-                                name="win-minimal"
+                                id="daily-win"
+                                name="daily-win"
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
-                                placeholder="What was a small win today?"
-                                className="text-center rounded-xl h-10 bg-white/30 dark:bg-black/30 text-night-900 dark:text-white border-none focus-visible:ring-pink-200 dark:focus-visible:ring-pink-800 placeholder:text-night-500/60 dark:placeholder:text-night-400/60 text-sm"
+                                placeholder="Daily win?"
+                                className="rounded-xl h-10 bg-white/30 dark:bg-black/30 border-none text-sm"
                                 autoFocus={isEditing}
                             />
-                            <div className="flex justify-center gap-2">
-                                {content.trim() && (
-                                    <Button type="submit" size="sm" variant="ghost" className="text-pink-400 hover:text-pink-600 hover:bg-transparent h-auto py-1 px-4 text-xs font-black uppercase tracking-widest">
-                                        {isEditing ? 'Update' : 'Save'}
-                                    </Button>
-                                )}
-                                {isEditing && (
-                                    <Button type="button" size="sm" variant="ghost" onClick={() => setIsEditing(false)} className="text-night-400 hover:text-night-600 hover:bg-transparent h-auto py-1 px-4 text-xs font-black uppercase tracking-widest">
-                                        Cancel
-                                    </Button>
-                                )}
-                            </div>
+                            <Button type="submit" size="sm" className="bg-pink-500 rounded-xl h-10 px-4">
+                                <CheckCircle2 className="w-4 h-4" />
+                            </Button>
                         </motion.form>
                     )}
                 </AnimatePresence>
@@ -114,124 +130,84 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
         )
     }
 
+    const partnerName = currentPerson === 'shubham' ? 'Khushi' : 'Shubham'
+    const partnerImage = currentPerson === 'shubham' ? '/khushi.jpg' : '/shubham.jpg'
+
     return (
-        <Card className="border-none bg-card shadow-soft rounded-[2.5rem] overflow-hidden group hover:shadow-glow transition-all duration-500">
-            <CardContent className="p-8">
-                <div className="flex items-center space-x-3 mb-6">
-                    <div className="p-2 rounded-2xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 shadow-sm transition-transform group-hover:rotate-12 active:rotate-12">
-                        <Trophy className="w-5 h-5 shrink-0" />
-                    </div>
-                    <div className="relative">
-                        <span className="text-xs uppercase tracking-widest text-night-500 dark:text-night-400 font-body font-semibold opacity-90">Reflection</span>
-                        <div className="absolute -bottom-1 left-0 w-6 h-0.5 bg-primary/30 rounded-full" />
+        <Card className="border-none bg-card shadow-soft rounded-[2.5rem] overflow-hidden group hover:shadow-glow transition-all duration-500 h-full flex flex-col">
+            <CardContent className="p-8 flex flex-col h-full">
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-3">
+                        <div className="p-2 rounded-2xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 shadow-sm transition-transform group-hover:rotate-12">
+                            <Trophy className="w-5 h-5" />
+                        </div>
+                        <span className="text-xs uppercase tracking-widest text-night-500 dark:text-night-400 font-black">Daily Win</span>
                     </div>
                 </div>
 
-                <AnimatePresence mode="wait">
-                    {loading ? (
-                        <div className="h-12 w-full animate-pulse bg-muted rounded-xl" />
-                    ) : (todayWin && !isEditing) ? (
-                        <motion.div
-                            key="win-saved"
-                            initial={{ opacity: 0, x: 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="flex items-start justify-between"
-                        >
-                            <div className="flex items-start space-x-4">
-                                <div className="w-12 h-12 rounded-full bg-pink-50 dark:bg-pink-900/30 flex items-center justify-center shrink-0 border border-pink-100 dark:border-pink-800/50 shadow-sm transition-transform group-hover:rotate-12">
-                                    <PartyPopper className="w-6 h-6 text-pink-500" />
-                                </div>
-                                <div className="space-y-1 pt-1">
-                                    <p className="text-night-800 dark:text-white font-display font-semibold text-lg leading-snug tracking-tight italic">"{todayWin?.content}"</p>
-                                    <div className="flex items-center text-xs text-pink-500 font-body font-semibold uppercase tracking-widest">
-                                        <CheckCircle2 className="w-3 h-3 mr-1" />
-                                        Moment Logged
-                                    </div>
-                                </div>
-                            </div>
-                            <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={() => {
-                                    setContent(todayWin.content)
-                                    setIsEditing(true)
-                                }}
-                                className="text-night-400 hover:text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 rounded-xl"
+                <div className="flex-grow">
+                    <AnimatePresence mode="wait">
+                        {isEditing || !myWin ? (
+                            <motion.form
+                                key="form"
+                                onSubmit={handleSubmit}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="space-y-4"
                             >
-                                Edit
-                            </Button>
-                        </motion.div>
-                    ) : (
-                        <motion.form
-                            key="win-form"
-                            onSubmit={handleSubmit}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="space-y-5"
-                        >
-                            <h3 className="text-xl font-display font-semibold text-night-800 dark:text-white leading-snug tracking-tight">
-                                {isEditing ? 'Update your win' : 'What was a small win today?'}
-                            </h3>
-                            <div className="flex flex-col md:flex-row gap-3">
-                                <div className="relative flex-1">
-                                    <Input
-                                        id="win-full"
-                                        name="win-full"
-                                        value={content}
-                                        maxLength={120}
-                                        onChange={(e) => setContent(e.target.value)}
-                                        placeholder="Even opening this site counts..."
-                                        className="rounded-2xl h-14 bg-muted/30 dark:bg-muted/20 border-border focus-visible:ring-pink-500/30 dark:focus-visible:ring-pink-500/40 placeholder:text-muted-foreground pr-16"
-                                        autoFocus={isEditing}
-                                    />
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-widest text-night-400 dark:text-night-600">
-                                        {content.length}/120
+                                <textarea
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    placeholder="What was your win today?"
+                                    className="w-full bg-night-50 dark:bg-night-950/50 border-none rounded-2xl p-4 text-night-900 dark:text-white placeholder:text-night-400 font-medium focus:ring-2 focus:ring-pink-500/20 transition-all min-h-[100px] resize-none text-lg font-handwritten"
+                                    maxLength={160}
+                                />
+                                <div className="flex justify-end gap-2">
+                                    {myWin && (
+                                        <Button type="button" variant="ghost" onClick={() => setIsEditing(false)} className="rounded-full">Cancel</Button>
+                                    )}
+                                    <Button type="submit" className="rounded-full bg-pink-500 hover:bg-pink-600 text-white px-8 font-black shadow-lg">Save Win ✨</Button>
+                                </div>
+                            </motion.form>
+                        ) : (
+                            <motion.div
+                                key="display"
+                                initial={{ opacity: 0, scale: 0.98 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full"
+                            >
+                                <div className="bg-rose-500/5 dark:bg-rose-500/10 p-5 rounded-3xl border border-rose-500/10 relative group/mine h-full">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-rose-500">My Win</span>
+                                        <button onClick={() => setIsEditing(true)} className="opacity-0 group-hover/mine:opacity-100 transition-opacity text-[10px] font-black uppercase text-night-400 hover:text-rose-500">Edit</button>
+                                    </div>
+                                    <p className="text-xl font-handwritten text-night-900 dark:text-white leading-tight">"{myWin.content}"</p>
+                                    <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-white dark:bg-night-900 rounded-full flex items-center justify-center shadow-sm border border-rose-500/20">
+                                        <PartyPopper className="w-5 h-5 text-rose-500" />
                                     </div>
                                 </div>
-                                <div className="flex gap-2">
-                                    <Button type="submit" className="flex-1 sm:flex-none rounded-2xl h-14 px-8 shadow-glow bg-pink-500 hover:bg-pink-600 border-none transition-all whitespace-nowrap">
-                                        {isEditing ? 'Update ✨' : 'Save ✨'}
-                                    </Button>
-                                    {isEditing && (
-                                        <Button 
-                                            type="button" 
-                                            variant="outline"
-                                            onClick={() => setIsEditing(false)}
-                                            className="rounded-2xl h-14 px-6 border-pink-200 text-pink-500 hover:bg-pink-50"
-                                        >
-                                            Cancel
-                                        </Button>
+
+                                <div className="bg-blue-500/5 dark:bg-blue-500/10 p-5 rounded-3xl border border-blue-500/10 relative h-full flex flex-col">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-5 h-5 rounded-full overflow-hidden border border-blue-500/20">
+                                            <Image src={partnerImage} alt={partnerName} width={20} height={20} className="object-cover" />
+                                        </div>
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-500">{partnerName}&apos;s Win</span>
+                                    </div>
+                                    {partnerWin ? (
+                                        <p className="text-xl font-handwritten text-night-900 dark:text-white leading-tight italic opacity-90">"{partnerWin.content}"</p>
+                                    ) : (
+                                        <div className="flex-grow flex items-center justify-center text-center">
+                                            <p className="text-xs font-bold text-night-400 italic">Still grinding... ⚡️</p>
+                                        </div>
                                     )}
                                 </div>
-                            </div>
-                        </motion.form>
-                    )}
-                </AnimatePresence>
-                {currentPerson === 'both' && (
-                    <div className="flex gap-4 justify-center mt-6">
-                        <button
-                            type="button"
-                            onClick={() => setAuthor('shubham')}
-                            className={`group flex items-center gap-2 p-1 pr-4 rounded-full text-xs font-black uppercase tracking-widest transition-all ${author === 'shubham' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 ring-2 ring-blue-500' : 'bg-gray-50 dark:bg-night-900 text-gray-400 dark:text-night-400 opacity-60 hover:opacity-100'}`}
-                        >
-                            <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm">
-                                <Image src="/shubham.jpg" alt="Shubham" width={32} height={32} className="w-full h-full object-cover" />
-                            </div>
-                            Shubham
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setAuthor('khushi')}
-                            className={`group flex items-center gap-2 p-1 pr-4 rounded-full text-xs font-black uppercase tracking-widest transition-all ${author === 'khushi' ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 ring-2 ring-pink-500' : 'bg-gray-50 dark:bg-night-900 text-gray-400 dark:text-night-400 opacity-60 hover:opacity-100'}`}
-                        >
-                            <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm">
-                                <Image src="/khushi.jpg" alt="Khushi" width={32} height={32} className="w-full h-full object-cover" />
-                            </div>
-                            Khushi
-                        </button>
-                    </div>
-                )}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
             </CardContent>
-        </Card >
+        </Card>
     )
 }

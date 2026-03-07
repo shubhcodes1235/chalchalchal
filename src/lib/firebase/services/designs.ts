@@ -32,7 +32,7 @@ export interface Design {
     tags: string[];
     isHallOfFame: boolean;
     uploadedByPersona: 'shubham' | 'khushi' | 'both';
-    createdAt: unknown;
+    createdAt: any;
     reactions: Reaction[];
     hypeCount?: number;
 }
@@ -40,7 +40,7 @@ export interface Design {
 export interface Reaction {
     emoji: string;
     byPersona: string;
-    at: unknown;
+    at: any;
 }
 
 // ============================================

@@ -11,6 +11,7 @@ import { StickyNote } from "@/lib/db/schemas"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Plus, Pin, Trash2, Lightbulb, Heart, Target, BookOpen, Sparkles } from "lucide-react"
 import Link from "next/link"
@@ -23,6 +24,10 @@ import { logActivityToFirebase } from "@/lib/firebase/services/activity"
 import { addGoalToFirebase, deleteGoalFromFirebase, toggleGoalCompletionInFirebase } from "@/lib/firebase/services/goals"
 import { goalsRepo } from "@/lib/db/repositories/goals.repo"
 import { nanoid } from "nanoid"
+import { toast } from "react-hot-toast"
+import { useCelebration } from "@/providers/celebration-provider"
+import { doc, updateDoc } from "firebase/firestore"
+import { db as fDb } from "@/lib/firebase/config"
 
 const NOTE_COLORS = [
     "bg-pink-100 dark:bg-pink-950/40 border-pink-200 dark:border-pink-900/50 text-pink-900 dark:text-pink-100",
@@ -47,6 +52,7 @@ const NOTE_REACTIONS = [
 
 export default function BoardPage() {
     const { currentPerson } = useAppStore()
+    const { triggerCelebration } = useCelebration()
     const [viewMode, setViewMode] = useState<'notes' | 'tasks'>('notes')
     const [filterType, setFilterType] = useState<StickyNote['type'] | 'all'>('all')
     const [activePerson, setActivePerson] = useState<string>("all")
@@ -136,7 +142,6 @@ export default function BoardPage() {
 
             setIsTaskDialogOpen(false)
             setTaskFormData({ title: "", description: "", priority: "medium", deadline: "" })
-            const { toast } = await import('react-hot-toast');
             toast.success("Task added! Let's get to work! 🎯");
         } catch (error) {
             console.error("Failed to add task:", error)
@@ -180,7 +185,6 @@ export default function BoardPage() {
 
             setIsDialogOpen(false)
             setFormData({ content: "", type: "thought", color: NOTE_COLORS[0], isPinned: false, linkedUrl: "" })
-            const { toast } = await import('react-hot-toast');
             toast.success("Note posted to the board! 🌸");
         } catch (error) {
             console.error("Failed to add note:", error)
@@ -315,6 +319,8 @@ export default function BoardPage() {
                                 <div className="space-y-2">
                                     <label className="text-xs font-black uppercase tracking-widest text-night-600">What needs to be done?</label>
                                     <Textarea
+                                        id="task-title"
+                                        name="task-title"
                                         value={taskFormData.title}
                                         onChange={e => setTaskFormData(prev => ({ ...prev, title: e.target.value }))}
                                         placeholder="E.g., Finish the new logo design"
@@ -344,6 +350,8 @@ export default function BoardPage() {
                                 <div className="space-y-2">
                                     <label className="text-xs font-black uppercase tracking-widest text-night-600">Goal Description (Optional)</label>
                                     <Textarea
+                                        id="task-description"
+                                        name="task-description"
                                         value={taskFormData.description}
                                         onChange={e => setTaskFormData(prev => ({ ...prev, description: e.target.value }))}
                                         placeholder="Add more details about what needs to be done..."
@@ -354,6 +362,8 @@ export default function BoardPage() {
                                     <label className="text-xs font-black uppercase tracking-widest text-night-600">Deadline (Optional)</label>
                                     <input
                                         type="date"
+                                        id="task-deadline"
+                                        name="task-deadline"
                                         value={taskFormData.deadline}
                                         onChange={e => setTaskFormData(prev => ({ ...prev, deadline: e.target.value }))}
                                         className="w-full rounded-2xl border border-night-100 h-12 px-4 focus-visible:ring-night-200 text-night-950 font-bold bg-white"
@@ -503,15 +513,64 @@ export default function BoardPage() {
                                         <div className="flex space-x-1">
                                             <button
                                                 onClick={async () => {
-                                                    if (window.confirm("Are you sure you want to delete this note? This cannot be undone.")) {
-                                                        await notesRepo.deleteNote(note.id);
-                                                        await deleteNoteFromFirebase(note.id);
-                                                    }
+                                                    const originalNote = { ...note };
+                                                    await notesRepo.deleteNote(note.id);
+                                                    await deleteNoteFromFirebase(note.id);
+                                                    toast.success((t) => (
+                                                        <span className="flex items-center gap-2">
+                                                            Note deleted!
+                                                            <button 
+                                                                onClick={async () => {
+                                                                    await notesRepo.addNote(originalNote, note.id);
+                                                                    await addNoteToFirebase(originalNote, note.id);
+                                                                    toast.dismiss(t.id);
+                                                                }}
+                                                                className="bg-night-950 text-white px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider hover:bg-night-800 transition-colors"
+                                                            >
+                                                                Undo
+                                                            </button>
+                                                        </span>
+                                                    ), { duration: 4000 });
                                                 }}
                                                 className="p-1.5 hover:bg-red-500 hover:text-white rounded-lg transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
                                             </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Replies Section */}
+                                    <div className="mt-4 space-y-2">
+                                        {note.replies?.map((reply: any, idx: number) => (
+                                            <div key={idx} className="bg-white/30 rounded-xl p-2 text-[11px] font-bold text-night-900/60 leading-tight">
+                                                <span className="text-pink-600 mr-1">{reply.persona}:</span>
+                                                {reply.content}
+                                            </div>
+                                        ))}
+                                        <div className="relative group/reply">
+                                            <Input 
+                                                id={`reply-${note.id}`}
+                                                name={`reply-${note.id}`}
+                                                placeholder="Reply..."
+                                                className="h-8 bg-black/5 border-none rounded-xl text-[10px] pr-8 focus-visible:ring-pink-500/20"
+                                                onKeyDown={async (e) => {
+                                                    if (e.key === 'Enter') {
+                                                        const persona = currentPerson === 'both' ? 'shubham' : currentPerson;
+                                                        const content = e.currentTarget.value;
+                                                        if (!content.trim()) return;
+                                                        
+                                                        // Firebase service needs to be updated or we can just update via updateNoteInFirebase
+                                                        const replies = [...(note.replies || []), { persona, content: content.trim(), timestamp: new Date() }];
+                                                        await notesRepo.updateNote(note.id, { replies });
+                                                        // Using the existing updateNoteInFirebase if it exists, or just updating document
+                                                        await updateDoc(doc(fDb, "notes", note.id), { replies });
+                                                        
+                                                        e.currentTarget.value = "";
+                                                        toast.success("Reply added! 💬");
+                                                    }
+                                                }}
+                                            />
+                                            <Sparkles className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-pink-400 opacity-40" />
                                         </div>
                                     </div>
 
@@ -555,10 +614,16 @@ export default function BoardPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 className={cn(
-                                    "flex items-center gap-4 bg-white dark:bg-card p-4 rounded-2xl border shadow-sm transition-all hover:shadow-md",
+                                    "flex items-center gap-4 bg-white dark:bg-card p-4 rounded-2xl border shadow-sm transition-all hover:shadow-md relative",
                                     task.isCompleted ? "opacity-60 grayscale" : "border-night-100"
                                 )}
                             >
+                                {task.priority === 'high' && !task.isCompleted && (
+                                    <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                    </span>
+                                )}
                                 <button
                                     onClick={async () => {
                                         const newState = !task.isCompleted;
@@ -572,6 +637,7 @@ export default function BoardPage() {
                                             title: 'Task Updated',
                                             message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} just ${newState ? 'completed' : 'uncompleted'} the task: "${task.title.substring(0, 30)}${task.title.length > 30 ? '...' : ''}" ${newState ? '✅' : '🔄'}`
                                         });
+                                        if (newState) triggerCelebration('milestone');
                                     }}
                                     className="flex-shrink-0 p-2 -m-2 text-pink-500 hover:scale-110 transition-transform"
                                 >
@@ -631,18 +697,24 @@ export default function BoardPage() {
                                 </div>
                                 <button
                                     onClick={async () => {
-                                        if (window.confirm("Delete this task?")) {
-                                            await goalsRepo.deleteGoal(task.id);
-                                            await deleteGoalFromFirebase(task.id);
-                                            
-                                            const uploader = currentPerson === 'both' ? 'shubham' : currentPerson;
-                                            await logActivityToFirebase({
-                                                person: uploader,
-                                                type: 'task',
-                                                title: 'Task Deleted',
-                                                message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} deleted the task: "${task.title.substring(0, 30)}${task.title.length > 30 ? '...' : ''}" 🗑️`
-                                            });
-                                        }
+                                        const originalTask = { ...task };
+                                        await goalsRepo.deleteGoal(task.id);
+                                        await deleteGoalFromFirebase(task.id);
+                                        toast.success((t) => (
+                                            <span className="flex items-center gap-2">
+                                                Task deleted!
+                                                <button 
+                                                    onClick={async () => {
+                                                        await goalsRepo.addGoal(originalTask, task.id);
+                                                        await addGoalToFirebase(originalTask, task.id);
+                                                        toast.dismiss(t.id);
+                                                    } }
+                                                    className="bg-night-950 text-white px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider hover:bg-night-800 transition-colors"
+                                                >
+                                                    Undo
+                                                </button>
+                                            </span>
+                                        ), { duration: 4000 });
                                     }}
                                     className="p-2 hover:bg-red-50 hover:text-red-500 text-night-400 rounded-xl transition-all"
                                 >

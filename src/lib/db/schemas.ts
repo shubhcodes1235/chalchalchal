@@ -40,6 +40,11 @@ export interface StickyNote {
     byPersona: string;
     at: Date;
   }[];
+  replies?: {
+    persona: string;
+    content: string;
+    timestamp: Date;
+  }[];
   createdAt: Date;
 }
 

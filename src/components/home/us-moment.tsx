@@ -1,41 +1,77 @@
-// src/components/home/us-moment.tsx
-"use client"
-
-import React from "react"
 import { motion } from "framer-motion"
-import { Heart } from "lucide-react"
+import { Heart, Sparkles } from "lucide-react"
 import Image from "next/image"
 import { useAppStore } from "@/lib/store/app-store"
+import { useLiveQuery } from "dexie-react-hooks"
+import { db } from "@/lib/db/database"
+import { cn } from "@/lib/utils/cn"
 
 export function UsMoment() {
     const { currentPerson } = useAppStore()
+    const settings = useLiveQuery(() => db.appSettings.get('main'))
+
+    const isKhushi = currentPerson === 'khushi'
+    const isShubham = currentPerson === 'shubham'
+    const isBoth = currentPerson === 'both'
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            className="w-full bg-primary/5 dark:bg-primary/10 rounded-[3rem] p-12 border border-primary/10 dark:border-primary/20 flex flex-col items-center text-center space-y-4"
+            viewport={{ once: true }}
+            className="w-full relative overflow-hidden bg-white/40 dark:bg-card/40 backdrop-blur-md rounded-[4rem] p-12 md:p-20 border border-pink-100/50 dark:border-night-800 flex flex-col items-center text-center space-y-8"
         >
-            <div className="w-16 h-16 rounded-full bg-white dark:bg-card flex items-center justify-center shadow-soft">
-                <Heart className="w-8 h-8 text-primary fill-primary" />
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-pink-500/10 blur-[100px] rounded-full" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[100px] rounded-full" />
             </div>
 
-            <div className="space-y-2">
-                <h2 className="text-3xl font-handwritten font-bold text-night-900 dark:text-foreground">
-                    {currentPerson === 'shubham' ? "Working for the dream, together." : "Building the future, together."}
+            <motion.div 
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="w-20 h-20 rounded-full bg-white dark:bg-night-900 flex items-center justify-center shadow-xl shadow-pink-500/10 relative z-10"
+            >
+                <Heart className="w-10 h-10 text-pink-500 fill-pink-500" />
+            </motion.div>
+
+            <div className="space-y-4 relative z-10">
+                <h2 className="text-4xl md:text-5xl font-handwritten font-black text-night-950 dark:text-white flex items-center justify-center gap-3">
+                    <Sparkles className="w-6 h-6 text-pink-400" />
+                    {isShubham ? "Chasing our dream, together." : isKhushi ? "Building our world, together." : "It's always been us."}
+                    <Sparkles className="w-6 h-6 text-pink-400" />
                 </h2>
-                <p className="text-night-500 dark:text-muted-foreground font-body font-medium max-w-md mx-auto italic text-sm leading-relaxed">
-                    &ldquo;Some days showing up is the win. We&apos;re proud of you today.&rdquo;
-                </p>
+                
+                <div className="max-w-xl mx-auto space-y-4">
+                    <p className="text-xl md:text-2xl font-display font-medium text-night-600 dark:text-night-400 italic leading-relaxed">
+                        &ldquo;{settings?.manifestationQuote || "Chote chote kadam bhi kadam hain."}&rdquo;
+                    </p>
+                    <div className="flex items-center justify-center gap-2 opacity-40">
+                        <div className="h-px w-8 bg-night-300" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-night-500 dark:text-night-400">Our Manifestation</span>
+                        <div className="h-px w-8 bg-night-300" />
+                    </div>
+                </div>
             </div>
 
-            <div className="pt-4 flex -space-x-3">
-                <div className="w-12 h-12 rounded-full border-4 border-white dark:border-card overflow-hidden bg-blue-100 dark:bg-blue-900/30 shadow-sm flex items-center justify-center">
-                    <Image src="/shubham.jpg" alt="S" width={48} height={48} className="w-full h-full object-cover" />
-                </div>
-                <div className="w-12 h-12 rounded-full border-4 border-white dark:border-card overflow-hidden bg-pink-100 dark:bg-pink-900/30 shadow-sm flex items-center justify-center">
-                    <Image src="/khushi.jpg" alt="K" width={48} height={48} className="w-full h-full object-cover" />
-                </div>
+            <div className="pt-6 flex items-center justify-center -space-x-4 relative z-10">
+                <motion.div 
+                    whileHover={{ scale: 1.1, zIndex: 20 }}
+                    className={cn(
+                        "w-16 h-16 rounded-full border-4 border-white dark:border-card overflow-hidden bg-blue-100 dark:bg-blue-900/30 shadow-lg flex items-center justify-center transition-all",
+                        isShubham || isBoth ? "ring-4 ring-pink-500/20" : "grayscale opacity-50"
+                    )}
+                >
+                    <Image src="/shubham.jpg" alt="Shubham" width={64} height={64} className="w-full h-full object-cover" />
+                </motion.div>
+                <motion.div 
+                    whileHover={{ scale: 1.1, zIndex: 20 }}
+                    className={cn(
+                        "w-16 h-16 rounded-full border-4 border-white dark:border-card overflow-hidden bg-pink-100 dark:bg-pink-900/30 shadow-lg flex items-center justify-center transition-all",
+                        isKhushi || isBoth ? "ring-4 ring-pink-500/20" : "grayscale opacity-50"
+                    )}
+                >
+                    <Image src="/khushi.jpg" alt="Khushi" width={64} height={64} className="w-full h-full object-cover" />
+                </motion.div>
             </div>
         </motion.div>
     )

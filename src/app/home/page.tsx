@@ -1,4 +1,3 @@
-// src/app/home/page.tsx
 "use client"
 
 import React, { useState, useEffect } from "react"
@@ -9,6 +8,7 @@ import { WinOfTheDay } from "@/components/home/win-of-the-day"
 import { PartnerFeed } from "@/components/home/partner-feed"
 import { VisionSnippet } from "@/components/home/vision-snippet"
 import { FocusCard } from "@/components/home/focus-card"
+import { UsMoment } from "@/components/home/us-moment"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
@@ -49,11 +49,10 @@ export default function HomePage() {
     useEffect(() => {
         if (!currentPerson || currentPerson === 'both') return;
         const targetPartner = currentPerson === 'shubham' ? 'khushi' : 'shubham';
-        const unsubscribe = subscribeToPartnerPresence(targetPartner, (data) => {
+        const unsubscribe = subscribeToPartnerPresence(targetPartner, (data: any) => {
             setPartnerMood(data.sessionMood);
         });
         return () => unsubscribe();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPerson]);
 
     const isKhushi = currentPerson === 'khushi'
@@ -80,17 +79,35 @@ export default function HomePage() {
                 {/* Connectivity Badge */}
                 <motion.div variants={itemVariants} className="flex items-center space-x-3 bg-white/60 dark:bg-card/60 backdrop-blur-md border border-pink-100/50 dark:border-night-800 px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex -space-x-2">
-                        <div className={cn("w-8 h-8 rounded-full overflow-hidden border-2 border-white dark:border-card flex items-center justify-center shadow-sm bg-blue-100 dark:bg-blue-900 transition-transform", isShubham || isBoth ? "scale-110 z-10" : "opacity-50 grayscale")}>
+                        <div className={cn("w-8 h-8 rounded-full overflow-hidden border-2 border-white dark:border-card flex items-center justify-center shadow-sm bg-blue-100 dark:bg-blue-900 transition-transform relative", isShubham || isBoth ? "scale-110 z-10" : "opacity-50 grayscale")}>
                             <Image src="/shubham.jpg" alt="Shubham" width={32} height={32} className="w-full h-full object-cover" />
+                            {(isShubham || isBoth) && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-night-950 animate-pulse" />}
                         </div>
-                        <div className={cn("w-8 h-8 rounded-full overflow-hidden border-2 border-white dark:border-card flex items-center justify-center shadow-sm bg-pink-100 dark:bg-pink-900 transition-transform", isKhushi || isBoth ? "scale-110 z-10" : "opacity-50 grayscale")}>
+                        <div className={cn("w-8 h-8 rounded-full overflow-hidden border-2 border-white dark:border-card flex items-center justify-center shadow-sm bg-pink-100 dark:bg-pink-900 transition-transform relative", isKhushi || isBoth ? "scale-110 z-10" : "opacity-50 grayscale")}>
                             <Image src="/khushi.jpg" alt="Khushi" width={32} height={32} className="w-full h-full object-cover" />
+                            {(isKhushi || isBoth) && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-night-950 animate-pulse" />}
                         </div>
                     </div>
                     <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-night-600 dark:text-night-300">
                         {isBoth ? "Building Together" : isShubham ? "Shubham is active" : "Khushi is active"}
                     </span>
                 </motion.div>
+
+                {/* Shared Focus Banner */}
+                <AnimatePresence>
+                    {isSharedFocus && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                            className="bg-gradient-to-r from-pink-500/20 via-rose-500/20 to-pink-500/20 backdrop-blur-md border border-pink-200/50 dark:border-pink-500/30 px-6 py-2 rounded-2xl shadow-glow text-pink-600 dark:text-pink-400 font-bold text-sm flex items-center gap-3"
+                        >
+                            <Sparkles className="w-4 h-4 animate-spin-slow" />
+                            <span>Vibe Match: You&apos;re both in flow today! 🔥</span>
+                            <Sparkles className="w-4 h-4 animate-spin-slow" />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* Main Headline */}
                 <motion.div variants={itemVariants} className="relative max-w-4xl mx-auto w-full px-2">
@@ -127,7 +144,13 @@ export default function HomePage() {
 
             {/* 2. MANIFESTATION JOURNEY BAR */}
             {showContent && (
-                <section className="w-full bg-white/40 dark:bg-card/40 backdrop-blur-md rounded-[3rem] p-8 md:p-12 border border-pink-100/50 dark:border-night-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <motion.section 
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.8 }}
+                    className="w-full bg-white/40 dark:bg-card/40 backdrop-blur-md rounded-[3rem] p-8 md:p-12 border border-pink-100/50 dark:border-night-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+                >
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h2 className="text-2xl md:text-3xl font-black text-night-950 dark:text-white tracking-tight flex items-center gap-3">
@@ -138,12 +161,18 @@ export default function HomePage() {
                         </div>
                     </div>
                     <DreamProgressBar />
-                </section>
+                </motion.section>
             )}
 
             {/* 3. CORE ACTION GRID: Money & Vision */}
             {showContent && (
-                <section className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in duration-700 delay-150">
+                <motion.section 
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.8, delay: 0.1 }}
+                    className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6"
+                >
                     {/* The Hustle (Focus) */}
                     <div className="space-y-4">
                         <div className="flex items-center space-x-2 pl-2">
@@ -165,12 +194,18 @@ export default function HomePage() {
                         </div>
                         <VisionSnippet />
                     </div>
-                </section>
+                </motion.section>
             )}
 
             {/* 4. MOMENTUM & WINS */}
             {showContent && (
-                <section className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in duration-700 delay-300">
+                <motion.section 
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="w-full grid grid-cols-1 md:grid-cols-2 gap-6"
+                >
                     <div className="space-y-4">
                         <div className="flex items-center justify-between pl-2">
                             <span className="text-xs font-black uppercase tracking-[0.2em] text-pink-500 dark:text-pink-400">Consistency Tracker</span>
@@ -184,12 +219,18 @@ export default function HomePage() {
                         </div>
                         <WinOfTheDay />
                     </div>
-                </section>
+                </motion.section>
             )}
 
             {/* 5. LIVE CONNECTIVITY FEED */}
             {showContent && (
-                <section className="w-full max-w-4xl mx-auto pt-8 md:pt-12 relative animate-in fade-in duration-700 delay-500">
+                <motion.section 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.8 }}
+                    className="w-full max-w-4xl mx-auto pt-8 md:pt-12 relative"
+                >
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-[2px] bg-gradient-to-r from-transparent via-pink-400 to-transparent opacity-50"></div>
                     <div className="text-center mb-8 md:mb-10 mt-4 md:mt-0">
                         <h3 className="text-xl font-black text-night-900 dark:text-white tracking-tight">Our Live Thread</h3>
@@ -198,12 +239,31 @@ export default function HomePage() {
                     <div className="bg-white/50 dark:bg-card/50 backdrop-blur-sm rounded-[3rem] p-4 md:p-6 border border-night-100/30 dark:border-night-800">
                         <PartnerFeed />
                     </div>
-                </section>
+                </motion.section>
             )}
 
-            {/* 6. FOOTER REMINDER */}
+            {/* 6. US MOMENT ZEN SECTION */}
             {showContent && (
-                <section className="w-full pt-12 pb-10 animate-in fade-in duration-1000">
+                <motion.section 
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                    className="w-full pt-16"
+                >
+                    <UsMoment />
+                </motion.section>
+            )}
+
+            {/* 7. FOOTER REMINDER */}
+            {showContent && (
+                <motion.section 
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.5 }}
+                    className="w-full pt-12 pb-10"
+                >
                     <div className="text-center space-y-6">
                         <p className="font-display text-2xl md:text-3xl font-black text-night-400 dark:text-night-500 tracking-tight">
                             "Chal chal chal — the world is ours to explore."
@@ -216,7 +276,7 @@ export default function HomePage() {
                             <div className="h-px w-8 bg-night-400 dark:bg-night-600" />
                         </div>
                     </div>
-                </section>
+                </motion.section>
             )}
 
         </PageWrapper>

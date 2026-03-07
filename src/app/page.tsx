@@ -14,25 +14,36 @@ import { useTimeOfDay } from "@/lib/hooks/use-time-of-day"
 import { db } from "@/lib/db/database"
 import { updatePresenceMood, subscribeToPartnerPresence } from "@/lib/firebase/services/presence"
 import { cn } from "@/lib/utils/cn"
+import { useCelebration } from "@/providers/celebration-provider"
 
 export default function EntryPage() {
   const router = useRouter()
   const { currentPerson, setCurrentPerson } = useAppStore()
   const { setMood } = useMoodStore()
   const { greeting } = useTimeOfDay()
+  const { triggerCelebration } = useCelebration()
 
   const [step, setStep] = useState<'person' | 'mood'>('person')
-  const [partnerStatus, setPartnerStatus] = useState<Record<'shubham' | 'khushi', boolean>>({
-    shubham: false,
-    khushi: false
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [partnerStatus, setPartnerStatus] = useState<Record<'shubham' | 'khushi', { isOnline: boolean; sessionMood: string | null }>>({
+    shubham: { isOnline: false, sessionMood: null },
+    khushi: { isOnline: false, sessionMood: null }
   })
 
   useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({ x: e.clientX, y: e.clientY })
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+
+  useEffect(() => {
     const unsubShubham = subscribeToPartnerPresence('shubham', (data) => {
-      setPartnerStatus(prev => ({ ...prev, shubham: data.isOnline }))
+      setPartnerStatus(prev => ({ ...prev, shubham: { isOnline: data.isOnline, sessionMood: data.sessionMood } }))
     })
     const unsubKhushi = subscribeToPartnerPresence('khushi', (data) => {
-      setPartnerStatus(prev => ({ ...prev, khushi: data.isOnline }))
+      setPartnerStatus(prev => ({ ...prev, khushi: { isOnline: data.isOnline, sessionMood: data.sessionMood } }))
     })
     return () => {
       unsubShubham()
@@ -42,6 +53,7 @@ export default function EntryPage() {
 
   const handlePersonSelect = async (person: 'shubham' | 'khushi') => {
     setCurrentPerson(person)
+    triggerCelebration('milestone')
     await db.appSettings.update('main', { currentPerson: person })
     setStep('mood')
   }
@@ -60,19 +72,51 @@ export default function EntryPage() {
     }
   }
 
+  const getMoodEmoji = (mood: string | null) => {
+    switch (mood) {
+      case 'design': return '🎨';
+      case 'vibe': return '😌';
+      case 'lost': return '💡';
+      default: return '✨';
+    }
+  }
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden transition-colors duration-700">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden transition-colors duration-700 bg-white dark:bg-night-950">
       {/* Background Atmosphere - Dreamy Blobs */}
-      <div className="absolute inset-0 z-0 opacity-30 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-raspberry/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blush-100/40 rounded-full blur-[120px] animate-float" />
+      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
+        <motion.div 
+          animate={{ x: mousePos.x * 0.1, y: mousePos.y * 0.1 }}
+          className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-raspberry/10 rounded-full blur-[120px]" 
+        />
+        <motion.div 
+          animate={{ x: (mousePos.x - 500) * -0.05, y: (mousePos.y - 500) * -0.05 }}
+          className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-blush-100/40 rounded-full blur-[120px]" 
+        />
+        <motion.div 
+          animate={{ 
+            x: mousePos.x - 250, 
+            y: mousePos.y - 250,
+          }}
+          transition={{ type: "spring", damping: 40, stiffness: 40, mass: 0.8 }}
+          className="absolute w-[500px] h-[500px] bg-pink-500/5 rounded-full blur-[80px]" 
+        />
       </div>
 
       <div className="z-10 w-full max-w-2xl text-center space-y-12">
         <motion.h2
           initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-raspberry font-bold text-xs md:text-xs tracking-[0.15em] uppercase opacity-80 mb-2"
+          animate={{ 
+            opacity: [0.6, 1, 0.6],
+            y: 0,
+            scale: [0.98, 1, 0.98]
+          }}
+          transition={{ 
+            initial: { duration: 0.6 },
+            opacity: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+            scale: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+          }}
+          className="text-raspberry font-bold text-xs md:text-xs tracking-[0.25em] uppercase opacity-80 mb-2"
         >
           {greeting}
         </motion.h2>
@@ -82,7 +126,7 @@ export default function EntryPage() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          <div className="text-4xl md:text-6xl text-deep-plum font-poppins font-black tracking-tight transition-colors duration-300 drop-shadow-sm uppercase">
+          <div className="text-4xl md:text-6xl text-deep-plum dark:text-white font-poppins font-black tracking-tight transition-colors duration-300 drop-shadow-sm uppercase">
             <TypingAnimation
               sequence={["Kaun hai aaj?", 2000, "Ready to dream?", 1500, "Chal chal chal!", 2000]}
               repeat={Infinity}
@@ -101,7 +145,7 @@ export default function EntryPage() {
               className="space-y-10"
             >
               <div className="space-y-2">
-                <h3 className="text-sm md:text-base font-bold text-deep-plum opacity-80 uppercase tracking-[0.15em]">Who&apos;s here today?</h3>
+                <h3 className="text-sm md:text-base font-bold text-deep-plum dark:text-night-300 opacity-80 uppercase tracking-[0.2em]">Who&apos;s here today?</h3>
               </div>
 
               <div className="grid grid-cols-2 gap-4 sm:gap-8 max-w-2xl mx-auto">
@@ -111,7 +155,9 @@ export default function EntryPage() {
                 ].map((p, i) => {
                   const partnerId = p.id === 'shubham' ? 'khushi' : 'shubham';
                   const partnerName = p.id === 'shubham' ? 'Khushi' : 'Shubham';
-                  const isPartnerWaiting = partnerStatus[partnerId as 'shubham' | 'khushi'];
+                  const partnerData = partnerStatus[partnerId as 'shubham' | 'khushi'];
+                  const isPartnerOnline = partnerData.isOnline;
+                  const partnerMood = partnerData.sessionMood;
 
                   return (
                     <motion.div
@@ -123,24 +169,37 @@ export default function EntryPage() {
                     >
                       <Card
                         hover
-                        className="cursor-pointer group relative overflow-hidden bg-white/80 dark:bg-night-950/40 backdrop-blur-sm rounded-3xl h-full border-2 border-transparent hover:border-pink-300 ring-0 hover:ring-4 hover:ring-pink-500/10 transition-all duration-500 shadow-sm hover:shadow-2xl"
+                        className="cursor-pointer group relative overflow-hidden bg-white/80 dark:bg-night-900/60 backdrop-blur-md rounded-[2.5rem] h-full border-2 border-transparent hover:border-pink-300 dark:hover:border-pink-500/50 ring-0 hover:ring-8 hover:ring-pink-500/5 transition-all duration-500 shadow-sm hover:shadow-2xl"
                         onClick={() => handlePersonSelect(p.id as 'shubham' | 'khushi')}
                       >
                         <CardContent className="p-4 sm:p-8 flex flex-col items-center space-y-4 sm:space-y-6">
-                          <div className={cn("w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-rose-glow border-[3px] sm:border-4 border-white relative", p.bg)}>
+                          <div className={cn("w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-rose-glow border-[3px] sm:border-4 border-white dark:border-night-800 relative", p.bg)}>
                             <div className="absolute inset-0 skeleton-shimmer opacity-20 group-hover:opacity-40 transition-opacity" />
                             <Image src={p.image} alt={p.name} width={112} height={112} className="w-full h-full object-cover relative z-10" />
                           </div>
                           <div className="flex flex-col space-y-1">
-                            <span className="text-2xl font-poppins font-bold tracking-tight text-deep-plum transition-colors group-hover:text-pink-600">{p.name}</span>
-                            <span className="text-xs uppercase tracking-widest font-bold text-raspberry/60">Let&apos;s do this!</span>
+                            <span className="text-2xl font-poppins font-bold tracking-tight text-deep-plum dark:text-white transition-colors group-hover:text-pink-600">{p.name}</span>
+                            {isPartnerOnline ? (
+                               <div className="flex items-center justify-center gap-1.5 bg-green-500/10 dark:bg-green-500/20 px-3 py-1 rounded-full border border-green-500/20">
+                                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                 <span className="text-[10px] uppercase tracking-widest font-black text-green-600 dark:text-green-400">Online</span>
+                               </div>
+                            ) : (
+                              <span className="text-xs uppercase tracking-widest font-bold text-raspberry/60 dark:text-night-400">Let&apos;s do this!</span>
+                            )}
                           </div>
 
-                          {isPartnerWaiting && (
-                             <div className="absolute top-4 right-4 transition-opacity duration-500">
-                               <span className="text-[10px] sm:text-xs uppercase tracking-wider bg-raspberry/10 px-2 py-1 rounded-full text-raspberry font-black animate-pulse flex items-center gap-1 shadow-sm border border-raspberry/20">
-                                 <span className="w-1.5 h-1.5 rounded-full bg-raspberry" />
-                                 {partnerName} waiting 🌸
+                          {isPartnerOnline && (
+                             <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+                               <motion.div 
+                                 initial={{ scale: 0 }} 
+                                 animate={{ scale: 1 }}
+                                 className="w-8 h-8 rounded-full bg-white dark:bg-night-800 shadow-lg flex items-center justify-center text-lg border border-pink-100 dark:border-night-700"
+                               >
+                                 {getMoodEmoji(partnerMood)}
+                               </motion.div>
+                               <span className="text-[10px] uppercase tracking-wider bg-raspberry/10 dark:bg-raspberry/20 px-2 py-1 rounded-full text-raspberry font-black flex items-center gap-1 shadow-sm border border-raspberry/20">
+                                 {partnerName} is here 🌸
                                </span>
                              </div>
                           )}
@@ -159,9 +218,9 @@ export default function EntryPage() {
               exit={{ opacity: 0, x: -50 }}
               className="space-y-12"
             >
-              <div className="space-y-2">
-                <h3 className="text-3xl md:text-4xl font-poppins font-bold text-deep-plum transition-colors duration-300 tracking-tight">Welcome back, {currentPerson === 'shubham' ? 'Shubham ✨' : 'Khushi ✨'}</h3>
-                <p className="text-xl text-deep-plum opacity-90 font-bold">Aaj kya karna hai?</p>
+              <div className="space-y-4">
+                <h3 className="text-3xl md:text-4xl font-poppins font-bold text-deep-plum dark:text-white transition-colors duration-300 tracking-tight">Welcome back, {currentPerson === 'shubham' ? 'Shubham ✨' : 'Khushi ✨'}</h3>
+                <p className="text-xl text-deep-plum dark:text-night-300 opacity-90 font-bold">Aaj kya karna hai?</p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6">
@@ -180,12 +239,12 @@ export default function EntryPage() {
                     <Card
                       hover
                       onClick={() => handleMoodSelect(m.id as 'design' | 'vibe' | 'lost')}
-                      className="cursor-pointer bg-white group h-full"
+                      className="cursor-pointer bg-white/90 dark:bg-night-900/60 backdrop-blur-sm group h-full rounded-[2.5rem] border-2 border-transparent hover:border-raspberry/20"
                     >
                       <CardContent className="p-4 md:p-8 flex flex-col items-center text-center space-y-4">
-                        <div className="w-16 h-16 rounded-full bg-blush-50 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500">{m.icon}</div>
-                        <h4 className="font-poppins font-bold text-lg text-deep-plum leading-tight">{m.title}</h4>
-                        <p className="text-sm text-deep-plum opacity-80 leading-relaxed font-bold">{m.desc}</p>
+                        <div className="w-16 h-16 rounded-3xl bg-blush-50 dark:bg-raspberry/10 flex items-center justify-center text-3xl group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 shadow-inner">{m.icon}</div>
+                        <h4 className="font-poppins font-bold text-lg text-deep-plum dark:text-white leading-tight">{m.title}</h4>
+                        <p className="text-sm text-deep-plum/70 dark:text-night-400 leading-relaxed font-bold">{m.desc}</p>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -194,7 +253,7 @@ export default function EntryPage() {
               <Button
                 variant="ghost"
                 onClick={() => setStep('person')}
-                className="text-raspberry hover:text-raspberry/80 font-bold opacity-80 hover:opacity-100"
+                className="text-raspberry hover:text-raspberry underline-offset-8 hover:underline font-bold opacity-80 hover:opacity-100 transition-all"
               >
                 Wait, it&apos;s not me!
               </Button>
