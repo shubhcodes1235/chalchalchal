@@ -95,6 +95,7 @@ const config: Config = {
                 'shimmer': 'shimmer 2s linear infinite',
                 'grow': 'grow 0.5s ease-out',
                 'scale-pulse': 'scale-pulse 3s ease-in-out infinite',
+                'marquee': 'marquee 60s linear infinite',
             },
             keyframes: {
                 float: {
@@ -128,6 +129,10 @@ const config: Config = {
                 'scale-pulse': {
                     '0%, 100%': { transform: 'scale(1)' },
                     '50%': { transform: 'scale(1.08)' },
+                },
+                marquee: {
+                    from: { transform: 'translateX(0)' },
+                    to: { transform: 'translateX(-100%)' },
                 },
             },
         },

@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { subscribeToDesigns, Design } from "@/lib/firebase/services/designs"; // Function we just added
 import { useAppStore } from "@/lib/store/app-store";
@@ -46,7 +47,7 @@ export function PartnerFeed() {
 
     return (
         <div className="space-y-8 w-full max-w-2xl mx-auto section-connect">
-            <h2 className="text-2xl font-display font-bold text-center text-night-950 dark:text-foreground mb-6 uppercase tracking-widest">
+            <h2 className="text-xs font-black uppercase tracking-[0.2em] text-pink-500 dark:text-pink-400 mb-8 text-center opacity-80">
                 {targetPersona ? `${targetPersona.charAt(0).toUpperCase() + targetPersona.slice(1)}'s Latest` : "Latest Updates"}
             </h2>
 
@@ -61,14 +62,15 @@ export function PartnerFeed() {
                             key={design.id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.1 }}
+                            transition={{ delay: Math.min(i * 0.1, 0.4) }}
                             className="bg-white dark:bg-card group rounded-[2.5rem] overflow-hidden shadow-soft hover:shadow-glow transition-all duration-500 border-none"
                         >
-                            <div className="relative aspect-video">
-                                <img
+                            <div className="relative aspect-video overflow-hidden">
+                                <Image
                                     src={design.imageUrl}
                                     alt={design.title}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    fill
+                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
                                 <div className="absolute top-6 right-6 bg-deep-plum/80 dark:bg-black/80 backdrop-blur text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">
                                     {design.tool}
@@ -111,6 +113,12 @@ export function PartnerFeed() {
                             </div>
                         </motion.div>
                     ))}
+                    {designs.length > 0 && (
+                        <div className="pt-4 text-center">
+                            <div className="h-px w-24 bg-gradient-to-r from-transparent via-pink-200 dark:via-pink-900/40 to-transparent mx-auto mb-4" />
+                            <p className="text-night-500 dark:text-night-400 font-body font-medium italic text-sm">All caught up ✨</p>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

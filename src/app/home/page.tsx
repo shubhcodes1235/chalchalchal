@@ -25,6 +25,22 @@ export default function HomePage() {
     const [partnerMood, setPartnerMood] = useState<string | null>(null)
     const [showContent, setShowContent] = useState(false);
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.15,
+                delayChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+    };
+
     useEffect(() => {
         const timer = setTimeout(() => setShowContent(true), 150);
         return () => clearTimeout(timer);
@@ -54,10 +70,15 @@ export default function HomePage() {
 
 
             {/* 1. HERO SECTION: EARNING & EXPLORING */}
-            <section className="w-full flex flex-col items-center text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 mt-4">
+            <motion.section 
+                variants={containerVariants}
+                initial="hidden"
+                animate={showContent ? "show" : "hidden"}
+                className="w-full flex flex-col items-center text-center space-y-8 mt-4"
+            >
                 
                 {/* Connectivity Badge */}
-                <div className="flex lg:hidden items-center space-x-3 bg-white/60 dark:bg-card/60 backdrop-blur-md border border-pink-100/50 dark:border-night-800 px-4 py-2 rounded-full shadow-sm">
+                <motion.div variants={itemVariants} className="flex items-center space-x-3 bg-white/60 dark:bg-card/60 backdrop-blur-md border border-pink-100/50 dark:border-night-800 px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex -space-x-2">
                         <div className={cn("w-8 h-8 rounded-full overflow-hidden border-2 border-white dark:border-card flex items-center justify-center shadow-sm bg-blue-100 dark:bg-blue-900 transition-transform", isShubham || isBoth ? "scale-110 z-10" : "opacity-50 grayscale")}>
                             <Image src="/shubham.jpg" alt="Shubham" width={32} height={32} className="w-full h-full object-cover" />
@@ -69,10 +90,10 @@ export default function HomePage() {
                     <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-night-600 dark:text-night-300">
                         {isBoth ? "Building Together" : isShubham ? "Shubham is active" : "Khushi is active"}
                     </span>
-                </div>
+                </motion.div>
 
                 {/* Main Headline */}
-                <div className="relative max-w-4xl mx-auto w-full px-2">
+                <motion.div variants={itemVariants} className="relative max-w-4xl mx-auto w-full px-2">
                     <div className="absolute -inset-10 bg-gradient-to-r from-pink-500/10 via-purple-500/5 to-blue-500/10 blur-2xl rounded-[100%] opacity-70 pointer-events-none" />
                     <h1 className="relative text-5xl leading-[1.1] md:text-6xl md:leading-[1.1] lg:text-8xl font-display font-black tracking-tighter text-night-950 dark:text-white">
                         Earn together.<br />
@@ -80,29 +101,29 @@ export default function HomePage() {
                             Explore everything.
                         </span>
                     </h1>
-                </div>
+                </motion.div>
 
-                <div className="space-y-6 max-w-xl mx-auto">
+                <motion.div variants={itemVariants} className="space-y-6 max-w-xl mx-auto">
                     <p className="text-lg md:text-xl font-bold text-night-600/80 dark:text-night-400 leading-relaxed px-4">
                         Financial freedom, endless opportunities, and a life designed entirely by us. Every design, every small step is building the dream.
                     </p>
-                </div>
+                </motion.div>
 
                 {/* Primary Action */}
-                <div className="pt-2 w-full flex flex-col sm:flex-row items-center justify-center gap-4 px-2">
+                <motion.div variants={itemVariants} className="pt-2 w-full flex flex-col sm:flex-row items-center justify-center gap-4 px-2">
                     <Link href="/upload" className="w-full sm:w-auto">
-                        <Button className="w-full sm:w-auto h-14 sm:h-16 px-10 rounded-full bg-night-950 dark:bg-white text-white dark:text-night-950 hover:bg-night-800 dark:hover:bg-night-100 text-lg font-black tracking-tight shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                        <Button className="w-full sm:w-auto h-14 sm:h-16 px-10 rounded-full bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white border-none text-lg font-black tracking-tight shadow-xl hover:shadow-glow hover:scale-105 transition-all duration-300">
                             Push Today&apos;s Work
                             <ArrowRight className="ml-3 w-5 h-5" />
                         </Button>
                     </Link>
                     <Link href="/board" className="w-full sm:w-auto">
-                        <Button variant="outline" className="w-full sm:w-auto h-14 sm:h-16 px-10 rounded-full bg-white/50 dark:bg-card/50 border-2 border-night-100 dark:border-night-800 hover:border-pink-300 dark:hover:border-pink-500 hover:bg-white dark:hover:bg-card text-night-900 dark:text-white text-lg font-black tracking-tight transition-all duration-300">
+                        <Button variant="outline" className="w-full sm:w-auto h-14 sm:h-16 px-10 rounded-full bg-white/50 dark:bg-card/50 border-2 border-night-200 dark:border-night-800 hover:border-pink-300 dark:hover:border-pink-500 hover:bg-white dark:hover:bg-card text-night-900 dark:text-white text-lg font-black tracking-tight transition-all duration-300">
                             Leave a Note 📝
                         </Button>
                     </Link>
-                </div>
-            </section>
+                </motion.div>
+            </motion.section>
 
             {/* 2. MANIFESTATION JOURNEY BAR */}
             {showContent && (
@@ -181,20 +202,22 @@ export default function HomePage() {
             )}
 
             {/* 6. FOOTER REMINDER */}
-            <section className="w-full pt-12 pb-10 animate-in fade-in duration-1000 delay-700">
-                <div className="text-center space-y-6">
-                    <p className="font-display text-2xl md:text-3xl font-black text-night-400 dark:text-night-500 tracking-tight">
-                        "Chal chal chal — the world is ours to explore."
-                    </p>
-                    <div className="flex items-center justify-center space-x-4 opacity-40">
-                        <div className="h-px w-8 bg-night-400 dark:bg-night-600" />
-                        <span className="text-[10px] uppercase tracking-[0.3em] font-black text-night-600 dark:text-night-500">
-                            Never stop pushing
-                        </span>
-                        <div className="h-px w-8 bg-night-400 dark:bg-night-600" />
+            {showContent && (
+                <section className="w-full pt-12 pb-10 animate-in fade-in duration-1000">
+                    <div className="text-center space-y-6">
+                        <p className="font-display text-2xl md:text-3xl font-black text-night-400 dark:text-night-500 tracking-tight">
+                            "Chal chal chal — the world is ours to explore."
+                        </p>
+                        <div className="flex items-center justify-center space-x-4 opacity-40">
+                            <div className="h-px w-8 bg-night-400 dark:bg-night-600" />
+                            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-night-600 dark:text-night-500">
+                                Never stop pushing
+                            </span>
+                            <div className="h-px w-8 bg-night-400 dark:bg-night-600" />
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
 
         </PageWrapper>
     )

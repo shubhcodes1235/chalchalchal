@@ -1,7 +1,7 @@
 // src/components/archive/design-card.tsx
 "use client"
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Design } from "@/lib/db/schemas"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -23,6 +23,18 @@ export const DesignCard = React.forwardRef<HTMLDivElement, DesignCardProps>(
         const tool = TOOLS.find(t => t.id === design.tool) || TOOLS[TOOLS.length - 1];
         const ToolIcon = tool.icon;
 
+        const [imageUrl, setImageUrl] = useState<string>("");
+
+        useEffect(() => {
+            if (design.thumbnailBlob) {
+                const url = URL.createObjectURL(design.thumbnailBlob);
+                setImageUrl(url);
+                return () => URL.revokeObjectURL(url);
+            } else {
+                setImageUrl(design.thumbnailUrl || design.imageUrl || "");
+            }
+        }, [design.thumbnailBlob, design.thumbnailUrl, design.imageUrl]);
+
         return (
             <motion.div
                 ref={ref}
@@ -34,13 +46,13 @@ export const DesignCard = React.forwardRef<HTMLDivElement, DesignCardProps>(
                 transition={{ duration: 0.2 }}
             >
                 <Card
-                    className="overflow-hidden border-none cursor-pointer h-full group relative transition-all duration-200 rounded-xl shadow-sm hover:shadow-md hover:ring-2 hover:ring-night-900/5 bg-white"
+                    className="overflow-hidden border-none cursor-pointer h-full group relative transition-all duration-200 rounded-xl shadow-sm hover:shadow-md hover:ring-2 hover:ring-night-900/5 bg-white dark:bg-card"
                     onClick={() => onClick(design)}
                 >
                     <div className="aspect-square relative bg-night-100 overflow-hidden">
                         {(design.thumbnailBlob || design.thumbnailUrl || design.imageUrl) ? (
                             <Image
-                                src={design.thumbnailBlob ? URL.createObjectURL(design.thumbnailBlob) : (design.thumbnailUrl || design.imageUrl || '')}
+                                src={imageUrl}
                                 alt={design.title}
                                 fill
                                 priority={priority}
@@ -54,7 +66,7 @@ export const DesignCard = React.forwardRef<HTMLDivElement, DesignCardProps>(
                         <div className="absolute top-2 left-2 z-10">
                             <div className="bg-night-950 text-white px-2 py-1 rounded shadow-lg flex items-center space-x-1">
                                 <ToolIcon className="w-2.5 h-2.5" />
-                                <span className="text-[7px] font-black uppercase tracking-widest">{tool.name}</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest">{tool.name}</span>
                             </div>
                         </div>
 
@@ -67,10 +79,10 @@ export const DesignCard = React.forwardRef<HTMLDivElement, DesignCardProps>(
                     </div>
 
                     <CardContent className="p-2.5 space-y-0.5">
-                        <h4 className="text-[13px] font-black text-night-950 truncate tracking-tight">
+                        <h4 className="text-[13px] font-black text-night-950 dark:text-foreground truncate tracking-tight">
                             {design.title}
                         </h4>
-                        <p className="text-sm text-night-600 font-bold uppercase tracking-tighter">
+                        <p className="text-sm text-night-600 dark:text-muted-foreground font-bold uppercase tracking-tighter">
                             {formatDistanceToNow(design.createdAt, { addSuffix: true })}
                         </p>
                     </CardContent>

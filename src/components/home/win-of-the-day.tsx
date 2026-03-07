@@ -118,7 +118,7 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
         <Card className="border-none bg-card shadow-soft rounded-[2.5rem] overflow-hidden group hover:shadow-glow transition-all duration-500">
             <CardContent className="p-8">
                 <div className="flex items-center space-x-3 mb-6">
-                    <div className="p-2 rounded-2xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 shadow-sm transition-transform group-hover:rotate-12">
+                    <div className="p-2 rounded-2xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 shadow-sm transition-transform group-hover:rotate-12 active:rotate-12">
                         <Trophy className="w-5 h-5 shrink-0" />
                     </div>
                     <div className="relative">
@@ -172,19 +172,25 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                             <h3 className="text-xl font-display font-semibold text-night-800 dark:text-white leading-snug tracking-tight">
                                 {isEditing ? 'Update your win' : 'What was a small win today?'}
                             </h3>
-                            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                                <Input
-                                    id="win-full"
-                                    name="win-full"
-                                    value={content}
-                                    onChange={(e) => setContent(e.target.value)}
-                                    placeholder="Even opening this site counts..."
-                                    className="rounded-2xl h-14 bg-muted/30 dark:bg-muted/20 border-border focus-visible:ring-primary/30 dark:focus-visible:ring-primary/40 placeholder:text-muted-foreground"
-                                    autoFocus={isEditing}
-                                />
+                            <div className="flex flex-col md:flex-row gap-3">
+                                <div className="relative flex-1">
+                                    <Input
+                                        id="win-full"
+                                        name="win-full"
+                                        value={content}
+                                        maxLength={120}
+                                        onChange={(e) => setContent(e.target.value)}
+                                        placeholder="Even opening this site counts..."
+                                        className="rounded-2xl h-14 bg-muted/30 dark:bg-muted/20 border-border focus-visible:ring-pink-500/30 dark:focus-visible:ring-pink-500/40 placeholder:text-muted-foreground pr-16"
+                                        autoFocus={isEditing}
+                                    />
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-widest text-night-400 dark:text-night-600">
+                                        {content.length}/120
+                                    </div>
+                                </div>
                                 <div className="flex gap-2">
-                                    <Button type="submit" className="rounded-2xl h-14 px-8 shadow-glow bg-pink-500 hover:bg-pink-600 border-none transition-all whitespace-nowrap">
-                                        {isEditing ? 'Update Win ✨' : 'Save Win ✨'}
+                                    <Button type="submit" className="flex-1 sm:flex-none rounded-2xl h-14 px-8 shadow-glow bg-pink-500 hover:bg-pink-600 border-none transition-all whitespace-nowrap">
+                                        {isEditing ? 'Update ✨' : 'Save ✨'}
                                     </Button>
                                     {isEditing && (
                                         <Button 
@@ -201,7 +207,7 @@ export function WinOfTheDay({ minimal = false }: { minimal?: boolean }) {
                         </motion.form>
                     )}
                 </AnimatePresence>
-                {currentPerson === 'both' && !todayWin && (
+                {currentPerson === 'both' && (
                     <div className="flex gap-4 justify-center mt-6">
                         <button
                             type="button"

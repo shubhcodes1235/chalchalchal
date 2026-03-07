@@ -17,6 +17,20 @@ export function VisualizationGarden() {
         return () => unsubscribe();
     }, []);
 
+    if (streak === null) {
+        return (
+            <Card className="border-none bg-white dark:bg-card shadow-soft rounded-[2.5rem] overflow-hidden animate-pulse min-h-[380px] flex items-center justify-center">
+                <CardContent className="p-8 flex flex-col items-center justify-center text-center space-y-6 w-full">
+                    <div className="w-36 h-36 md:w-44 md:h-44 rounded-full bg-night-50 dark:bg-night-900 border-8 border-white dark:border-card" />
+                    <div className="space-y-3 w-full max-w-[200px]">
+                        <div className="h-6 bg-night-50 dark:bg-night-900 rounded-full w-full" />
+                        <div className="h-4 bg-night-50 dark:bg-night-900 rounded-full w-3/4 mx-auto" />
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
     const count = streak?.currentStreak || 0;
     
     // Determine the visualization state based on streak
@@ -61,7 +75,7 @@ export function VisualizationGarden() {
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5, type: "spring" }}
-                    className={`w-36 h-36 md:w-44 md:h-44 rounded-full bg-gradient-to-br ${stageClass} flex items-center justify-center text-6xl md:text-7xl shadow-xl shadow-pink-500/20 border-8 border-white dark:border-night-800 group-hover:scale-105 transition-transform duration-500 relative`}
+                    className={`w-36 h-36 md:w-44 md:h-44 rounded-full bg-gradient-to-br ${stageClass} flex items-center justify-center text-6xl md:text-7xl shadow-xl shadow-pink-500/20 border-8 border-white dark:border-card group-hover:scale-105 transition-transform duration-500 relative`}
                 >
                     {/* Inner Glow Ring */}
                     <div className="absolute inset-4 rounded-full bg-white/20 backdrop-blur-[2px] border border-white/30" />
@@ -75,8 +89,8 @@ export function VisualizationGarden() {
                     </motion.div>
                     
                     {/* Streak Badge Overlay */}
-                    <div className="absolute -bottom-2 -right-2 w-12 h-12 rounded-full bg-night-950 dark:bg-white text-white dark:text-night-950 flex items-center justify-center text-xl font-black shadow-lg border-4 border-white dark:border-night-800 transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
-                        {count}
+                    <div className="absolute -bottom-2 -right-2 w-12 h-12 rounded-full bg-night-950 dark:bg-white text-white dark:text-night-950 flex items-center justify-center text-xl font-black shadow-lg border-4 border-white dark:border-card transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
+                        🔥
                     </div>
                 </motion.div>
 

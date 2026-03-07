@@ -29,7 +29,7 @@ export function BottomNavbar() {
                     if (item.isFab) {
                         return (
                             <div key={item.href} className="relative -top-6 mx-2">
-                                <Link href={item.href}>
+                                <Link href={item.href} aria-current={isActive ? "page" : undefined}>
                                     <motion.div
                                         whileTap={{ scale: 0.9 }}
                                         className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 via-rose-500 to-orange-400 text-white flex items-center justify-center shadow-[0_8px_30px_rgb(233,30,99,0.3)] border-[4px] border-background animate-scale-pulse"
@@ -50,13 +50,14 @@ export function BottomNavbar() {
                         <Link
                             key={item.href}
                             href={item.href}
+                            aria-current={isActive ? "page" : undefined}
                             className="flex-1 flex justify-center py-2"
                         >
                             <motion.div 
                                 whileTap={{ scale: 0.9 }}
                                 className={cn(
                                     "relative flex flex-col items-center justify-center w-full max-w-[64px] rounded-2xl transition-all duration-300",
-                                    isActive ? "py-1" : "py-1"
+                                    isActive ? "py-2" : "py-1"
                                 )}
                             >
                                 {isActive && (

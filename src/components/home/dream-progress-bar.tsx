@@ -29,13 +29,18 @@ export function DreamProgressBar() {
     const progress = total > 1 ? ((completed - 1) / (total - 1)) * 100 : 0;
 
     return (
-        <div className="w-full py-6 space-y-6">
+        <div className="w-full py-6 pb-14 space-y-6">
             <div className="relative">
                 {/* Track Line Background */}
-                <div className="absolute top-1/2 left-0 right-0 h-1 -translate-y-1/2 bg-night-50 rounded-full z-0" />
+                <div className="absolute top-1/2 left-0 right-0 h-1.5 -translate-y-1/2 bg-night-100 dark:bg-night-900 rounded-full z-0" />
 
                 {/* Active Progress Line */}
-                <div className="absolute top-1/2 left-0 h-1 -translate-y-1/2 bg-pink-300 rounded-full z-0 transition-all duration-1000" style={{ width: `${progress}%` }} />
+                <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                    className="absolute top-1/2 left-0 h-1.5 -translate-y-1/2 bg-gradient-to-r from-pink-500 to-rose-400 rounded-full z-0 shadow-sm shadow-pink-500/20" 
+                />
 
                 {/* Steps Container */}
                 <div className="relative z-10 flex justify-between w-full">
@@ -45,20 +50,22 @@ export function DreamProgressBar() {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 className={cn(
-                                    "w-12 h-12 rounded-full flex items-center justify-center text-xl transition-all duration-500 border-4 bg-white shadow-sm z-10",
+                                    "w-12 h-12 rounded-full flex items-center justify-center text-xl transition-all duration-500 border-4 bg-white dark:bg-night-950 shadow-sm z-10",
                                     m.isCompleted
-                                        ? "border-pink-300 text-pink-500"
-                                        : "border-night-50 text-night-200 grayscale opacity-80"
+                                        ? "border-pink-500 text-pink-500"
+                                        : "border-night-100 dark:border-night-900 text-night-200 dark:text-night-800 grayscale opacity-80"
                                 )}
                             >
                                 {m.emoji}
                             </motion.div>
 
                             {/* Label - Absolute to not affect flex spacing, but centered */}
-                            <div className="absolute -bottom-8 w-24 text-center">
+                            <div className="absolute -bottom-10 w-24 text-center">
                                 <span className={cn(
-                                    "text-sm uppercase tracking-widest font-black transition-all block truncate px-1",
-                                    m.isCompleted ? "text-pink-400 opacity-100" : "text-night-500 opacity-0 group-hover:opacity-100"
+                                    "text-[10px] sm:text-xs uppercase tracking-widest font-black transition-all block truncate px-0.5",
+                                    m.isCompleted 
+                                        ? "text-pink-500/80 dark:text-pink-400/80 opacity-100" 
+                                        : "text-night-400 dark:text-night-600 opacity-40 sm:opacity-0 sm:group-hover:opacity-100"
                                 )}>
                                     {m.title}
                                 </span>

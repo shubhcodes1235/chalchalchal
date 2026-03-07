@@ -22,7 +22,7 @@ export default function EntryPage() {
   const { greeting } = useTimeOfDay()
 
   const [step, setStep] = useState<'person' | 'mood'>('person')
-  const [partnerStatus, setPartnerStatus] = useState({
+  const [partnerStatus, setPartnerStatus] = useState<Record<'shubham' | 'khushi', boolean>>({
     shubham: false,
     khushi: false
   })
@@ -111,8 +111,7 @@ export default function EntryPage() {
                 ].map((p, i) => {
                   const partnerId = p.id === 'shubham' ? 'khushi' : 'shubham';
                   const partnerName = p.id === 'shubham' ? 'Khushi' : 'Shubham';
-                  // @ts-ignore
-                  const isPartnerWaiting = partnerStatus[partnerId];
+                  const isPartnerWaiting = partnerStatus[partnerId as 'shubham' | 'khushi'];
 
                   return (
                     <motion.div
@@ -138,8 +137,8 @@ export default function EntryPage() {
                           </div>
 
                           {isPartnerWaiting && (
-                             <div className="absolute top-4 right-4 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500">
-                               <span className="text-[10px] sm:text-xs uppercase tracking-wider bg-raspberry/10 px-2 py-1 rounded-full text-raspberry font-black animate-pulse flex items-center gap-1 shadow-sm">
+                             <div className="absolute top-4 right-4 transition-opacity duration-500">
+                               <span className="text-[10px] sm:text-xs uppercase tracking-wider bg-raspberry/10 px-2 py-1 rounded-full text-raspberry font-black animate-pulse flex items-center gap-1 shadow-sm border border-raspberry/20">
                                  <span className="w-1.5 h-1.5 rounded-full bg-raspberry" />
                                  {partnerName} waiting 🌸
                                </span>
@@ -180,7 +179,7 @@ export default function EntryPage() {
                   >
                     <Card
                       hover
-                      onClick={() => handleMoodSelect(m.id as any)}
+                      onClick={() => handleMoodSelect(m.id as 'design' | 'vibe' | 'lost')}
                       className="cursor-pointer bg-white group h-full"
                     >
                       <CardContent className="p-4 md:p-8 flex flex-col items-center text-center space-y-4">
