@@ -17,6 +17,7 @@ import { ShieldCheck, RefreshCw, Upload, FileJson, LogOut, Users, User, Wifi, Se
 import Image from "next/image"
 import { useAppStore } from "@/lib/store/app-store"
 import { logActivityToFirebase } from "@/lib/firebase/services/activity"
+import { getPersonName } from "@/lib/utils/person"
 
 export default function SettingsPage() {
     const { currentPerson, setCurrentPerson } = useAppStore()
@@ -151,7 +152,7 @@ export default function SettingsPage() {
 
     const pingPartner = async () => {
         if (!isFirebaseConfigured) {
-            toast.error("Firebase is not connected! Connection impossible. 🛑");
+            toast.error("Cloud is not connected! 🛑");
             return;
         }
         const uploader = currentPerson === 'both' ? 'shubham' : currentPerson
@@ -159,13 +160,13 @@ export default function SettingsPage() {
             await logActivityToFirebase({
                 person: uploader,
                 type: 'hype',
-                title: 'Sync Check!',
-                message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} sent a test ping! 🧪`
+                title: 'Ping! 📡',
+                message: `${getPersonName(uploader)} sent a connection test ping!`
             })
-            toast.success("Ping sent to cloud!")
+            toast.success("Test ping sent! 🚀")
         } catch (error) {
             console.error("Ping failed:", error)
-            toast.error("Cloud connection failed. Check your internet or Firebase config.")
+            toast.error("Cloud connection failed. Check your internet.")
         }
     }
 
@@ -258,8 +259,8 @@ export default function SettingsPage() {
                     <CardContent className="p-6">
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="space-y-1 text-center sm:text-left">
-                                <p className="font-bold text-night-900">Sync Diagnostic</p>
-                                <p className="text-xs text-night-500 max-w-[300px]">Send a test notification to the other persona to verify the real-time link.</p>
+                                <p className="font-bold text-night-900">Connection Check</p>
+                                <p className="text-xs text-night-500 max-w-[300px]">Send a test notification to verify the real-time link with your partner.</p>
                             </div>
                             <Button
                                 variant="outline"
@@ -267,7 +268,7 @@ export default function SettingsPage() {
                                 className="rounded-xl font-black text-xs h-11 px-6 bg-white border-2 border-night-100 hover:border-night-200"
                             >
                                 <Send className="w-4 h-4 mr-2" />
-                                PING PARTNER
+                                Send Test Ping
                             </Button>
                         </div>
                     </CardContent>

@@ -14,8 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useAppStore } from "@/lib/store/app-store"
 import Image from "next/image"
 import { EmergencyButton } from "@/components/layout/emergency-button"
-import { subscribeToPartnerStatus, subscribeToPartnerPresence } from "@/lib/firebase/services/presence"
-import { useMoodStore } from "@/lib/store/mood-store"
+import { subscribeToPartnerStatus } from "@/lib/firebase/services/presence"
 import { NotificationBell } from "@/components/layout/notification-bell"
 
 
@@ -43,27 +42,16 @@ export function Header() {
     const { currentPerson, setCurrentPerson } = useAppStore()
     const [shubhamOnline, setShubhamOnline] = React.useState(false)
     const [khushiOnline, setKhushiOnline] = React.useState(false)
-    const [partnerMood, setPartnerMood] = React.useState<string | null>(null)
     const [subtitleIndex, setSubtitleIndex] = React.useState(0)
-    const { sessionMood } = useMoodStore()
+
 
     React.useEffect(() => {
-        const targetPartner = (currentPerson === 'shubham') ? 'khushi' : (currentPerson === 'khushi' ? 'shubham' : null);
-        
         const unsubS = subscribeToPartnerStatus('shubham', (online) => setShubhamOnline(online))
         const unsubK = subscribeToPartnerStatus('khushi', (online) => setKhushiOnline(online))
         
-        let unsubPresence = () => {}
-        if (targetPartner) {
-            unsubPresence = subscribeToPartnerPresence(targetPartner, (data) => {
-                setPartnerMood(data.sessionMood);
-            });
-        }
-
         return () => {
             unsubS()
             unsubK()
-            unsubPresence()
         }
     }, [currentPerson])
 
@@ -73,8 +61,6 @@ export function Header() {
         }, 5000)
         return () => clearInterval(interval)
     }, [])
-
-    const isSharedFocus = sessionMood === 'design' && partnerMood === 'design';
 
     const title = pageTitles[pathname] || "Dream & Design"
 
@@ -97,7 +83,6 @@ export function Header() {
             }
         } catch (e) {
             console.error("Failed to switch user:", e)
-            // Error handling could be a toast here
         }
     }
 
@@ -126,18 +111,6 @@ export function Header() {
                         </AnimatePresence>
                     </div>
                 </div>
-
-                {isSharedFocus && (
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="flex items-center gap-1.5 md:gap-2 bg-pink-500 text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] px-2 md:px-3 sm:px-4 py-1.5 md:py-2 rounded-full shadow-glow animate-glow"
-                    >
-                        <Sparkles className="w-2.5 h-2.5 md:w-3 md:h-3" />
-                        <span className="hidden xs:inline">Shared Focus</span>
-                        <span className="xs:hidden">Focus</span>
-                    </motion.div>
-                )}
 
                 <div className="flex items-center space-x-4">
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

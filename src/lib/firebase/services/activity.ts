@@ -68,3 +68,25 @@ export function subscribeToOtherActivities(
         });
     });
 }
+
+export async function fetchMissedActivities(
+  partnerPerson: string,
+  sinceTimestamp: Date
+): Promise<Activity[]> {
+  const { getDocs } = await import("firebase/firestore");
+  
+  const q = query(
+    collection(db, "activities"),
+    where("person", "==", partnerPerson),
+    where("timestamp", ">", sinceTimestamp),
+    orderBy("timestamp", "desc"),
+    limit(50)
+  );
+
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({
+    ...doc.data(),
+    id: doc.id
+  } as Activity));
+}
+

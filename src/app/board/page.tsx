@@ -28,6 +28,7 @@ import { toast } from "react-hot-toast"
 import { useCelebration } from "@/providers/celebration-provider"
 import { doc, updateDoc } from "firebase/firestore"
 import { db as fDb } from "@/lib/firebase/config"
+import { getPersonName } from "@/lib/utils/person"
 
 const NOTE_COLORS = [
     "bg-pink-100 dark:bg-pink-950/40 border-pink-200 dark:border-pink-900/50 text-pink-900 dark:text-pink-100",
@@ -136,13 +137,13 @@ export default function BoardPage() {
             await logActivityToFirebase({
                 person: uploader,
                 type: 'task',
-                title: 'New Task',
-                message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} assigned a new task: "${taskFormData.title.substring(0, 30)}${taskFormData.title.length > 30 ? '...' : ''}" 🎯`
+                title: 'New Task 🎯',
+                message: `${getPersonName(uploader)} added a task: "${taskFormData.title.substring(0, 30)}${taskFormData.title.length > 30 ? '...' : ''}"`
             })
 
             setIsTaskDialogOpen(false)
             setTaskFormData({ title: "", description: "", priority: "medium", deadline: "" })
-            toast.success("Task added! Let's get to work! 🎯");
+            toast.success("Task added! 🎯");
         } catch (error) {
             console.error("Failed to add task:", error)
         }
@@ -179,13 +180,13 @@ export default function BoardPage() {
             await logActivityToFirebase({
                 person: uploader,
                 type: 'note',
-                title: 'New Note',
-                message: `Chal chal chal! ${uploader === 'shubham' ? 'Shubham' : 'Khushi'} just left a motivating note for you: "${formData.content.substring(0, 30)}${formData.content.length > 30 ? '...' : ''}" 💖 Go read it!`
+                title: 'New Note 📝',
+                message: `${getPersonName(uploader)} left you a note: "${formData.content.substring(0, 30)}${formData.content.length > 30 ? '...' : ''}" 💬`
             })
 
             setIsDialogOpen(false)
             setFormData({ content: "", type: "thought", color: NOTE_COLORS[0], isPinned: false, linkedUrl: "" })
-            toast.success("Note posted to the board! 🌸");
+            toast.success("Note posted! 🌸");
         } catch (error) {
             console.error("Failed to add note:", error)
         }
@@ -635,7 +636,7 @@ export default function BoardPage() {
                                             person: uploader,
                                             type: 'task',
                                             title: 'Task Updated',
-                                            message: `${uploader === 'shubham' ? 'Shubham' : 'Khushi'} just ${newState ? 'completed' : 'uncompleted'} the task: "${task.title.substring(0, 30)}${task.title.length > 30 ? '...' : ''}" ${newState ? '✅' : '🔄'}`
+                                            message: `${getPersonName(uploader)} ${newState ? 'completed' : 'uncompleted'} the task: "${task.title.substring(0, 30)}${task.title.length > 30 ? '...' : ''}" ${newState ? '✅' : '🔄'}`
                                         });
                                         if (newState) triggerCelebration('milestone');
                                     }}
@@ -798,7 +799,7 @@ export default function BoardPage() {
                         onClick={() => setIsTaskDialogOpen(true)}
                         className="rounded-2xl bg-night-950 hover:bg-night-800 text-white font-black h-16 px-12 relative z-10 shadow-xl text-lg tracking-tight"
                     >
-                        Add your first task
+                        Add Task
                     </Button>
                 </div>
             )}

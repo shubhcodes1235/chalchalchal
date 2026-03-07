@@ -4,13 +4,13 @@
 import React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, FolderHeart, Plus, LayoutDashboard, LineChart, MessageSquareHeart, Settings } from "lucide-react"
+import { Home, FolderHeart, Plus, LayoutDashboard, LineChart, StickyNote, Settings } from "lucide-react"
 import { cn } from "@/lib/utils/cn"
 import { motion } from "framer-motion"
 
 const navItems = [
     { icon: Home, label: "Home", href: "/home" },
-    { icon: MessageSquareHeart, label: "Board", href: "/board" },
+    { icon: StickyNote, label: "Board", href: "/board" },
     { icon: Plus, label: "Upload", href: "/upload", isFab: true },
     { icon: LineChart, label: "Progress", href: "/progress" },
     { icon: FolderHeart, label: "Gallery", href: "/archive" },

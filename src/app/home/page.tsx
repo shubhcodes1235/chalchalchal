@@ -13,16 +13,13 @@ import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Sparkles, Coins, Compass } from "lucide-react"
+import { ArrowRight, Sparkles, Coins, MapPin, TrendingUp, Flame, Radio } from "lucide-react"
 import { useAppStore } from "@/lib/store/app-store"
-import { useMoodStore } from "@/lib/store/mood-store"
 import { subscribeToPartnerPresence } from "@/lib/firebase/services/presence"
 import { cn } from "@/lib/utils/cn"
 
 export default function HomePage() {
     const { currentPerson } = useAppStore()
-    const { sessionMood } = useMoodStore()
-    const [partnerMood, setPartnerMood] = useState<string | null>(null)
     const [showContent, setShowContent] = useState(false);
 
     const containerVariants = {
@@ -46,25 +43,13 @@ export default function HomePage() {
         return () => clearTimeout(timer);
     }, []);
 
-    useEffect(() => {
-        if (!currentPerson || currentPerson === 'both') return;
-        const targetPartner = currentPerson === 'shubham' ? 'khushi' : 'shubham';
-        const unsubscribe = subscribeToPartnerPresence(targetPartner, (data: any) => {
-            setPartnerMood(data.sessionMood);
-        });
-        return () => unsubscribe();
-    }, [currentPerson]);
-
     const isKhushi = currentPerson === 'khushi'
     const isBoth = currentPerson === 'both'
     const isShubham = currentPerson === 'shubham'
 
-    const isSharedFocus = sessionMood === 'design' && partnerMood === 'design';
-
     return (
         <PageWrapper className={cn(
-            "flex flex-col items-center max-w-5xl mx-auto space-y-8 md:space-y-12 pt-4 md:pt-8 pb-24 md:pb-32 px-4 transition-colors duration-1000",
-            isSharedFocus && "dark:shadow-[inset_0_0_100px_rgba(233,30,99,0.15)] rounded-3xl"
+            "flex flex-col items-center max-w-5xl mx-auto space-y-8 md:space-y-12 pt-4 md:pt-8 pb-24 md:pb-32 px-4 transition-colors duration-1000"
         )}>
 
 
@@ -93,36 +78,20 @@ export default function HomePage() {
                     </span>
                 </motion.div>
 
-                {/* Shared Focus Banner */}
-                <AnimatePresence>
-                    {isSharedFocus && (
-                        <motion.div 
-                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                            className="bg-gradient-to-r from-pink-500/20 via-rose-500/20 to-pink-500/20 backdrop-blur-md border border-pink-200/50 dark:border-pink-500/30 px-6 py-2 rounded-2xl shadow-glow text-pink-600 dark:text-pink-400 font-bold text-sm flex items-center gap-3"
-                        >
-                            <Sparkles className="w-4 h-4 animate-spin-slow" />
-                            <span>Vibe Match: You&apos;re both in flow today! 🔥</span>
-                            <Sparkles className="w-4 h-4 animate-spin-slow" />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
                 {/* Main Headline */}
                 <motion.div variants={itemVariants} className="relative max-w-4xl mx-auto w-full px-2">
                     <div className="absolute -inset-10 bg-gradient-to-r from-pink-500/10 via-purple-500/5 to-blue-500/10 blur-2xl rounded-[100%] opacity-70 pointer-events-none" />
                     <h1 className="relative text-5xl leading-[1.1] md:text-6xl md:leading-[1.1] lg:text-8xl font-display font-black tracking-tighter text-night-950 dark:text-white">
-                        Earn together.<br />
+                        Built for us.<br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-rose-500 to-orange-500 block mt-1">
-                            Explore everything.
+                            Made with love.
                         </span>
                     </h1>
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="space-y-6 max-w-xl mx-auto">
                     <p className="text-lg md:text-xl font-bold text-night-600/80 dark:text-night-400 leading-relaxed px-4">
-                        Financial freedom, endless opportunities, and a life designed entirely by us. Every design, every small step is building the dream.
+                        Financial freedom, endless opportunities, and a life designed entirely by us. Every design, every small step is building our dream.
                     </p>
                 </motion.div>
 
@@ -130,7 +99,7 @@ export default function HomePage() {
                 <motion.div variants={itemVariants} className="pt-2 w-full flex flex-col sm:flex-row items-center justify-center gap-4 px-2">
                     <Link href="/upload" className="w-full sm:w-auto">
                         <Button className="w-full sm:w-auto h-14 sm:h-16 px-10 rounded-full bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white border-none text-lg font-black tracking-tight shadow-xl hover:shadow-glow hover:scale-105 transition-all duration-300">
-                            Push Today&apos;s Work
+                            Share Your Work
                             <ArrowRight className="ml-3 w-5 h-5" />
                         </Button>
                     </Link>
@@ -154,7 +123,7 @@ export default function HomePage() {
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h2 className="text-2xl md:text-3xl font-black text-night-950 dark:text-white tracking-tight flex items-center gap-3">
-                                <Sparkles className="w-6 h-6 text-pink-500" />
+                                <TrendingUp className="w-6 h-6 text-pink-500" />
                                 Manifestation Journey
                             </h2>
                             <p className="text-sm font-bold text-night-500 dark:text-night-400 mt-1">Tracking our path from where we are to financial freedom.</p>
@@ -177,7 +146,7 @@ export default function HomePage() {
                     <div className="space-y-4">
                         <div className="flex items-center space-x-2 pl-2">
                             <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400">
-                                <Coins className="w-3.5 h-3.5" />
+                                <Flame className="w-3.5 h-3.5" />
                             </span>
                             <span className="text-xs font-black uppercase tracking-widest text-night-600 dark:text-night-400">The Hustle</span>
                         </div>
@@ -188,7 +157,7 @@ export default function HomePage() {
                     <div className="space-y-4">
                         <div className="flex items-center space-x-2 pl-2">
                             <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">
-                                <Compass className="w-3.5 h-3.5" />
+                                <MapPin className="w-3.5 h-3.5" />
                             </span>
                             <span className="text-xs font-black uppercase tracking-widest text-night-600 dark:text-night-400">The Destination</span>
                         </div>
@@ -233,8 +202,11 @@ export default function HomePage() {
                 >
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-[2px] bg-gradient-to-r from-transparent via-pink-400 to-transparent opacity-50"></div>
                     <div className="text-center mb-8 md:mb-10 mt-4 md:mt-0">
-                        <h3 className="text-xl font-black text-night-900 dark:text-white tracking-tight">Our Live Thread</h3>
-                        <p className="text-xs font-bold uppercase tracking-widest text-night-500 dark:text-night-400 mt-2">See what's happening right now</p>
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                             <Radio className="w-4 h-4 text-pink-500 animate-pulse" />
+                             <h3 className="text-xl font-black text-night-900 dark:text-white tracking-tight">Our Live Thread</h3>
+                        </div>
+                        <p className="text-xs font-bold uppercase tracking-widest text-night-500 dark:text-night-400">See what's happening right now</p>
                     </div>
                     <div className="bg-white/50 dark:bg-card/50 backdrop-blur-sm rounded-[3rem] p-4 md:p-6 border border-night-100/30 dark:border-night-800">
                         <PartnerFeed />
